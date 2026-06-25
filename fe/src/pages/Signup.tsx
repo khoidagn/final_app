@@ -64,17 +64,17 @@ export default function SignUp() {
           
           <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 shrink-0" />
-            <span className="text-sm font-medium text-gray-700">Tiếp tục với Google</span>
+            <span className="text-sm font-medium text-gray-700">Sign in with Google</span>
           </button>
           
           <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
             <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" className="w-5 h-5 shrink-0" />
-            <span className="text-sm font-medium text-gray-700">Tiếp tục với Facebook</span>
+            <span className="text-sm font-medium text-gray-700">Sign in with Facebook</span>
           </button>
           
           <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
             <img src="https://www.svgrepo.com/show/475689/twitter-color.svg" alt="Twitter" className="w-5 h-5 shrink-0" />
-            <span className="text-sm font-medium text-gray-700">Tiếp tục với Twitter</span>
+            <span className="text-sm font-medium text-gray-700">Sign in with Twitter</span>
           </button>
 
         </div>
@@ -84,7 +84,7 @@ export default function SignUp() {
       <div className="text-sm text-gray-500 mt-5 font-normal">
         Already have an account?{' '}
         <Link 
-          to="/login" // Thay đổi đường dẫn này theo router của bạn để quay lại trang Đăng nhập
+          to="/login" 
           className="text-blue-900 hover:underline text-decoration-none font-semibold"
         >
           Sign in

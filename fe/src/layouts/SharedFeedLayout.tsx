@@ -10,7 +10,7 @@ interface SharedFeedLayoutProps {
   photos: PhotoData[];
   albums: AlbumData[];
   isLoading?: boolean;
-  activeTab: FeedTabType; // NHẬN TỪ CHA
+  activeTab: FeedTabType; 
   onChangeTab: (tab: FeedTabType) => void; 
   onFollowToggle?: (authorId: number, currentStatus: boolean) => void;
 }

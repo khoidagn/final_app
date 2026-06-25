@@ -51,13 +51,11 @@ export default function Login() {
 
           <div className="p-6 pt-0 border-b border-gray-100 flex flex-col gap-3 bg-gray-50/50">
           
-          {/* Nút Google */}
           <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 shrink-0" />
             <span className="text-sm font-medium text-gray-700">Sign in with Google</span>
           </button>
           
-          {/* Nút Facebook */}
           <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
             <img src="https://www.svgrepo.com/show/475647/facebook-color.svg" alt="Facebook" className="w-5 h-5 shrink-0" />
             <span className="text-sm font-medium text-gray-700">Sign in with Facebook</span>

@@ -1,10 +1,15 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { MOCK_AUTH_SESSION } from '../mocks/authMock';
+import { useAuth } from '../hooks/useAuth'; 
 import Avatar from './Avatar';
 import { getFullName } from '../utils/string';
 
 export default function Navbar() {
-  const { isLoggedIn, user } = MOCK_AUTH_SESSION;
+  const { isLoggedIn, user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <nav className="bg-blue-900 h-14 w-full sticky top-0 z-50 shadow-sm"></nav>;
+  }
 
   return (
     <nav className="bg-blue-900 text-white p-3 sm:py-2 sm:px-6 flex flex-col gap-3 shadow-sm sticky top-0 z-50">      
@@ -40,6 +45,7 @@ export default function Navbar() {
             <div className="hidden sm:block w-4"></div>
           )}
         </div>
+        
         <div className="shrink-0 text-right sm:text-center sm:min-w-0">
           {isLoggedIn ? (
             <Link to="/login" className="text-gray-200 hover:text-white hover:underline transition-colors text-decoration-none text-sm font-medium">
@@ -61,7 +67,6 @@ export default function Navbar() {
           className="w-full bg-white text-gray-800 px-4 py-1.5 rounded-xs text-sm focus:outline-none placeholder-gray-400 shadow-inner"
         />
       </div>
-
     </nav>
   );
 }

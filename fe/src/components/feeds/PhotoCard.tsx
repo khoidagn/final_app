@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import type { PhotoData } from '../../types/feeds';
 import { getFullName } from '../../utils/string';
 import Avatar from '../Avatar'; 
-
+import FollowButton from '../FollowButton';
 interface PhotoCardProps {
   data: PhotoData;
   onFollowToggle?: (authorId: number, currentStatus: boolean) => void;
@@ -10,17 +10,11 @@ interface PhotoCardProps {
 
 export default function PhotoCard({ data, onFollowToggle }: PhotoCardProps) {
   if (!data || !data.author) return null;
-  
-  const isFollowing = data.author.is_following;
-
   return (
     <div className="flex flex-col md:flex-row bg-gray-50 border border-gray-200 rounded-md overflow-hidden shadow-2xs hover:shadow-sm transition-shadow">
-
       <div className="w-full md:w-1/2 aspect-square flex items-center justify-center bg-gray-50 relative shrink-0 overflow-hidden">
-
         <img src={data.image_url} alt={data.title} className="w-full h-full object-cover" />
       </div>
-
       <div className="w-full md:w-1/2 p-4 flex flex-col justify-between min-w-0">
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -40,19 +34,10 @@ export default function PhotoCard({ data, onFollowToggle }: PhotoCardProps) {
             </div>
 
             {onFollowToggle && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation(); 
-                  onFollowToggle(data.author.id, isFollowing);
-                }}
-                className={`text-[9px] font-bold px-1.5 py-0.5 rounded-xl transition-colors shrink-0 border ${
-                  isFollowing 
-                    ? 'text-white bg-orange-500 border-orange-500' 
-                    : 'text-orange-500 border-orange-400 hover:bg-orange-50' 
-                }`}
-              >
-                {isFollowing ? 'Following' : 'Follow'}
-              </button>
+              <FollowButton 
+                isFollowing={data.author.is_following} 
+                onToggle={() => onFollowToggle(data.author.id, data.author.is_following)} 
+              />
             )}
           </div>
           

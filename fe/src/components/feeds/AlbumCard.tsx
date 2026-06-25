@@ -1,6 +1,7 @@
 import type { AlbumData } from '../../types/feeds';
 import { getFullName } from '../../utils/string';
 import Avatar from '../Avatar'; 
+import FollowButton from '../FollowButton';
 interface AlbumCardProps {
   data: AlbumData; 
   onFollowToggle?: (authorId: number, currentStatus: boolean) => void;
@@ -9,7 +10,6 @@ interface AlbumCardProps {
 export default function AlbumCard({ data, onFollowToggle }: AlbumCardProps) {
   if (!data || !data.author) return null;
 
-  const isFollowing = data.author.is_following;
   const images = data?.images || [];
   const [coverImg, secondImg, thirdImg] = images;
 
@@ -54,19 +54,10 @@ export default function AlbumCard({ data, onFollowToggle }: AlbumCardProps) {
             </div>
 
             {onFollowToggle && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation(); 
-                  onFollowToggle(data.author.id, isFollowing);
-                }}
-                className={`text-[9px] font-bold px-1.5 py-0.5 rounded-xl transition-colors shrink-0 border ${
-                  isFollowing 
-                    ? 'text-white bg-orange-500 border-orange-500' 
-                    : 'text-orange-500 border-orange-400 hover:bg-orange-50' 
-                }`}
-              >
-                {isFollowing ? 'Following' : 'Follow'}
-              </button>
+              <FollowButton 
+                isFollowing={data.author.is_following} 
+                onToggle={() => onFollowToggle(data.author.id, data.author.is_following)} 
+              />
             )}
           </div>
 

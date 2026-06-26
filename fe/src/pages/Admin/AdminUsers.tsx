@@ -1,16 +1,19 @@
 import React from 'react';
 import type { AdminUserData } from '../../types/admin';
 import { useAdminPagination } from '../../hooks/useAdminPagination';
-import Pagination from '../../components/Pagination';
+import Pagination from '../../components/ui/Pagination';
 
 export default function AdminUsers() {
-  const { 
-    dataList: users, 
-    currentPage, 
-    setCurrentPage, 
-    totalPages, 
-    isLoading 
-  } = useAdminPagination<AdminUserData>({ endpoint: 'admin_users', itemsPerPage: 40 });
+  const {
+    dataList: users,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    isLoading,
+  } = useAdminPagination<AdminUserData>({
+    endpoint: 'admin_users',
+    itemsPerPage: 40,
+  });
 
   if (isLoading) {
     return (
@@ -22,7 +25,6 @@ export default function AdminUsers() {
 
   return (
     <div className="bg-white rounded-md border border-gray-100 p-6 w-full min-h-[500px] flex flex-col justify-between">
-      
       <div className="w-full overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
@@ -55,12 +57,11 @@ export default function AdminUsers() {
         </table>
       </div>
 
-      <Pagination 
-        currentPage={currentPage} 
-        totalPages={totalPages} 
-        onPageChange={setCurrentPage} 
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
       />
-
     </div>
   );
 }

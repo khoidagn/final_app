@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
-import { adminService, type PaginatedResponse } from '../services/admin.service';
+import {
+  adminService,
+  type PaginatedResponse,
+} from '../services/admin.service';
 
 interface UseAdminPaginationProps {
-  endpoint: string;       
-  itemsPerPage: number;  
+  endpoint: string;
+  itemsPerPage: number;
 }
 
-export function useAdminPagination<T>({ endpoint, itemsPerPage }: UseAdminPaginationProps) {
+export function useAdminPagination<T>({
+  endpoint,
+  itemsPerPage,
+}: UseAdminPaginationProps) {
   const [dataList, setDataList] = useState<T[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -14,22 +20,28 @@ export function useAdminPagination<T>({ endpoint, itemsPerPage }: UseAdminPagina
 
   useEffect(() => {
     let isMounted = true;
-    setIsLoading(true);
+    const timer = setTimeout(() => {
+      if (isMounted) setIsLoading(true);
+    }, 0);
 
-    adminService.getPaginatedData<T>(endpoint, currentPage, itemsPerPage)
+    adminService
+      .getPaginatedData<T>(endpoint, currentPage, itemsPerPage)
       .then((resData) => {
         if (!isMounted) return;
 
-        if (resData && typeof resData === 'object' && 'data' in resData && Array.isArray(resData.data)) {
+        if (
+          resData &&
+          typeof resData === 'object' &&
+          'data' in resData &&
+          Array.isArray(resData.data)
+        ) {
           const paginated = resData as PaginatedResponse<T>;
           setDataList(paginated.data);
           setTotalCount(paginated.items);
-        } 
-        else if (Array.isArray(resData)) {
+        } else if (Array.isArray(resData)) {
           setDataList(resData);
           setTotalCount(resData.length);
-        } 
-        else {
+        } else {
           console.error(`Cấu trúc API lạ tại endpoint ${endpoint}:`, resData);
           setDataList([]);
           setTotalCount(0);
@@ -46,7 +58,8 @@ export function useAdminPagination<T>({ endpoint, itemsPerPage }: UseAdminPagina
       });
 
     return () => {
-      isMounted = false; 
+      isMounted = false;
+      clearTimeout(timer);
     };
   }, [currentPage, endpoint, itemsPerPage]);
 
@@ -57,6 +70,6 @@ export function useAdminPagination<T>({ endpoint, itemsPerPage }: UseAdminPagina
     currentPage,
     setCurrentPage,
     totalPages,
-    isLoading
+    isLoading,
   };
 }

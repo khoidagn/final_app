@@ -7,7 +7,8 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    authService.getCurrentSession()
+    authService
+      .getCurrentSession()
       .then((session) => {
         setIsLoggedIn(session.isLoggedIn);
         setUser(session.user);
@@ -25,6 +26,6 @@ export function useAuth() {
   return {
     isLoggedIn,
     user,
-    isLoading
+    isLoading,
   };
 }

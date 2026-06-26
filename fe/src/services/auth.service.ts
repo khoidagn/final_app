@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000';
+import { authApi } from '../api/authApi';
 
 export interface AuthUser {
   id: number;
@@ -15,10 +15,7 @@ export interface AuthSessionResponse {
 
 export const authService = {
   getCurrentSession: async (): Promise<AuthSessionResponse> => {
-    const response = await fetch(`${BASE_URL}/auth_session`);
-    if (!response.ok) {
-      throw new Error('Không thể lấy thông tin phiên đăng nhập');
-    }
-    return response.json();
-  }
+    const response = await authApi.fetchCurrentSession();
+    return response.data;
+  },
 };

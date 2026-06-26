@@ -1,30 +1,32 @@
-const BASE_URL = 'http://localhost:5000';
-
-export interface PaginatedFeedResponse<T> {
-  data: T[];
-  hasMore: boolean;
-}
+import { feedsApi } from '../api/feedsApi';
+import type {
+  PhotoData,
+  AlbumData,
+  PaginatedFeedResponse,
+} from '../types/feeds';
 
 export const feedsService = {
-  getPhotos: async (page: number, perPage: number): Promise<PaginatedFeedResponse<any>> => {
-    const response = await fetch(`${BASE_URL}/feeds_photos?_page=${page}&_per_page=${perPage}`);
-    if (!response.ok) throw new Error('Không thể tải danh sách ảnh từ Server');
-    
-    const resData = await response.json();
+  getPhotos: async (
+    page: number,
+    perPage: number
+  ): Promise<PaginatedFeedResponse<PhotoData>> => {
+    const response = await feedsApi.fetchPhotos(page, perPage);
+    const resData = response.data;
     return {
       data: resData.data || [],
-      hasMore: page < resData.pages 
+      hasMore: page < resData.pages,
     };
   },
 
-  getAlbums: async (page: number, perPage: number): Promise<PaginatedFeedResponse<any>> => {
-    const response = await fetch(`${BASE_URL}/feeds_albums?_page=${page}&_per_page=${perPage}`);
-    if (!response.ok) throw new Error('Không thể tải danh sách album từ Server');
-    
-    const resData = await response.json();
+  getAlbums: async (
+    page: number,
+    perPage: number
+  ): Promise<PaginatedFeedResponse<AlbumData>> => {
+    const response = await feedsApi.fetchAlbums(page, perPage);
+    const resData = response.data;
     return {
       data: resData.data || [],
-      hasMore: page < resData.pages
+      hasMore: page < resData.pages,
     };
-  }
+  },
 };

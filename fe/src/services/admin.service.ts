@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000';
+import { adminApi } from '../api/adminApi';
 
 export interface PaginatedResponse<T> {
   first: number;
@@ -7,32 +7,20 @@ export interface PaginatedResponse<T> {
   last: number;
   pages: number;
   items: number;
-  data: T[];   
+  data: T[];
 }
 
 export const adminService = {
-  /**
-   * Lấy danh sách dữ liệu phân trang theo endpoint quản trị
-   * @param endpoint - Tên tài nguyên (admin_photos, admin_albums, admin_users)
-   * @param page - Trang hiện tại cần lấy
-   * @param perPage - Số lượng bản ghi trên mỗi trang 
-   */
   getPaginatedData: async <T>(
     endpoint: string,
     page: number,
     perPage: number
-  ): Promise<PaginatedResponse<T> | T[]> => {
-    const response = await fetch(
-      `${BASE_URL}/${endpoint}?_page=${page}&_per_page=${perPage}`
+  ): Promise<PaginatedResponse<T>> => {
+    const response = await adminApi.fetchPaginatedData<T>(
+      endpoint,
+      page,
+      perPage
     );
-
-    if (!response.ok) {
-      throw new Error(`Không thể kết nối đến tài nguyên: ${endpoint}`);
-    }
-
-    return response.json();
+    return response.data;
   },
-  
-  // deleteUser: async (id: number) => { ... },
-  // toggleUserStatus: async (id: number, active: boolean) => { ... }
 };

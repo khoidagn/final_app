@@ -11,10 +11,10 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
   const [activeTab, setActiveTab] = useState<FeedTabType>('photo');
   const [displayedPhotos, setDisplayedPhotos] = useState<PhotoData[]>([]);
   const [displayedAlbums, setDisplayedAlbums] = useState<AlbumData[]>([]);
-  
+
   const [photoPage, setPhotoPage] = useState<number>(1);
   const [albumPage, setAlbumPage] = useState<number>(1);
-  
+
   const [hasMorePhotos, setHasMorePhotos] = useState<boolean>(true);
   const [hasMoreAlbums, setHasMoreAlbums] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,15 +30,12 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
       if (activeTab === 'photo') {
         const nextPage = photoPage + 1;
         const res = await feedsService.getPhotos(nextPage, itemsPerPage);
-        
-        // THAY ĐỔI: Sử dụng Spread Operator nối đuôi mảng cũ với dữ liệu trang mới từ API
         setDisplayedPhotos((prev) => [...prev, ...res.data]);
         setHasMorePhotos(res.hasMore);
         setPhotoPage(nextPage);
       } else {
         const nextPage = albumPage + 1;
         const res = await feedsService.getAlbums(nextPage, itemsPerPage);
-        
         setDisplayedAlbums((prev) => [...prev, ...res.data]);
         setHasMoreAlbums(res.hasMore);
         setAlbumPage(nextPage);
@@ -48,7 +45,15 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading, activeTab, photoPage, albumPage, hasMorePhotos, hasMoreAlbums, itemsPerPage]);
+  }, [
+    isLoading,
+    activeTab,
+    photoPage,
+    albumPage,
+    hasMorePhotos,
+    hasMoreAlbums,
+    itemsPerPage,
+  ]);
 
   useEffect(() => {
     const initData = async () => {
@@ -56,7 +61,7 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
       try {
         const [photoRes, albumRes] = await Promise.all([
           feedsService.getPhotos(1, itemsPerPage),
-          feedsService.getAlbums(1, itemsPerPage)
+          feedsService.getAlbums(1, itemsPerPage),
         ]);
         setDisplayedPhotos(photoRes.data);
         setHasMorePhotos(photoRes.hasMore);
@@ -73,7 +78,8 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
+      const scrollPosition =
+        window.innerHeight + document.documentElement.scrollTop;
       const targetThreshold = document.documentElement.offsetHeight - 50;
 
       if (scrollPosition >= targetThreshold) {
@@ -87,12 +93,20 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
 
   const handleFollowToggle = (authorId: number, currentStatus: boolean) => {
     const nextStatus = !currentStatus;
-    
-    const updateAuthorFollow = <T extends { author: { id: number; is_following: boolean } }>(items: T[]): T[] =>
-      items.map(item => item.author.id === authorId ? { ...item, author: { ...item.author, is_following: nextStatus } } : item);
 
-    setDisplayedPhotos(prev => updateAuthorFollow(prev));
-    setDisplayedAlbums(prev => updateAuthorFollow(prev));
+    const updateAuthorFollow = <
+      T extends { author: { id: number; is_following: boolean } },
+    >(
+      items: T[]
+    ): T[] =>
+      items.map((item) =>
+        item.author.id === authorId
+          ? { ...item, author: { ...item.author, is_following: nextStatus } }
+          : item
+      );
+
+    setDisplayedPhotos((prev) => updateAuthorFollow(prev));
+    setDisplayedAlbums((prev) => updateAuthorFollow(prev));
 
     if (onFollowAlert) {
       onFollowAlert(authorId, nextStatus);
@@ -105,6 +119,6 @@ export function useFeedData({ itemsPerPage, onFollowAlert }: UseFeedDataProps) {
     displayedPhotos,
     displayedAlbums,
     isLoading,
-    handleFollowToggle
+    handleFollowToggle,
   };
 }

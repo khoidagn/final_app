@@ -27,3 +27,8 @@ export interface AlbumData {
 }
 
 export type FeedTabType = 'photo' | 'album';
+
+export interface PaginatedFeedResponse<T> {
+  data: T[];
+  hasMore: boolean;
+}

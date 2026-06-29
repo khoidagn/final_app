@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ProfileTab, ProfileStats } from '../../../types/profile';
+import { cn } from '../../../utils/cn';
 
 interface ProfileTabsProps {
   stats: ProfileStats;
@@ -22,30 +23,61 @@ export default function ProfileTabs({
   ];
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 w-full pb-0">
-      <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto sm:space-x-6 text-gray-400 select-none -mb-px">
+    <div
+      className={cn(
+        'w-full flex flex-col gap-4 pb-0',
+        'sm:flex-row sm:items-end sm:justify-between'
+      )}
+    >
+      <div
+        className={cn(
+          'w-full flex items-center justify-between select-none -mb-px text-text-muted',
+          'sm:justify-start sm:w-auto sm:space-x-6'
+        )}
+      >
         {tabs.map((tab, idx) => (
           <React.Fragment key={tab.id}>
             {idx > 0 && (
-              <div className="border-l border-gray-200 h-6 sm:h-5 self-center mb-2 sm:mb-3 shrink-0"></div>
+              <div
+                className={cn(
+                  'border-l h-6 self-center mb-2 shrink-0',
+                  'sm:h-5 sm:mb-3',
+                  'border-border-default'
+                )}
+              />
             )}
             <button
               onClick={() => onChangeTab(tab.id)}
-              className={`focus:outline-none transition-colors cursor-pointer flex flex-col items-center pb-2 relative flex-1 sm:flex-initial ${
+              className={cn(
+                'focus:outline-none transition-all cursor-pointer flex flex-col items-center pb-2 relative flex-1 transform duration-150',
+                'sm:flex-initial',
+                'active:scale-95',
                 activeTab === tab.id
-                  ? 'text-blue-900 font-bold border-b-2 border-blue-900 z-10'
-                  : 'hover:text-gray-600 font-medium'
-              }`}
+                  ? 'text-brand font-bold border-b-2 border-brand z-10'
+                  : 'hover:text-text-secondary font-medium'
+              )}
             >
-              <div className="flex flex-col items-center sm:flex-row sm:items-baseline sm:space-x-1.5 text-center sm:text-left">
+              <div
+                className={cn(
+                  'flex flex-col items-center text-center',
+                  'sm:flex-row sm:items-baseline sm:space-x-1.5 sm:text-left'
+                )}
+              >
                 <span
-                  className={`text-lg sm:text-2xl font-bold leading-none transition-colors ${
-                    activeTab === tab.id ? 'text-blue-900' : 'text-gray-700'
-                  }`}
+                  className={cn(
+                    'text-lg font-bold leading-none transition-colors',
+                    'sm:text-2xl',
+                    activeTab === tab.id ? 'text-brand' : 'text-text-primary'
+                  )}
                 >
                   {tab.count}
                 </span>
-                <span className="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase mt-1 sm:mt-0 shrink-0">
+                <span
+                  className={cn(
+                    'text-[9px] font-bold tracking-wider uppercase mt-1 shrink-0',
+                    'sm:text-[10px] sm:mt-0'
+                  )}
+                >
                   {tab.label}
                 </span>
               </div>
@@ -55,7 +87,7 @@ export default function ProfileTabs({
       </div>
 
       {renderTabAction && (
-        <div className="shrink-0 w-full sm:w-auto flex justify-end">
+        <div className={cn('shrink-0 w-full flex justify-end sm:w-auto')}>
           {renderTabAction()}
         </div>
       )}

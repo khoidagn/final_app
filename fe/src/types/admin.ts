@@ -2,12 +2,12 @@ export interface AdminPhotoData {
   id: number;
   title: string;
   image_url: string;
-  created_at?: string; 
+  created_at?: string;
 }
 export interface AdminAlbumData {
   id: number;
   title: string;
-  image_url: string; 
+  image_url: string;
   created_at?: string;
 }
 

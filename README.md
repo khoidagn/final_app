@@ -5,6 +5,7 @@ A modern photo-sharing platform where users can upload, organize, and share phot
 This project is developed as part of the NUS Advanced Training Program and follows a full-stack architecture with a focus on scalability, maintainability, and modern web development practices.
 
 ---
+
 ## 🚧 Project Status
 
 This project is currently under development.
@@ -20,54 +21,55 @@ This project is currently under development.
 
 Fotobook allows users to:
 
-* Create and manage personal accounts.
-* Upload and organize photos into albums.
-* Set photos and albums as public or private.
-* Follow and unfollow other users.
-* Explore community content through feeds and discovery pages.
-* Like photos and albums.
-* Manage personal profiles and uploaded content.
-* Access administrator features for user and content management.
+- Create and manage personal accounts.
+- Upload and organize photos into albums.
+- Set photos and albums as public or private.
+- Follow and unfollow other users.
+- Explore community content through feeds and discovery pages.
+- Like photos and albums.
+- Manage personal profiles and uploaded content.
+- Access administrator features for user and content management.
 
 ### Key Features
 
 #### Authentication & Authorization
 
-* User registration and login
-* JWT-based authentication
-* Email verification
-* Password reset
-* Role-based access control (User/Admin)
+- User registration and login
+- JWT-based authentication
+- Email verification
+- Password reset
+- Role-based access control (User/Admin)
 
 #### Photo Management
 
-* Upload photos
-* Edit and delete photos
-* Public/private visibility
-* Image preview and gallery view
+- Upload photos
+- Edit and delete photos
+- Public/private visibility
+- Image preview and gallery view
 
 #### Album Management
 
-* Create albums
-* Upload multiple images
-* Edit and delete albums
-* Public/private visibility
+- Create albums
+- Upload multiple images
+- Edit and delete albums
+- Public/private visibility
 
 #### Social Features
 
-* Follow / unfollow users
-* Like photos and albums
-* Personalized feed
-* Public user profiles
+- Follow / unfollow users
+- Like photos and albums
+- Personalized feed
+- Public user profiles
 
 #### Admin Features
 
-* Manage users
-* Manage photos
-* Manage albums
-* Activate/deactivate user accounts
+- Manage users
+- Manage photos
+- Manage albums
+- Activate/deactivate user accounts
 
 ---
+
 ## 🛠 Tech Stack
 
 ### Frontend
@@ -97,8 +99,8 @@ Fotobook allows users to:
 ![TypeScript ESLint](https://img.shields.io/badge/typescript--eslint-8.59.2-3178C6?logo=typescript&logoColor=white)
 ![JSON Server](https://img.shields.io/badge/JSON_Server-1.0.0--beta.15-000000)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Ready-2088FF?logo=githubactions&logoColor=white)
----
 
+---
 
 ## Project Structure
 
@@ -137,9 +139,9 @@ final_app/
 
 Make sure you have installed:
 
-* Node.js >= 20
-* npm >= 10
-* Git
+- Node.js >= 20
+- npm >= 10
+- Git
 
 ### Clone Repository
 
@@ -206,11 +208,11 @@ npm run preview
 
 ## 📜 Available Scripts
 
-| Command            | Description                      |
-| ------------------ | -------------------------------- |
-| `npm run dev`      | Start Vite development server    |
-| `npm run mock-api` | Start JSON Server mock API       |
-| `npm run lint`     | Run ESLint                       |
+| Command            | Description                   |
+| ------------------ | ----------------------------- |
+| `npm run dev`      | Start Vite development server |
+| `npm run mock-api` | Start JSON Server mock API    |
+| `npm run lint`     | Run ESLint                    |
 
 <!-- | `npm run build`    | Build application for production |
 | `npm run preview`  | Preview production build         | -->
@@ -227,18 +229,17 @@ VITE_API_URL=http://localhost:5000
 
 Never commit real environment files or secrets to the repository.
 
-
 ---
 
 ## Future Improvements
 
-* Real-time notifications
-* Advanced search functionality
-* Social login (Google, Facebook, X)
-* Infinite scrolling optimization
-* Cloud image storage (AWS S3 / Cloudinary)
-* Email notification system
-* Docker deployment
+- Real-time notifications
+- Advanced search functionality
+- Social login (Google, Facebook, X)
+- Infinite scrolling optimization
+- Cloud image storage (AWS S3 / Cloudinary)
+- Email notification system
+- Docker deployment
 
 ---
 

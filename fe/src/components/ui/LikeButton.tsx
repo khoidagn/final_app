@@ -1,5 +1,6 @@
-import { useState, type MouseEvent } from 'react';
+import React, { useState, type MouseEvent } from 'react';
 import { Heart } from 'lucide-react';
+import { cn } from '../../utils/cn';
 
 interface LikeButtonProps {
   initialLikes: number;
@@ -30,20 +31,22 @@ export default function LikeButton({
   return (
     <button
       onClick={handleLikeToggle}
-      className={`inline-flex items-center cursor-pointer transition-colors focus:outline-none bg-transparent border-none p-0 ${
+      className={cn(
+        'inline-flex items-center cursor-pointer transition-all focus:outline-none bg-transparent border-none p-0',
+        'active:scale-90 transform transition-transform',
         isLiked
-          ? 'text-red-500 font-semibold'
-          : 'text-gray-400 hover:text-red-500'
-      }`}
+          ? 'text-danger font-semibold'
+          : 'text-text-muted hover:text-danger'
+      )}
     >
       <Heart
-        size={13}
-        className="mr-1 transition-colors"
-        stroke={isLiked ? '#ef4444' : '#1e3a8a'}
-        fill={isLiked ? '#ef4444' : 'none'}
+        size={12}
+        className={cn('mr-1 mb-1 transition-colors')}
+        stroke={isLiked ? 'var(--color-danger)' : 'var(--color-brand)'}
+        fill={isLiked ? 'var(--color-danger)' : 'none'}
         strokeWidth={2.5}
       />
-      <span className="leading-none">{likesCount}</span>
+      <span className={cn('leading-none')}>{likesCount}</span>
     </button>
   );
 }

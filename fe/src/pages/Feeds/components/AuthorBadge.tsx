@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Avatar from '../../../components/ui/Avatar';
 import { getFullName } from '../../../utils/string';
 import { type Author } from '../../../types/feeds';
+import { cn } from '../../../utils/cn';
 
 interface AuthorBadgeProps {
   author: Author;
@@ -19,14 +20,16 @@ export default function AuthorBadge({
 
   const handleBadgeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-
     navigate(`/profile/${author.id}`);
   };
 
   return (
     <div
       onClick={handleBadgeClick}
-      className="flex items-center space-x-1.5 min-w-0 cursor-pointer group/badge select-none"
+      className={cn(
+        'flex items-center space-x-1.5 min-w-0 cursor-pointer group/badge select-none transform transition-transform',
+        'active:scale-98'
+      )}
     >
       <Avatar
         firstName={author.first_name}
@@ -34,10 +37,15 @@ export default function AuthorBadge({
         avatarUrl={author.avatar_url}
         sizeClass={sizeClass}
         textSizeClass={textSizeClass}
-        bgColorClass="bg-blue-900"
+        bgColorClass="bg-brand"
         textColorClass="text-white"
       />
-      <span className="text-xs font-semibold text-blue-900 truncate group-hover/badge:underline decoration-blue-950">
+      <span
+        className={cn(
+          'text-xs font-semibold truncate group-hover/badge:underline',
+          'text-brand decoration-brand'
+        )}
+      >
         {getFullName(author.first_name, author.last_name)}
       </span>
     </div>

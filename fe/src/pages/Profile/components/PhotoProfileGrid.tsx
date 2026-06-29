@@ -1,6 +1,8 @@
+import React from 'react';
 import type { ProfileCardData } from '../../../types/profile';
 import { LockKeyhole } from 'lucide-react';
 import EditButton from '../../../components/ui/EditButton';
+import { cn } from '../../../utils/cn';
 
 interface PhotoProfileGridProps {
   items: ProfileCardData[];
@@ -12,25 +14,39 @@ export default function PhotoProfileGrid({
   isOwnProfile,
 }: PhotoProfileGridProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 w-full">
+    <div className={cn('w-full grid grid-cols-2 gap-6', 'md:grid-cols-4')}>
       {items.map((item) => (
-        <div key={item.id} className="flex flex-col group min-w-0">
-          <div className="aspect-square bg-gray-100 rounded-md overflow-hidden relative shadow-2xs border border-gray-100">
+        <div key={item.id} className={cn('flex flex-col min-w-0 group')}>
+          <div
+            className={cn(
+              'aspect-square overflow-hidden relative shadow-2xs rounded-md border',
+              'bg-background border-border-default'
+            )}
+          >
             <img
               src={item.image_url}
               alt={item.title}
-              className="w-full h-full object-cover"
+              className={cn('w-full h-full object-cover')}
             />
 
             {item.is_private && (
-              <div className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full text-[10px]">
+              <div
+                className={cn(
+                  'absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full text-[10px]'
+                )}
+              >
                 <LockKeyhole size={16} strokeWidth={1} />
               </div>
             )}
 
             {isOwnProfile && <EditButton to={`/photos/${item.id}/edit`} />}
           </div>
-          <span className="text-[11px] text-gray-500 mt-1.5 truncate text-center sm:text-left">
+
+          <span
+            className={cn(
+              'text-[11px] mt-1.5 truncate text-center text-text-secondary'
+            )}
+          >
             {item.title}
           </span>
         </div>

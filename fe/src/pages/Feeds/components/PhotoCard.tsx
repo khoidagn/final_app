@@ -1,8 +1,8 @@
-import React from 'react';
 import type { PhotoData } from '../../../types/feeds';
 import FollowButton from '../../../components/ui/FollowButton';
 import LikeButton from '../../../components/ui/LikeButton';
 import AuthorBadge from './AuthorBadge';
+import { cn } from '../../../utils/cn';
 
 interface PhotoCardProps {
   data: PhotoData;
@@ -20,18 +20,34 @@ export default function PhotoCard({
   return (
     <div
       onClick={onCardClick}
-      className="flex flex-col md:flex-row bg-gray-50 border border-gray-200 rounded-md overflow-hidden shadow-2xs hover:shadow-sm transition-shadow cursor-pointer"
+      className={cn(
+        'flex flex-col w-full overflow-hidden transition-all duration-200',
+        'md:flex-row',
+        'bg-background border border-border-default rounded-md shadow-2xs hover:shadow-sm',
+        onCardClick && 'cursor-pointer active:scale-[0.99] transform'
+      )}
     >
-      <div className="w-full md:w-1/2 aspect-square flex items-center justify-center bg-gray-50 relative shrink-0 overflow-hidden">
+      <div
+        className={cn(
+          'w-full aspect-square flex items-center justify-center relative shrink-0 overflow-hidden select-none',
+          'md:w-1/2',
+          'bg-background/40'
+        )}
+      >
         <img
           src={data.image_url}
           alt={data.title}
-          className="w-full h-full object-cover"
+          className={cn('w-full h-full object-cover')}
         />
       </div>
-      <div className="w-full md:w-1/2 p-4 flex flex-col justify-between min-w-0">
+
+      <div
+        className={cn(
+          'w-full p-4 flex flex-col justify-between min-w-0 md:w-1/2'
+        )}
+      >
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className={cn('flex items-center justify-between mb-3')}>
             <AuthorBadge author={data.author} />
 
             {onFollowToggle && (
@@ -46,15 +62,29 @@ export default function PhotoCard({
             )}
           </div>
 
-          <h3 className="text-xs font-bold text-gray-900 mb-1 leading-tight truncate">
+          <h3
+            className={cn(
+              'text-xs font-bold text-text-primary mb-1 leading-tight truncate'
+            )}
+          >
             {data.title}
           </h3>
-          <p className="text-[11px] text-gray-500 line-clamp-4 leading-relaxed break-words">
+          <p
+            className={cn(
+              'text-[11px] text-text-secondary leading-relaxed line-clamp-4 break-words'
+            )}
+          >
             {data.description}
           </p>
         </div>
 
-        <div className="flex items-center justify-between text-[10px] text-gray-400 mt-4 md:mt-2">
+        <div
+          className={cn(
+            'flex items-center justify-between text-[10px] mt-4 pt-2 border-t',
+            'md:mt-2',
+            'text-text-muted border-border-muted'
+          )}
+        >
           <LikeButton
             initialLikes={data.likes_count}
             initialIsLiked={false}

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { UserFollowData, ProfileTab } from '../../../types/profile';
 import UserCard from './UserCard';
+import { cn } from '../../../utils/cn';
 
 interface UserFollowGridProps {
   users: UserFollowData[];
@@ -16,7 +17,13 @@ export default function UserFollowGrid({
   onAction,
 }: UserFollowGridProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full">
+    <div
+      className={cn(
+        'w-full grid grid-cols-2 gap-4',
+        'sm:grid-cols-3',
+        'md:grid-cols-4'
+      )}
+    >
       {users.map((user) => (
         <UserCard
           key={user.id}

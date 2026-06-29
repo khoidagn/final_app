@@ -1,5 +1,7 @@
+import React from 'react';
 import PhotoCard from './PhotoCard';
 import type { PhotoData } from '../../../types/feeds';
+import { cn } from '../../../utils/cn';
 
 interface PhotoGridProps {
   photos: PhotoData[];
@@ -13,15 +15,16 @@ export default function PhotoGrid({
   onFollowToggle,
 }: PhotoGridProps) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full mb-10">
+    <div
+      className={cn('w-full mb-10 grid grid-cols-1 gap-6', 'lg:grid-cols-2')}
+    >
       {photos.map((photo) => (
-        <div
+        <PhotoCard
           key={photo.id}
-          onClick={() => onSelectPhoto(photo.id)}
-          className="cursor-pointer"
-        >
-          <PhotoCard data={photo} onFollowToggle={onFollowToggle} />
-        </div>
+          data={photo}
+          onFollowToggle={onFollowToggle}
+          onCardClick={() => onSelectPhoto(photo.id)}
+        />
       ))}
     </div>
   );

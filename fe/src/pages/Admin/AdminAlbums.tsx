@@ -4,6 +4,7 @@ import type { AdminAlbumData } from '../../types/admin';
 import { useAdminPagination } from '../../hooks/useAdminPagination';
 import Pagination from '../../components/ui/Pagination';
 import { SquarePen } from 'lucide-react';
+import { cn } from '../../utils/cn';
 
 export default function AdminAlbums() {
   const {
@@ -19,37 +20,81 @@ export default function AdminAlbums() {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-md border border-gray-100 p-6 w-full min-h-[500px] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-900 rounded-full animate-spin"></div>
+      <div
+        className={cn(
+          "w-full min-h-[500px] flex items-center justify-center p-6",
+          "bg-surface border border-border-default rounded-md"
+        )}
+      >
+        <div
+          className={cn(
+            "w-8 h-8 border-4 rounded-full animate-spin",
+            "border-border-default border-t-brand"
+          )}
+        />
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-md border border-gray-100 p-6 w-full min-h-[500px] flex flex-col justify-between">
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6">
+    <div
+      className={cn(
+        "w-full min-h-[500px] flex flex-col justify-between p-6",
+        "bg-surface border border-border-default rounded-md shadow-xs"
+      )}
+    >
+      <div
+        className={cn(
+          "grid grid-cols-2 gap-x-4 gap-y-6",
+          "sm:grid-cols-3",
+          "lg:grid-cols-4"
+        )}
+      >
         {albums.map((album) => (
           <div
             key={album.id}
-            className="aspect-square w-full relative flex items-center justify-center bg-gray-50/20 select-none"
+            className={cn(
+              "aspect-square w-full relative flex items-center justify-center select-none",
+              "bg-background/20"
+            )}
           >
-            <div className="absolute w-[82%] h-[82%] rounded-xs bg-gray-200 border border-white transform rotate-12  opacity-40 shadow-2xs"></div>
-            <div className="absolute w-[82%] h-[82%] rounded-xs bg-gray-300 border border-white transform rotate-6  opacity-75 shadow-2xs"></div>
-
-            <div className="absolute w-[85%] h-[85%] rounded-xs overflow-hidden shadow-sm border-2 border-white transform -rotate-1 z-10">
+            <div
+              className={cn(
+                "absolute w-[82%] h-[82%] rounded-xs bg-border-default border border-surface shadow-2xs opacity-40",
+                "transform rotate-12"
+              )}
+            />
+            <div
+              className={cn(
+                "absolute w-[82%] h-[82%] rounded-xs bg-text-muted border border-surface shadow-2xs opacity-75",
+                "transform rotate-6"
+              )}
+            />
+            <div
+              className={cn(
+                "absolute w-[85%] h-[85%] rounded-xs overflow-hidden shadow-sm border-2 border-surface z-10",
+                "transform -rotate-1"
+              )}
+            >
               <img
                 src={album.image_url}
                 alt={album.title}
-                className="absolute inset-0 w-full h-full object-cover"
+                className={cn("absolute inset-0 w-full h-full object-cover")}
               />
-
-              <div className="absolute top-0 left-0 right-0 bg-black/40 text-white px-2 py-1.5 flex items-center justify-between z-20">
-                <span className="text-[10px] truncate pr-2 font-medium w-full block text-left">
+              <div
+                className={cn(
+                  "absolute top-0 left-0 right-0 bg-black/40 text-white px-2 py-1.5 flex items-center justify-between z-20"
+                )}
+              >
+                <span className={cn("text-[10px] truncate pr-2 font-medium w-full block text-left")}>
                   {album.title}
                 </span>
                 <Link
-                  to={`/albums/${album.id}/edit`}
-                  className="text-white hover:text-gray-200 shrink-0"
+                  to={`/admin/albums/${album.id}/edit`} 
+                  className={cn(
+                    "text-white hover:text-white/80 shrink-0",
+                    "active:scale-90 transform transition-transform" 
+                  )}
                 >
                   <SquarePen size={16} strokeWidth={1.25} />
                 </Link>

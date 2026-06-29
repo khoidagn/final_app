@@ -1,3 +1,6 @@
+import React from 'react';
+import { cn } from '../../utils/cn';
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -10,15 +13,21 @@ export default function Pagination({
   onPageChange,
 }: PaginationProps) {
   return (
-    <div className="flex justify-center items-center space-x-1 mt-8 text-xs select-none">
+    <div
+      className={cn(
+        'flex justify-center items-center space-x-1 mt-8 text-xs select-none',
+        'max-sm:gap-1 max-sm:space-x-0'
+      )}
+    >
       <button
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className={`px-3 py-1 border rounded-sm transition-colors ${
+        className={cn(
+          'px-3 py-1.5 border rounded-sm transition-colors text-sm font-medium',
           currentPage === 1
-            ? 'border-gray-200 bg-white text-gray-400 cursor-not-allowed'
-            : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50 cursor-pointer'
-        }`}
+            ? 'border-border-default bg-surface text-text-muted cursor-not-allowed'
+            : 'border-border-default bg-surface text-text-secondary hover:bg-background cursor-pointer active:scale-95 transform'
+        )}
       >
         Previous
       </button>
@@ -29,11 +38,13 @@ export default function Pagination({
           <button
             key={pageNumber}
             onClick={() => onPageChange(pageNumber)}
-            className={`px-3 py-1 border rounded-sm transition-colors cursor-pointer ${
+            className={cn(
+              'px-3 py-1.5 border rounded-sm transition-colors cursor-pointer text-sm font-medium',
+              'active:scale-95 transform',
               currentPage === pageNumber
-                ? 'border-blue-900 bg-blue-50 text-blue-900 font-semibold'
-                : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-            }`}
+                ? 'border-brand bg-brand/5 text-brand font-bold'
+                : 'border-border-default bg-surface text-text-secondary hover:bg-background'
+            )}
           >
             {pageNumber}
           </button>
@@ -43,11 +54,12 @@ export default function Pagination({
       <button
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className={`px-3 py-1 border rounded-sm transition-colors ${
+        className={cn(
+          'px-3 py-1.5 border rounded-sm transition-colors text-sm font-medium',
           currentPage === totalPages
-            ? 'border-gray-200 bg-white text-gray-400 cursor-not-allowed'
-            : 'border-gray-200 bg-white text-blue-600 hover:bg-gray-50 cursor-pointer'
-        }`}
+            ? 'border-border-default bg-surface text-text-muted cursor-not-allowed'
+            : 'border-border-default bg-surface text-brand hover:bg-background cursor-pointer active:scale-95 transform'
+        )}
       >
         Next
       </button>

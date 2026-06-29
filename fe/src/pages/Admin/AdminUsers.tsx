@@ -1,9 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { AdminUserData } from '../../types/admin';
 import { useAdminPagination } from '../../hooks/useAdminPagination';
 import Pagination from '../../components/ui/Pagination';
+import { cn } from '../../utils/cn';
 
 export default function AdminUsers() {
+  const navigate = useNavigate();
+
   const {
     dataList: users,
     currentPage,
@@ -17,37 +21,86 @@ export default function AdminUsers() {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-md border border-gray-100 p-6 w-full min-h-[500px] flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-900 rounded-full animate-spin"></div>
+      <div
+        className={cn(
+          'w-full min-h-[500px] flex items-center justify-center p-6',
+          'bg-surface border border-border-default rounded-md'
+        )}
+      >
+        <div
+          className={cn(
+            'w-8 h-8 border-4 rounded-full animate-spin',
+            'border-border-default border-t-brand'
+          )}
+        />
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-md border border-gray-100 p-6 w-full min-h-[500px] flex flex-col justify-between">
-      <div className="w-full overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[600px]">
+    <div
+      className={cn(
+        'w-full min-h-[500px] flex flex-col justify-between p-6',
+        'bg-surface border border-border-default rounded-md shadow-xs'
+      )}
+    >
+      <div className={cn('w-full overflow-x-auto')}>
+        <table className={cn('w-full text-left border-collapse min-w-[600px]')}>
           <thead>
-            <tr className="border-b border-gray-200 text-xs font-bold text-gray-800">
-              <th className="pb-3 w-1/5">First Name</th>
-              <th className="pb-3 w-1/5">Last Name</th>
-              <th className="pb-3 w-2/5">Email</th>
-              <th className="pb-3 w-1/5">Last login</th>
-              <th className="pb-3 text-center w-24">Actions</th>
+            <tr
+              className={cn(
+                'border-b text-xs font-bold text-text-primary border-border-default'
+              )}
+            >
+              <th className={cn('pb-3 w-1/5')}>First Name</th>
+              <th className={cn('pb-3 w-1/5')}>Last Name</th>
+              <th className={cn('pb-3 w-2/5')}>Email</th>
+              <th className={cn('pb-3 w-1/5')}>Last login</th>
+              <th className={cn('pb-3 text-center w-24')}>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 text-xs text-gray-700">
+          <tbody
+            className={cn(
+              'divide-y text-xs text-text-secondary divide-border-muted'
+            )}
+          >
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-100 transition-colors">
-                <td className="py-3.5 font-medium">{user.first_name}</td>
-                <td className="py-3.5">{user.last_name}</td>
-                <td className="py-3.5 font-mono text-gray-600">{user.email}</td>
-                <td className="py-3.5 text-gray-500">{user.last_login}</td>
-                <td className="py-3.5 text-center flex items-center justify-center gap-1.5">
-                  <button className="bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold px-2 py-1 rounded-sm shadow-2xs cursor-pointer focus:outline-none">
+              <tr
+                key={user.id}
+                className={cn('hover:bg-background transition-colors')}
+              >
+                <td className={cn('py-3.5 font-medium text-text-primary')}>
+                  {user.first_name}
+                </td>
+                <td className={cn('py-3.5')}>{user.last_name}</td>
+                <td className={cn('py-3.5 font-mono text-text-muted')}>
+                  {user.email}
+                </td>
+                <td className={cn('py-3.5 text-text-muted')}>
+                  {user.last_login}
+                </td>
+                <td
+                  className={cn(
+                    'py-3.5 text-center flex items-center justify-center gap-1.5'
+                  )}
+                >
+                  <button
+                    onClick={() => navigate(`/admin/users/${user.id}/edit`)}
+                    className={cn(
+                      'text-white text-[10px] font-bold px-2 py-1 rounded-sm shadow-2xs cursor-pointer focus:outline-none',
+                      'bg-success hover:bg-success-hover',
+                      'active:scale-95 transform transition-transform'
+                    )}
+                  >
                     Edit
                   </button>
-                  <button className="bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm shadow-2xs cursor-pointer focus:outline-none">
+                  <button
+                    className={cn(
+                      'text-white text-[10px] font-bold px-2 py-1 rounded-sm shadow-2xs cursor-pointer focus:outline-none',
+                      'bg-danger hover:bg-danger-hover',
+                      'active:scale-95 transform transition-transform'
+                    )}
+                  >
                     Delete
                   </button>
                 </td>

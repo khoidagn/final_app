@@ -1,4 +1,6 @@
+import React from 'react';
 import { type FeedTabType } from '../../../types/feeds';
+import { cn } from '../../../utils/cn';
 
 interface FeedTabsProps {
   activeTab: FeedTabType;
@@ -7,24 +9,33 @@ interface FeedTabsProps {
 
 export default function FeedTabs({ activeTab, onChangeTab }: FeedTabsProps) {
   return (
-    <div className="flex border border-blue-900 rounded overflow-hidden mb-6 text-xs font-semibold">
+    <div
+      className={cn(
+        'flex border rounded overflow-hidden mb-6 text-xs font-semibold select-none',
+        'border-brand'
+      )}
+    >
       <button
         onClick={() => onChangeTab('photo')}
-        className={`px-4 py-2 uppercase tracking-wider focus:outline-none cursor-pointer transition-colors ${
+        className={cn(
+          'px-4 py-2 uppercase tracking-wider focus:outline-none cursor-pointer transition-all transform',
+          'active:scale-95 duration-75',
           activeTab === 'photo'
-            ? 'bg-blue-900 text-white'
-            : 'bg-white text-blue-900 hover:bg-gray-50'
-        }`}
+            ? 'bg-brand text-white'
+            : 'bg-surface text-brand hover:bg-background'
+        )}
       >
         Photo
       </button>
       <button
         onClick={() => onChangeTab('album')}
-        className={`px-4 py-2 uppercase tracking-wider focus:outline-none cursor-pointer transition-colors ${
+        className={cn(
+          'px-4 py-2 uppercase tracking-wider focus:outline-none cursor-pointer transition-all transform',
+          'active:scale-95 duration-75',
           activeTab === 'album'
-            ? 'bg-blue-900 text-white'
-            : 'bg-white text-blue-900 hover:bg-gray-50'
-        }`}
+            ? 'bg-brand text-white'
+            : 'bg-surface text-brand hover:bg-background'
+        )}
       >
         Album
       </button>

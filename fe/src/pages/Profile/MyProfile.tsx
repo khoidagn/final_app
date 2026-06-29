@@ -1,13 +1,18 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ProfileLayout from '../../components/layouts/ProfileLayout';
 import PhotoProfileGrid from './components/PhotoProfileGrid';
 import AlbumProfileGrid from './components/AlbumProfileGrid';
 import UserFollowGrid from './components/UserFollowGrid';
 import { useProfileData } from '../../hooks/useProfileData';
+import type { ProfileTab } from '../../types/profile';
+import { cn } from '../../utils/cn';
 
 export default function MyProfile() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const tabQuery = (searchParams.get('tab') as ProfileTab) || 'photos';
+
   const {
     profileUser,
     stats,
@@ -22,11 +27,17 @@ export default function MyProfile() {
 
   if (isLoading || !profileUser) {
     return (
-      <div className="p-8 text-center text-xs font-semibold text-gray-500">
+      <div
+        className={cn('p-8 text-center text-xs font-semibold text-text-muted')}
+      >
         Loading profile...
       </div>
     );
   }
+
+  const handleTabChange = (newTab: ProfileTab) => {
+    setSearchParams({ tab: newTab });
+  };
 
   return (
     <ProfileLayout
@@ -34,38 +45,54 @@ export default function MyProfile() {
       lastName={profileUser.last_name}
       avatarUrl={profileUser.avatar_url}
       stats={stats}
+      activeTab={tabQuery}
+      onChangeTab={handleTabChange}
       renderHeaderActions={() => (
         <button
           onClick={() => navigate('/my-profile/edit')}
-          className="text-xs font-semibold text-blue-900 border border-blue-900/40 px-3 py-1 rounded-full cursor-pointer hover:bg-gray-50"
+          className={cn(
+            'text-xs font-semibold px-3 py-1 rounded-full cursor-pointer border transition-all transform',
+            'text-brand border-brand/40 hover:bg-brand/5',
+            'active:scale-95'
+          )}
         >
           Edit Profile
         </button>
       )}
       renderTabContent={(activeTab) => (
-        <div>
+        <div className={cn('w-full')}>
           {activeTab === 'photos' && (
-            <div className="flex flex-col items-end gap-4">
+            <div className={cn('flex flex-col items-end gap-4 w-full')}>
               <button
                 onClick={() => navigate('/photos/new')}
-                className="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-md cursor-pointer hover:bg-emerald-700"
+                className={cn(
+                  'text-white text-xs font-semibold px-3 py-1 rounded-md cursor-pointer transition-all transform',
+                  'bg-success hover:bg-success-hover',
+                  'active:scale-95'
+                )}
               >
                 Add Photo
               </button>
               <PhotoProfileGrid items={photos} isOwnProfile={true} />
             </div>
           )}
+
           {activeTab === 'albums' && (
-            <div className="flex flex-col items-end gap-4">
+            <div className={cn('flex flex-col items-end gap-4 w-full')}>
               <button
                 onClick={() => navigate('/albums/new')}
-                className="bg-emerald-600 text-white text-xs font-semibold px-3 py-1 rounded-md cursor-pointer hover:bg-emerald-700"
+                className={cn(
+                  'text-white text-xs font-semibold px-3 py-1 rounded-md cursor-pointer transition-all transform',
+                  'bg-success hover:bg-success-hover',
+                  'active:scale-95'
+                )}
               >
                 Add Album
               </button>
               <AlbumProfileGrid items={albums} isOwnProfile={true} />
             </div>
           )}
+
           {activeTab === 'followings' && (
             <UserFollowGrid
               users={followings}
@@ -74,6 +101,7 @@ export default function MyProfile() {
               onAction={handleFollowAction}
             />
           )}
+
           {activeTab === 'followers' && (
             <UserFollowGrid
               users={followers}

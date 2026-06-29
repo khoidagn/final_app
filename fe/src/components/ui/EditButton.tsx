@@ -1,5 +1,6 @@
 import React, { type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '../../utils/cn';
 
 interface EditButtonProps {
   to: string;
@@ -17,7 +18,14 @@ export default function EditButton({ to }: EditButtonProps) {
   return (
     <button
       onClick={handleEditClick}
-      className="absolute bottom-2 right-2 bg-black/50 text-white text-[9px] font-bold px-1.5 py-0.5 rounded hover:bg-black/70 cursor-pointer z-20 transition-colors focus:outline-none"
+      className={cn(
+        'absolute bottom-2 right-2 z-20',
+        'bg-black/50 text-white font-bold rounded',
+        'text-[9px] px-1.5 py-0.5',
+        'hover:bg-black/70 transition-colors',
+        'cursor-pointer focus:outline-none',
+        'active:scale-95 transform transition-transform'
+      )}
     >
       EDIT
     </button>

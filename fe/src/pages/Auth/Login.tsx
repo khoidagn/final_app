@@ -1,18 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { cn } from '../../utils/cn';
 
 export default function Login() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 font-sans antialiased text-gray-800">
-      <h1 className="text-3xl font-bold text-blue-900 mb-6 tracking-wide">
+    <div
+      className={cn(
+        'min-h-screen flex flex-col items-center justify-center p-4 font-sans antialiased',
+        'bg-background text-text-primary'
+      )}
+    >
+      <h1 className={cn('text-2xl font-bold mb-5 tracking-wide text-brand')}>
         Fotobook Login
       </h1>
 
-      <div className="w-full max-w-md bg-white rounded-md shadow-xs border border-gray-200 overflow-hidden">
-        <div className="p-6 flex flex-col items-center">
-          <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-6 border border-gray-100">
+      <div
+        className={cn(
+          'w-full max-w-sm overflow-hidden',
+          'bg-surface rounded-md shadow-xs border border-border-default'
+        )}
+      >
+        <div className={cn('p-5 flex flex-col items-center')}>
+          {' '}
+          <div
+            className={cn(
+              'w-16 h-16 rounded-full flex items-center justify-center mb-5 border', 
+              'bg-background border-border-muted'
+            )}
+          >
             <svg
-              className="w-10 h-10 text-gray-400"
+              className={cn('w-8 h-8 text-text-muted')}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -25,80 +42,114 @@ export default function Login() {
               />
             </svg>
           </div>
-
-          <div className="w-full mb-4">
+          <div className={cn('w-full mb-3.5')}>
             <input
               type="email"
               placeholder="Email"
-              className="w-full bg-white border border-gray-300 rounded-xs px-3 py-2 text-sm focus:outline-none focus:border-blue-900 placeholder-gray-400"
+              className={cn(
+                'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+              )}
             />
           </div>
-
-          <div className="w-full mb-6">
+          <div className={cn('w-full mb-5')}>
             <input
               type="password"
               placeholder="Password"
-              className="w-full bg-white border border-gray-300 rounded-xs px-3 py-2 text-sm focus:outline-none focus:border-blue-900 placeholder-gray-400"
+              className={cn(
+                'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+              )}
             />
           </div>
-
           <Link
             to="/feeds"
-            className="w-24 bg-blue-900 hover:bg-blue-900 text-white text-center text-sm font-semibold py-2 rounded-xs shadow-2xs text-decoration-none transition-colors block mb-4"
+            className={cn(
+              'block w-24 mb-3.5 py-1.5 text-center text-decoration-none rounded-xs',
+              'text-xs font-semibold text-white bg-brand hover:bg-brand-hover',
+              'shadow-2xs transition-all transform active:scale-95'
+            )}
           >
             Login
           </Link>
-
           <Link
             to="#"
-            className="text-xs text-blue-900 hover:underline text-decoration-none font-medium"
+            className={cn(
+              'text-[11px] text-decoration-none font-medium text-brand hover:underline',
+              'active:scale-98 transform inline-block'
+            )}
           >
             Forgot password?
           </Link>
         </div>
 
-        <div className="p-6 pt-0 border-b border-gray-100 flex flex-col gap-3 bg-gray-50/50">
-          <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
+        <div
+          className={cn(
+            'p-5 pt-0 border-t flex flex-col gap-2.5', 
+            'border-border-muted bg-background/30'
+          )}
+        >
+          <button
+            className={cn(
+              'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
+              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
+              'active:scale-98 transform'
+            )}
+          >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
-              className="w-5 h-5 shrink-0"
+              className={cn('w-4 h-4 shrink-0')}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className={cn('text-xs font-medium')}>
               Sign in with Google
             </span>
           </button>
 
-          <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
+          <button
+            className={cn(
+              'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
+              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
+              'active:scale-98 transform'
+            )}
+          >
             <img
               src="https://www.svgrepo.com/show/475647/facebook-color.svg"
               alt="Facebook"
-              className="w-5 h-5 shrink-0"
+              className={cn('w-4 h-4 shrink-0')}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className={cn('text-xs font-medium')}>
               Sign in with Facebook
             </span>
           </button>
 
-          {/* Nút Twitter */}
-          <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
+          <button
+            className={cn(
+              'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
+              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
+              'active:scale-98 transform'
+            )}
+          >
             <img
               src="https://www.svgrepo.com/show/475689/twitter-color.svg"
               alt="Twitter"
-              className="w-5 h-5 shrink-0"
+              className={cn('w-4 h-4 shrink-0')}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className={cn('text-xs font-medium')}>
               Sign in with Twitter
             </span>
           </button>
         </div>
       </div>
 
-      <div className="text-sm text-gray-500 mt-5 font-normal">
+      <div className={cn('text-xs text-text-muted mt-4 font-normal')}>
         Don't have an account?{' '}
         <Link
           to="/signup"
-          className="text-blue-900 hover:underline text-decoration-none font-semibold"
+          className={cn(
+            'text-decoration-none font-semibold text-brand hover:underline',
+            'active:scale-98 transform inline-block'
+          )}
         >
           Sign up
         </Link>

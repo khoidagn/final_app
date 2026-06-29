@@ -2,6 +2,7 @@ import React from 'react';
 import ProfileTabs from './ProfileTabs';
 import type { ProfileTab, ProfileStats } from '../../../types/profile';
 import Avatar from '../../../components/ui/Avatar';
+import { cn } from '../../../utils/cn';
 
 interface ProfileHeaderProps {
   firstName: string | undefined;
@@ -22,11 +23,16 @@ export default function ProfileHeader({
   onChangeTab,
   renderHeaderActions,
 }: ProfileHeaderProps) {
-  const fullName = `${lastName} ${firstName}`.trim();
+  const fullName = `${lastName || ''} ${firstName || ''}`.trim();
 
   return (
-    <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6 w-full">
-      <div className="shrink-0">
+    <div
+      className={cn(
+        'w-full flex flex-col items-center gap-6',
+        'sm:flex-row sm:items-center'
+      )}
+    >
+      <div className={cn('shrink-0')}>
         <Avatar
           avatarUrl={avatarUrl}
           firstName={firstName}
@@ -36,16 +42,30 @@ export default function ProfileHeader({
         />
       </div>
 
-      <div className="flex-1 flex flex-col items-center sm:items-start gap-4 w-full">
-        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-          <h2 className="text-2xl font-bold text-gray-900 leading-none tracking-tight">
+      <div
+        className={cn(
+          'w-full flex-1 flex flex-col items-center gap-4',
+          'sm:items-start'
+        )}
+      >
+        <div
+          className={cn(
+            'flex flex-col items-center gap-3',
+            'sm:flex-row sm:gap-4'
+          )}
+        >
+          <h2
+            className={cn(
+              'text-2xl font-bold leading-none tracking-tight text-text-primary'
+            )}
+          >
             {fullName}
           </h2>
 
-          <div className="shrink-0">{renderHeaderActions()}</div>
+          <div className={cn('shrink-0')}>{renderHeaderActions()}</div>
         </div>
 
-        <div className="w-full flex justify-center sm:justify-start">
+        <div className={cn('w-full flex justify-center sm:justify-start')}>
           <ProfileTabs
             stats={stats}
             activeTab={activeTab}

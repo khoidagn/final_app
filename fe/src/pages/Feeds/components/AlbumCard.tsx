@@ -3,6 +3,7 @@ import type { AlbumData } from '../../../types/feeds';
 import FollowButton from '../../../components/ui/FollowButton';
 import LikeButton from '../../../components/ui/LikeButton';
 import AuthorBadge from './AuthorBadge';
+import { cn } from '../../../utils/cn';
 
 interface AlbumCardProps {
   data: AlbumData;
@@ -30,37 +31,67 @@ export default function AlbumCard({
   return (
     <div
       onClick={onCardClick}
-      className={`flex flex-col md:flex-row bg-gray-50 border border-gray-200 rounded-md overflow-hidden shadow-2xs hover:shadow-sm transition-shadow ${onCardClick ? 'cursor-pointer' : ''}`}
+      className={cn(
+        'flex flex-col w-full overflow-hidden transition-all duration-200',
+        'md:flex-row',
+        'bg-background border border-border-default rounded-md shadow-2xs hover:shadow-sm',
+        onCardClick && 'cursor-pointer active:scale-[0.99] transform'
+      )}
     >
-      <div className="w-full md:w-1/2 aspect-square flex items-center justify-center bg-gray-50 p-4 relative shrink-0 overflow-hidden">
-        <div className="absolute w-[80%] h-[80%] rounded-xs overflow-hidden shadow-xs border border-white transform rotate-12 opacity-60">
+      <div
+        className={cn(
+          'w-full aspect-square flex items-center justify-center p-4 relative shrink-0 overflow-hidden select-none',
+          'md:w-1/2',
+          'bg-background/40'
+        )}
+      >
+        <div
+          className={cn(
+            'absolute w-[80%] h-[80%] rounded-xs overflow-hidden border shadow-xs opacity-60',
+            'border-surface bg-surface transform rotate-12'
+          )}
+        >
           <img
             src={layer3}
             alt="Layer 3"
-            className="w-full h-full object-cover"
+            className={cn('w-full h-full object-cover')}
           />
         </div>
 
-        <div className="absolute w-[80%] h-[80%] rounded-xs overflow-hidden shadow-xs border border-white transform rotate-6 opacity-80">
+        <div
+          className={cn(
+            'absolute w-[80%] h-[80%] rounded-xs overflow-hidden border shadow-xs opacity-80',
+            'border-surface bg-surface transform rotate-6'
+          )}
+        >
           <img
             src={layer2}
             alt="Layer 2"
-            className="w-full h-full object-cover"
+            className={cn('w-full h-full object-cover')}
           />
         </div>
 
-        <div className="absolute w-[83%] h-[83%] rounded-xs overflow-hidden shadow-md border-2 border-white transform z-10">
+        <div
+          className={cn(
+            'absolute w-[83%] h-[83%] rounded-xs overflow-hidden border-2 shadow-md z-10',
+            'border-surface bg-surface transform'
+          )}
+        >
           <img
             src={coverImg || '/placeholder.jpg'}
             alt="Cover"
-            className="w-full h-full object-cover"
+            className={cn('w-full h-full object-cover')}
           />
         </div>
       </div>
 
-      <div className="w-full md:w-1/2 p-4 flex flex-col justify-between min-w-0">
+      <div
+        className={cn(
+          'w-full p-4 flex flex-col justify-between min-w-0 md:w-1/2'
+        )}
+      >
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className={cn('flex items-center justify-between mb-3')}>
             <AuthorBadge author={data.author} />
 
             {onFollowToggle && (
@@ -75,15 +106,27 @@ export default function AlbumCard({
             )}
           </div>
 
-          <h3 className="text-xs font-bold text-gray-900 mb-1 truncate">
+          <h3
+            className={cn('text-xs font-bold text-text-primary mb-1 truncate')}
+          >
             {data.title}
           </h3>
-          <p className="text-[11px] text-gray-500 leading-tight line-clamp-4 break-words">
+          <p
+            className={cn(
+              'text-[11px] text-text-secondary leading-tight line-clamp-4 break-words'
+            )}
+          >
             {data.description}
           </p>
         </div>
 
-        <div className="flex items-center justify-between text-[10px] text-gray-400 mt-4 md:mt-2 pt-2 border-t border-gray-50">
+        <div
+          className={cn(
+            'flex items-center justify-between text-[10px] mt-4 pt-2 border-t',
+            'md:mt-2',
+            'text-text-muted border-border-muted'
+          )}
+        >
           <LikeButton
             initialLikes={data.likes_count}
             initialIsLiked={false}

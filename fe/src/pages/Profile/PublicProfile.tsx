@@ -1,13 +1,19 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import ProfileLayout from '../../components/layouts/ProfileLayout';
 import PhotoProfileGrid from './components/PhotoProfileGrid';
 import AlbumProfileGrid from './components/AlbumProfileGrid';
 import UserFollowGrid from './components/UserFollowGrid';
+import FollowButton from '../../components/ui/FollowButton';
 import { useProfileData } from '../../hooks/useProfileData';
+import type { ProfileTab } from '../../types/profile';
+import { cn } from '../../utils/cn';
 
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const activeTab = (searchParams.get('tab') as ProfileTab) || 'photos';
+
   const {
     profileUser,
     stats,
@@ -23,11 +29,17 @@ export default function PublicProfile() {
 
   if (isLoading || !profileUser) {
     return (
-      <div className="p-8 text-center text-xs font-semibold text-gray-500">
+      <div
+        className={cn('p-8 text-center text-xs font-semibold text-text-muted')}
+      >
         Loading public profile...
       </div>
     );
   }
+
+  const handleTabChange = (newTab: ProfileTab) => {
+    setSearchParams({ tab: newTab });
+  };
 
   return (
     <ProfileLayout
@@ -35,28 +47,26 @@ export default function PublicProfile() {
       lastName={profileUser.last_name}
       avatarUrl={profileUser.avatar_url}
       stats={stats}
+      activeTab={activeTab}
+      onChangeTab={handleTabChange}
       renderHeaderActions={() => (
-        <button
-          onClick={toggleFollowProfile}
-          className={`text-xs font-bold px-4 py-1 rounded-full cursor-pointer transition-colors border ${
-            isFollowingUser
-              ? 'text-white bg-orange-500 border-orange-500 hover:bg-orange-600'
-              : 'text-orange-500 border-orange-400 hover:bg-orange-50'
-          }`}
-        >
-          {isFollowingUser ? 'Following' : 'Follow'}
-        </button>
+        <FollowButton
+          isFollowing={isFollowingUser}
+          onToggle={toggleFollowProfile}
+          textSizeClass="text-xs px-4"
+        />
       )}
-      renderTabContent={(activeTab) => (
-        <div>
-          {activeTab === 'photos' && (
+      renderTabContent={(currentTab) => (
+        <div className={cn('w-full')}>
+          {currentTab === 'photos' && (
             <PhotoProfileGrid items={photos} isOwnProfile={false} />
           )}
-          {activeTab === 'albums' && (
+
+          {currentTab === 'albums' && (
             <AlbumProfileGrid items={albums} isOwnProfile={false} />
           )}
 
-          {activeTab === 'followings' && (
+          {currentTab === 'followings' && (
             <UserFollowGrid
               users={followings}
               context="public-profile"
@@ -64,7 +74,8 @@ export default function PublicProfile() {
               onAction={handleFollowerToggle}
             />
           )}
-          {activeTab === 'followers' && (
+
+          {currentTab === 'followers' && (
             <UserFollowGrid
               users={followers}
               context="public-profile"

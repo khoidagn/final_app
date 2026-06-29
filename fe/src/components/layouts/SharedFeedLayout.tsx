@@ -5,6 +5,7 @@ import AlbumGrid from '../../pages/Feeds/components/AlbumGrid';
 import PhotoModal from '../../pages/Photos/PhotoModal';
 import AlbumModal from '../../pages/Albums/AlbumModal';
 import type { FeedTabType, PhotoData, AlbumData } from '../../types/feeds';
+import { cn } from '../../utils/cn';
 
 interface SharedFeedLayoutProps {
   photos: PhotoData[];
@@ -32,7 +33,12 @@ export default function SharedFeedLayout({
     albums.find((a) => a.id === selectedAlbumId) || null;
 
   return (
-    <div className="bg-white rounded-md shadow-sm border border-gray-100 pt-6 p-4 flex flex-col items-center w-full">
+    <div
+      className={cn(
+        'w-full flex flex-col items-center pt-6 p-4',
+        'bg-surface border border-border-default rounded-md shadow-xs'
+      )}
+    >
       <FeedTabs activeTab={activeTab} onChangeTab={onChangeTab} />
 
       {activeTab === 'photo' ? (
@@ -50,18 +56,23 @@ export default function SharedFeedLayout({
       )}
 
       {isLoading && (
-        <div className="mb-4">
-          <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-900 rounded-full animate-spin"></div>
+        <div className={cn('mb-4')}>
+          <div
+            className={cn(
+              'w-8 h-8 border-4 rounded-full animate-spin',
+              'border-border-default border-t-brand'
+            )}
+          />
         </div>
       )}
 
-      {selectedPhotoId !== null && (
+      {selectedPhotoId && (
         <PhotoModal
           data={currentSelectedPhoto}
           onClose={() => setSelectedPhotoId(null)}
         />
       )}
-      {selectedAlbumId !== null && (
+      {selectedAlbumId && (
         <AlbumModal
           data={currentSelectedAlbum}
           onClose={() => setSelectedAlbumId(null)}

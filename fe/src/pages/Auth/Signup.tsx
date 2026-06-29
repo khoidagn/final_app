@@ -1,18 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { cn } from '../../utils/cn';
 
 export default function SignUp() {
   return (
-    <div className="min-h-screen bg-[#f5f6f7] flex flex-col items-center justify-center p-4 font-sans antialiased text-gray-800">
-      <h1 className="text-3xl font-bold text-blue-900 mb-6 tracking-wide">
+    <div
+      className={cn(
+        'min-h-screen flex flex-col items-center justify-center p-4 font-sans antialiased',
+        'bg-background text-text-primary'
+      )}
+    >
+      <h1 className={cn('text-3xl font-bold mb-6 tracking-wide text-brand')}>
         Fotobook Sign Up
       </h1>
 
-      <div className="w-full max-w-[400px] bg-white rounded-md shadow-xs border border-gray-200 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex flex-col items-center">
-          <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-6 border border-gray-100">
+      <div
+        className={cn(
+          'w-full max-w-[400px] overflow-hidden',
+          'bg-surface rounded-md shadow-xs border border-border-default'
+        )}
+      >
+        <div className={cn('p-6 flex flex-col items-center')}>
+          <div
+            className={cn(
+              'w-20 h-20 rounded-full flex items-center justify-center mb-6 border',
+              'bg-background border-border-muted'
+            )}
+          >
             <svg
-              className="w-10 h-10 text-gray-400"
+              className={cn('w-10 h-10 text-text-muted')}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -26,87 +42,129 @@ export default function SignUp() {
             </svg>
           </div>
 
-          <div className="w-full mb-4">
+          <div className={cn('w-full mb-4')}>
             <input
               type="email"
               placeholder="Email"
-              className="w-full bg-white border border-gray-300 rounded-xs px-3 py-2 text-sm focus:outline-none focus:border-blue-900 placeholder-gray-400"
+              className={cn(
+                'w-full bg-surface border rounded-xs px-3 py-2 text-sm focus:outline-none placeholder-text-muted text-text-primary transition-all',
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+              )}
             />
           </div>
 
-          <div className="w-full mb-4">
+          <div className={cn('w-full mb-4')}>
             <input
               type="text"
               placeholder="Username"
-              className="w-full bg-white border border-gray-300 rounded-xs px-3 py-2 text-sm focus:outline-none focus:border-blue-900 placeholder-gray-400"
+              className={cn(
+                'w-full bg-surface border rounded-xs px-3 py-2 text-sm focus:outline-none placeholder-text-muted text-text-primary transition-all',
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+              )}
             />
           </div>
 
-          <div className="w-full mb-4">
+          <div className={cn('w-full mb-4')}>
             <input
               type="password"
               placeholder="Password"
-              className="w-full bg-white border border-gray-300 rounded-xs px-3 py-2 text-sm focus:outline-none focus:border-blue-900 placeholder-gray-400"
+              className={cn(
+                'w-full bg-surface border rounded-xs px-3 py-2 text-sm focus:outline-none placeholder-text-muted text-text-primary transition-all',
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+              )}
             />
           </div>
 
-          <div className="w-full mb-6">
+          <div className={cn('w-full mb-6')}>
             <input
               type="password"
               placeholder="Password Confirmation"
-              className="w-full bg-white border border-gray-300 rounded-xs px-3 py-2 text-sm focus:outline-none focus:border-blue-900 placeholder-gray-400"
+              className={cn(
+                'w-full bg-surface border rounded-xs px-3 py-2 text-sm focus:outline-none placeholder-text-muted text-text-primary transition-all',
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+              )}
             />
           </div>
 
           <button
             type="submit"
-            className="w-24 bg-blue-900 hover:bg-blue-800 text-white text-center text-sm font-semibold py-2 rounded-xs shadow-2xs transition-colors focus:outline-none"
+            className={cn(
+              'w-24 text-white text-center text-sm font-semibold py-2 rounded-xs shadow-2xs transition-all focus:outline-none cursor-pointer',
+              'bg-brand hover:bg-brand-hover',
+              'active:scale-95 transform'
+            )}
           >
             Sign Up
           </button>
         </div>
 
-        <div className="p-6 flex flex-col gap-3 bg-gray-50/50">
-          <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
+        <div
+          className={cn(
+            'p-6 flex flex-col gap-3 border-t',
+            'border-border-muted bg-background/30'
+          )}
+        >
+          <button
+            className={cn(
+              'w-full h-11 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
+              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
+              'active:scale-98 transform'
+            )}
+          >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
-              className="w-5 h-5 shrink-0"
+              className={cn('w-5 h-5 shrink-0')}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className={cn('text-sm font-medium')}>
               Sign in with Google
             </span>
           </button>
 
-          <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
+          <button
+            className={cn(
+              'w-full h-11 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
+              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
+              'active:scale-98 transform'
+            )}
+          >
             <img
               src="https://www.svgrepo.com/show/475647/facebook-color.svg"
               alt="Facebook"
-              className="w-5 h-5 shrink-0"
+              className={cn('w-5 h-5 shrink-0')}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className={cn('text-sm font-medium')}>
               Sign in with Facebook
             </span>
           </button>
 
-          <button className="w-full h-11 bg-white border border-gray-200 rounded-xs flex items-center justify-center space-x-3 shadow-2xs hover:bg-gray-50 transition-colors focus:outline-none px-4">
+          <button
+            className={cn(
+              'w-full h-11 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
+              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
+              'active:scale-98 transform'
+            )}
+          >
             <img
               src="https://www.svgrepo.com/show/475689/twitter-color.svg"
               alt="Twitter"
-              className="w-5 h-5 shrink-0"
+              className={cn('w-5 h-5 shrink-0')}
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className={cn('text-sm font-medium')}>
               Sign in with Twitter
             </span>
           </button>
         </div>
       </div>
 
-      <div className="text-sm text-gray-500 mt-5 font-normal">
+      <div className={cn('text-sm text-text-muted mt-5 font-normal')}>
         Already have an account?{' '}
         <Link
           to="/login"
-          className="text-blue-900 hover:underline text-decoration-none font-semibold"
+          className={cn(
+            'text-decoration-none font-semibold text-brand hover:underline',
+            'active:scale-98 transform inline-block'
+          )}
         >
           Sign in
         </Link>

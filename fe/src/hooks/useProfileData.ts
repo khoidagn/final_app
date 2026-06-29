@@ -57,10 +57,14 @@ export function useProfileData({ isOwnProfile, userId }: UseProfileDataProps) {
           ]);
 
         setPhotos(
-          isOwnProfile ? rawPhotos : rawPhotos.filter((p: unknown) => !p.is_private)
+          isOwnProfile
+            ? rawPhotos
+            : rawPhotos.filter((p: unknown) => !p.is_private)
         );
         setAlbums(
-          isOwnProfile ? rawAlbums : rawAlbums.filter((a: unknown) => !a.is_private)
+          isOwnProfile
+            ? rawAlbums
+            : rawAlbums.filter((a: unknown) => !a.is_private)
         );
         setFollowings(rawFollowings);
         setFollowers(rawFollowers);

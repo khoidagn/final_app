@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProfileHeader from '../../pages/Profile/components/ProfileHeader';
 import type { ProfileTab, ProfileStats } from '../../types/profile';
+import { cn } from '../../utils/cn';
 
 interface ProfileLayoutProps {
   firstName: string | undefined;
   lastName: string | undefined;
   avatarUrl: string;
   stats: ProfileStats;
+  activeTab: ProfileTab;
+  onChangeTab: (tab: ProfileTab) => void;
   renderHeaderActions: () => React.ReactNode;
   renderTabContent: (activeTab: ProfileTab) => React.ReactNode;
 }
@@ -16,25 +19,31 @@ export default function ProfileLayout({
   lastName,
   avatarUrl,
   stats,
+  activeTab,
+  onChangeTab,
   renderHeaderActions,
   renderTabContent,
 }: ProfileLayoutProps) {
-  const [activeTab, setActiveTab] = useState<ProfileTab>('photos');
-
   return (
-    <div className="bg-white rounded-md shadow-sm border border-gray-100 p-6 w-full flex flex-col">
-      <div className="mb-2 pb-4 border-b border-gray-100 w-full">
+    <div
+      className={cn(
+        'w-full flex flex-col p-6',
+        'bg-surface border border-border-default rounded-md shadow-xs'
+      )}
+    >
+      <div className={cn('w-full mb-2 pb-4 border-b border-border-muted')}>
         <ProfileHeader
           firstName={firstName}
           lastName={lastName}
           avatarUrl={avatarUrl}
           stats={stats}
           activeTab={activeTab}
-          onChangeTab={setActiveTab}
+          onChangeTab={onChangeTab}
           renderHeaderActions={renderHeaderActions}
         />
       </div>
-      <div className="w-full">{renderTabContent(activeTab)}</div>
+
+      <div className={cn('w-full')}>{renderTabContent(activeTab)}</div>
     </div>
   );
 }

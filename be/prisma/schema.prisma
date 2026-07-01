@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  firstName       String    @map("first_name") @db.VarChar(25)
+  lastName        String    @map("last_name") @db.VarChar(25)
+  email           String    @unique @db.VarChar(255)
+  passwordHash    String    @map("password_hash") @db.VarChar(255)
+  avatarUrl       String?   @map("avatar_url") @db.VarChar(255)
+  role            String    @default("user") @db.VarChar(20)
+  isActive        Boolean   @default(true) @map("is_active")
+  confirmedAt     DateTime? @map("confirmed_at") @db.Timestamp
+  lastLogin       DateTime? @map("last_login") @db.Timestamp
+  followingsCount Int       @default(0) @map("followings_count")
+  followersCount  Int       @default(0) @map("followers_count")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  medias         Media[]
+  photos         Photo[]
+  albums         Album[]
+  photoLikes     PhotoLike[]
+  albumLikes     AlbumLike[]
+
+  following      Follow[] @relation("UserFollowing")
+  followers      Follow[] @relation("UserFollowers")
+
+  @@map("users")
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  imageUrl  String   @map("image_url") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  photos       Photo[]
+  albumPhotos  AlbumPhoto[]
+
+  @@map("media")
+}
+
+model Photo {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  mediaId     Int      @map("media_id")
+  title       String   @db.VarChar(140)
+  description String   @db.VarChar(300)
+  sharingMode String   @default("public") @map("sharing_mode") @db.VarChar(20)
+  likesCount  Int      @default(0) @map("likes_count")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media       Media       @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  photoLikes  PhotoLike[]
+
+  @@map("photos")
+}
+
+model Album {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @map("user_id")
+  title       String   @db.VarChar(140)
+  description String   @db.VarChar(300)
+  sharingMode String   @default("public") @map("sharing_mode") @db.VarChar(20)
+  likesCount  Int      @default(0) @map("likes_count")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  albumPhotos  AlbumPhoto[]
+  albumLikes   AlbumLike[]
+
+  @@map("albums")
+}
+
+model AlbumPhoto {
+  albumId   Int      @map("album_id")
+  mediaId   Int      @map("media_id")
+  position  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  album      Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  media      Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@id([albumId, mediaId])
+  @@map("album_photo")
+}
+
+model PhotoLike {
+  userId    Int      @map("user_id")
+  photoId   Int      @map("photo_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photo      Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+
+  @@id([userId, photoId])
+  @@map("photo_likes")
+}
+
+model AlbumLike {
+  userId    Int      @map("user_id")
+  albumId   Int      @map("album_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  album      Album    @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@id([userId, albumId])
+  @@map("album_likes")
+}
+
+model Follow {
+  followerId  Int      @map("follower_id")
+  followingId Int      @map("following_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  follower     User     @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following    User     @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@map("follows")
+}

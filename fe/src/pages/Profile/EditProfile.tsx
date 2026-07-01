@@ -38,8 +38,12 @@ export default function EditProfile() {
         type: 'success',
         text: 'Cập nhật thông tin cơ bản thành công!',
       });
-    } catch (err: unknown) {
-      setStatusMsg({ type: 'error', text: err.message || 'Có lỗi xảy ra' });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra';
+      setStatusMsg({
+        type: 'error',
+        text: errorMessage,
+      });
     }
   };
 

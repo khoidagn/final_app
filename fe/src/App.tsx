@@ -23,6 +23,8 @@ import AdminEditUser from './pages/Admin/AdminEditUser';
 import AdminEditPhoto from './pages/Admin/AdminEditPhoto';
 import AdminEditAlbum from './pages/Admin/AdminEditAlbum';
 
+import NotFoundPage from './pages/not-found/NotFoundPage';
+
 export default function App() {
   return (
     <Routes>
@@ -52,14 +54,7 @@ export default function App() {
         <Route path="albums/:id/edit" element={<AdminEditAlbum />} />
       </Route>
 
-      <Route
-        path="*"
-        element={
-          <div className="p-8 text-center font-semibold">
-            Trang không tồn tại - 404 Not Found
-          </div>
-        }
-      />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

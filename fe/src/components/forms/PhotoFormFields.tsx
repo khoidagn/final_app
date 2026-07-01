@@ -68,7 +68,6 @@ export default function PhotoFormFields({
         </div>
       </div>
 
-      {/* 2. CỘT PHẢI (Con trực tiếp thứ hai của BaseFormLayout) */}
       <div className={cn('flex flex-col w-full h-full')}>
         <label
           className={cn('block text-xs font-bold text-text-primary mb-1.5')}

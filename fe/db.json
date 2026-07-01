@@ -1,0 +1,605 @@
+{
+  "photos": [
+    {
+      "id": "1",
+      "title": "Photo Title 1",
+      "image_url": "/dog.jpg"
+    }
+  ],
+  "admin_photos": [
+    {
+      "id": "501",
+      "title": "Beautiful puppy running in the park",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "502",
+      "title": "Lorem ipsum dolor sit amet...",
+      "image_url": "/dog2.jpg"
+    },
+    {
+      "id": "503",
+      "title": "Urban architecture abstract view",
+      "image_url": "/dog3.jpg"
+    },
+    {
+      "id": "504",
+      "title": "Sunset reflection on the lake water",
+      "image_url": "/avt.png"
+    },
+    {
+      "id": "505",
+      "title": "Minimalist desktop setup workspace",
+      "image_url": "/dog.jpg"
+    }
+  ],
+  "admin_albums": [
+    {
+      "id": "601",
+      "title": "Summer Vacation 2026",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "602",
+      "title": "My Lovely Pets Collection",
+      "image_url": "/dog2.jpg"
+    },
+    {
+      "id": "603",
+      "title": "Lorem ipsum dolor sit amet...",
+      "image_url": "/dog3.jpg"
+    },
+    {
+      "id": "604",
+      "title": "Company Team Building",
+      "image_url": "/dog2.jpg"
+    },
+    {
+      "id": "605",
+      "title": "Vintage Aesthetic Vibe",
+      "image_url": "/dog3.jpg"
+    },
+    {
+      "id": "606",
+      "title": "Beautiful Nature Landscapes",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "607",
+      "title": "Summer Vacation 2026",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "608",
+      "title": "My Lovely Pets Collection",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "609",
+      "title": "Lorem ipsum dolor sit amet...",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "610",
+      "title": "Company Team Building",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "611",
+      "title": "Vintage Aesthetic Vibe",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "612",
+      "title": "Beautiful Nature Landscapes",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "613",
+      "title": "Summer Vacation 2026",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "614",
+      "title": "My Lovely Pets Collection",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "615",
+      "title": "Lorem ipsum dolor sit amet...",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "616",
+      "title": "Company Team Building",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "617",
+      "title": "Vintage Aesthetic Vibe",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "618",
+      "title": "Beautiful Nature Landscapes",
+      "image_url": "/dog.jpg"
+    },
+    {
+      "id": "619",
+      "title": "Night Life Photography",
+      "image_url": "/dog.jpg"
+    }
+  ],
+  "admin_users": [
+    {
+      "id": "1",
+      "first_name": "Hieu 1",
+      "last_name": "Nguyen",
+      "email": "hieu1@hotmail.com",
+      "last_login": "4:56am 16/06/2026"
+    },
+    {
+      "id": "2",
+      "first_name": "Hieu 2",
+      "last_name": "Nguyen",
+      "email": "hieu2@hotmail.com",
+      "last_login": "8:20am 18/06/2026"
+    },
+    {
+      "id": "3",
+      "first_name": "Hieu 3",
+      "last_name": "Nguyen",
+      "email": "hieu3@hotmail.com",
+      "last_login": "9:15pm 20/06/2026"
+    },
+    {
+      "id": "7",
+      "first_name": "Hieu 4",
+      "last_name": "Nguyen",
+      "email": "hieu4@hotmail.com",
+      "last_login": "4:56am 16/06/2026"
+    },
+    {
+      "id": "8",
+      "first_name": "Hieu 5",
+      "last_name": "Nguyen",
+      "email": "hieu5@hotmail.com",
+      "last_login": "8:20am 18/06/2026"
+    },
+    {
+      "id": "9",
+      "first_name": "Hieu 6",
+      "last_name": "Nguyen",
+      "email": "hieu6@hotmail.com",
+      "last_login": "9:15pm 20/06/2026"
+    },
+    {
+      "id": "10",
+      "first_name": "Hieu 7",
+      "last_name": "Nguyen",
+      "email": "hieu7@hotmail.com",
+      "last_login": "4:56am 16/06/2026"
+    },
+    {
+      "id": "11",
+      "first_name": "Hieu 8",
+      "last_name": "Nguyen",
+      "email": "hieu8@hotmail.com",
+      "last_login": "8:20am 18/06/2026"
+    },
+    {
+      "id": "12",
+      "first_name": "Hieu 9",
+      "last_name": "Nguyen",
+      "email": "hieu9@hotmail.com",
+      "last_login": "9:15pm 20/06/2026"
+    },
+    {
+      "id": "4",
+      "first_name": "Khoi",
+      "last_name": "Vo",
+      "email": "khoivo@gmail.com",
+      "last_login": "5:06pm 24/06/2026"
+    },
+    {
+      "id": "5",
+      "first_name": "Nam",
+      "last_name": "Hai",
+      "email": "hainam@gmail.com",
+      "last_login": "2:30pm 22/06/2026"
+    },
+    {
+      "id": "6",
+      "first_name": "Quan",
+      "last_name": "Lai",
+      "email": "laiquan@gmail.com",
+      "last_login": "11:11am 23/06/2026"
+    }
+  ],
+  "feeds_photos": [
+    {
+      "id": "1",
+      "title": "Photo Title 1",
+      "description": "This is the description for photo number 1. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/fr.png",
+      "likes_count": 57,
+      "created_at": "4:11pm 20/06/2026",
+      "author": {
+        "id": 11,
+        "first_name": "Hieu",
+        "last_name": "Nguyen",
+        "is_following": false,
+        "image_url": "/avt.png"
+      }
+    },
+    {
+      "id": "2",
+      "title": "Photo Title 2",
+      "description": "This is the description for photo number 2. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog2.jpg",
+      "likes_count": 64,
+      "created_at": "4:12pm 20/06/2026",
+      "author": {
+        "id": 12,
+        "first_name": "Hansford",
+        "last_name": "Nguyen",
+        "is_following": false
+      }
+    },
+    {
+      "id": "3",
+      "title": "Photo Title 3",
+      "description": "This is the description for photo number 3. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog3.jpg",
+      "likes_count": 71,
+      "created_at": "4:13pm 20/06/2026",
+      "author": {
+        "id": 13,
+        "first_name": "Lai",
+        "last_name": "Quan",
+        "is_following": true
+      }
+    },
+    {
+      "id": "4",
+      "title": "Photo Title 4",
+      "description": "This is the description for photo number 4. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog2.jpg",
+      "likes_count": 78,
+      "created_at": "4:14pm 20/06/2026",
+      "author": {
+        "id": 10,
+        "first_name": "Kho",
+        "last_name": "Voi",
+        "is_following": false
+      }
+    },
+    {
+      "id": "5",
+      "title": "Photo Title 5",
+      "description": "This is the description for photo number 5. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog.jpg",
+      "likes_count": 85,
+      "created_at": "4:15pm 20/06/2026",
+      "author": {
+        "id": 11,
+        "first_name": "Hieu",
+        "last_name": "Nguyen",
+        "is_following": false
+      }
+    },
+    {
+      "id": "6",
+      "title": "Photo Title 6",
+      "description": "This is the description for photo number 6. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog3.jpg",
+      "likes_count": 92,
+      "created_at": "4:16pm 20/06/2026",
+      "author": {
+        "id": 12,
+        "first_name": "Hansford",
+        "last_name": "Nguyen",
+        "is_following": true
+      }
+    },
+    {
+      "id": "7",
+      "title": "Photo Title 7",
+      "description": "This is the description for photo number 7. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog2.jpg",
+      "likes_count": 99,
+      "created_at": "4:17pm 20/06/2026",
+      "author": {
+        "id": 13,
+        "first_name": "Lai",
+        "last_name": "Quan",
+        "is_following": false
+      }
+    },
+    {
+      "id": "8",
+      "title": "Photo Title 8",
+      "description": "This is the description for photo number 8. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/avt.png",
+      "likes_count": 106,
+      "created_at": "4:18pm 20/06/2026",
+      "author": {
+        "id": 10,
+        "first_name": "Kho",
+        "last_name": "Voi",
+        "is_following": false
+      }
+    },
+    {
+      "id": "50",
+      "title": "Photo Title 9",
+      "description": "This is the description for photo number 9. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog.jpg",
+      "likes_count": 113,
+      "created_at": "4:19pm 20/06/2026",
+      "author": {
+        "id": 11,
+        "first_name": "Hieu",
+        "last_name": "Nguyen",
+        "is_following": true
+      }
+    },
+    {
+      "id": "10",
+      "title": "Photo Title 10",
+      "description": "This is the description for photo number 10. It simulated data fetched from Backend API endpoint for pagination test.",
+      "image_url": "/dog.jpg",
+      "likes_count": 120,
+      "created_at": "4:20pm 20/06/2026",
+      "author": {
+        "id": 12,
+        "first_name": "Hansford",
+        "last_name": "Nguyen",
+        "is_following": false
+      }
+    }
+  ],
+  "feeds_albums": [
+    {
+      "id": "201",
+      "title": "Album Collection 201",
+      "description": "This is an amazing photo collection of album 201. Curabitur malesuada libero in nibh pretium, sed malesuada nisi feugiat.",
+      "likes_count": 41,
+      "created_at": "1:5pm 15/06/2026",
+      "images": [
+        "/dog.jpg",
+        "/dog2.jpg",
+        "/dog3.jpg"
+      ],
+      "author": {
+        "id": 21,
+        "first_name": "Hieu",
+        "last_name": "Nguyen",
+        "is_following": true
+      }
+    },
+    {
+      "id": "202",
+      "title": "Album Collection 202",
+      "description": "This is an amazing photo collection of album 202. Curabitur malesuada libero in nibh pretium, sed malesuada nisi feugiat.",
+      "likes_count": 52,
+      "created_at": "1:6pm 15/06/2026",
+      "images": [
+        "/dog.jpg",
+        "/dog2.jpg",
+        "/dog3.jpg"
+      ],
+      "author": {
+        "id": 22,
+        "first_name": "Hai",
+        "last_name": "Nam",
+        "is_following": false
+      }
+    },
+    {
+      "id": "203",
+      "title": "Album Collection 203",
+      "description": "This is an amazing photo collection of album 203. Curabitur malesuada libero in nibh pretium, sed malesuada nisi feugiat.",
+      "likes_count": 63,
+      "created_at": "1:7pm 15/06/2026",
+      "images": [
+        "/dog.jpg",
+        "/dog2.jpg",
+        "/dog3.jpg"
+      ],
+      "author": {
+        "id": 23,
+        "first_name": "Kho",
+        "last_name": "Voi",
+        "is_following": true
+      }
+    },
+    {
+      "id": "204",
+      "title": "Album Collection 204",
+      "description": "This is an amazing photo collection of album 204. Curabitur malesuada libero in nibh pretium, sed malesuada nisi feugiat.",
+      "likes_count": 74,
+      "created_at": "1:8pm 15/06/2026",
+      "images": [
+        "/dog.jpg",
+        "/dog2.jpg",
+        "/dog3.jpg"
+      ],
+      "author": {
+        "id": 24,
+        "first_name": "Quang",
+        "last_name": "Phong",
+        "is_following": false
+      }
+    },
+    {
+      "id": "205",
+      "title": "Album Collection 205",
+      "description": "This is an amazing photo collection of album 205. Curabitur malesuada libero in nibh pretium, sed malesuada nisi feugiat.",
+      "likes_count": 85,
+      "created_at": "1:9pm 15/06/2026",
+      "images": [
+        "/dog.jpg",
+        "/dog2.jpg",
+        "/dog3.jpg"
+      ],
+      "author": {
+        "id": 21,
+        "first_name": "Hieu",
+        "last_name": "Nguyen",
+        "is_following": true
+      }
+    },
+    {
+      "id": "206",
+      "title": "Album Collection 206",
+      "description": "This is an amazing photo collection of album 206. Curabitur malesuada libero in nibh pretium, sed malesuada nisi feugiat.",
+      "likes_count": 96,
+      "created_at": "1:10pm 15/06/2026",
+      "images": [
+        "/dog.jpg",
+        "/dog2.jpg",
+        "/dog3.jpg"
+      ],
+      "author": {
+        "id": 22,
+        "first_name": "Hai",
+        "last_name": "Nam",
+        "is_following": false
+      }
+    }
+  ],
+  "my_profile": {
+    "id": 10,
+    "first_name": "Kho",
+    "last_name": "Voi",
+    "avatar_url": "/dog.jpg",
+    "stats": {
+      "photos": 108,
+      "albums": 43,
+      "followings": 22,
+      "followers": 13
+    },
+    "email": "l@esdfs"
+  },
+  "public_profile_user": {
+    "id": 12,
+    "first_name": "Hansford",
+    "last_name": "Nguyen",
+    "avatar_url": "/dog2.jpg",
+    "stats": {
+      "photos": 45,
+      "albums": 12,
+      "followings": 80,
+      "followers": 230
+    },
+    "is_following": false
+  },
+  "profile_photos": [
+    {
+      "id": "1",
+      "title": "Photo title 1 (Private)",
+      "image_url": "/dog.jpg",
+      "is_private": true,
+      "author_id": 12
+    },
+    {
+      "id": "2",
+      "title": "Photo title 2 (Public)",
+      "image_url": "/dog2.jpg",
+      "is_private": false,
+      "author_id": 12
+    },
+    {
+      "id": "3",
+      "title": "Photo title 3 (Private)",
+      "image_url": "/dog3.jpg",
+      "is_private": true,
+      "author_id": 12
+    },
+    {
+      "id": "4",
+      "title": "Photo title 4 (Private)",
+      "image_url": "/dog.jpg",
+      "is_private": true,
+      "author_id": 12
+    }
+  ],
+  "profile_albums": [
+    {
+      "id": "21",
+      "title": "Album title 1 (Private)",
+      "image_url": "/dog.jpg",
+      "photos_count": 13,
+      "is_private": true,
+      "author_id": 12
+    },
+    {
+      "id": "22",
+      "title": "Album title 2 (Public)",
+      "image_url": "/dog3.jpg",
+      "photos_count": 24,
+      "is_private": false,
+      "author_id": 12
+    },
+    {
+      "id": "23",
+      "title": "Album title 3 (Public)",
+      "image_url": "/dog2.jpg",
+      "photos_count": 2,
+      "is_private": false,
+      "author_id": 12
+    }
+  ],
+  "profile_followings": [
+    {
+      "id": "301",
+      "first_name": "Nguyen",
+      "last_name": "Hieu",
+      "avatar_url": "/dog2.jpg",
+      "photos_count": 22,
+      "albums_count": 105,
+      "is_following": true
+    },
+    {
+      "id": "302",
+      "first_name": "Tran",
+      "last_name": "An",
+      "avatar_url": "/dog3.jpg",
+      "photos_count": 12,
+      "albums_count": 45,
+      "is_following": true
+    }
+  ],
+  "profile_followers": [
+    {
+      "id": "401",
+      "first_name": "Quan",
+      "last_name": "Lai",
+      "avatar_url": "/dog.jpg",
+      "photos_count": 54,
+      "albums_count": 210,
+      "is_following": false
+    },
+    {
+      "id": "402",
+      "first_name": "Nam",
+      "last_name": "Hai",
+      "avatar_url": "/dog.jpg",
+      "photos_count": 30,
+      "albums_count": 88,
+      "is_following": true
+    }
+  ],
+  "auth_session": {
+    "isLoggedIn": true,
+    "user": {
+      "id": 10,
+      "first_name": "Khoiiii",
+      "last_name": "Voi",
+      "avatar_url": "./fr.png",
+      "role": "admin"
+    }
+  },
+  "$schema": "./node_modules/json-server/schema.json"
+}

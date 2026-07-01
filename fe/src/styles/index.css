@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+@tailwind utilities;
+@theme {
+  /* Brand & State */
+  --color-brand: #1e3a8b;
+  --color-brand-hover: #172554;
+  /* follow */
+  --color-accent: #f97316;
+  --color-accent-hover: #ea580c;
+  /* Success */
+  --color-success: #10b981;
+  --color-success-hover: #059669;
+  /* error, delete */
+  --color-danger: #f43f5e;
+  --color-danger-hover: #e11d48;
+
+  /* 2. Background & Surface */
+  --color-background: #f5f6f7;
+  /* Card, Form, Box, Sidebar */
+  --color-surface: #ffffff;
+
+  /* 3. Sematic Typographic*/
+  --color-text-primary: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #9ca3af;
+
+  /* 4. Borders */
+  --color-border-default: #e5e7eb;
+  --color-border-muted: #f3f4f6;
+
+  /* 5. Border Radius Scale */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+@utility body-layout {
+  background-color: var(--color-background);
+  color: var(--color-text-secondary);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  @apply body-layout;
+}

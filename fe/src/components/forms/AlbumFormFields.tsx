@@ -1,0 +1,145 @@
+import React from 'react';
+import { cn } from '../../utils/cn';
+
+interface AlbumFormFieldsProps {
+  title: string;
+  setTitle: (value: string) => void;
+  sharingMode: string;
+  setSharingMode: (value: string) => void;
+  description: string;
+  setDescription: (value: string) => void;
+  albumImages: string[];
+  onAddImages: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onRemoveImage: (index: number) => void;
+}
+
+export default function AlbumFormFields({
+  title,
+  setTitle,
+  sharingMode,
+  setSharingMode,
+  description,
+  setDescription,
+  albumImages,
+  onAddImages,
+  onRemoveImage,
+}: AlbumFormFieldsProps) {
+  return (
+    <>
+      <div className={cn('flex flex-col gap-4 w-full')}>
+        <div>
+          <label
+            className={cn('block text-xs font-bold text-text-primary mb-1.5')}
+          >
+            Title
+          </label>
+          <input
+            type="text"
+            placeholder="Album Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className={cn(
+              'w-full bg-surface border rounded-sm px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
+              'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+            )}
+            required
+          />
+        </div>
+
+        <div>
+          <label
+            className={cn('block text-xs font-bold text-text-primary mb-1.5')}
+          >
+            Sharing mode
+          </label>
+          <select
+            value={sharingMode}
+            onChange={(e) => setSharingMode(e.target.value)}
+            className={cn(
+              'w-36 bg-surface border rounded-sm px-3 py-1.5 text-xs focus:outline-none text-text-primary cursor-pointer transition-all',
+              'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+            )}
+          >
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+        </div>
+
+        <div className={cn('mt-2 flex flex-col gap-2')}>
+          <label className={cn('block text-xs font-bold text-text-primary')}>
+            Images Grid
+          </label>
+
+          <div
+            className={cn(
+              'grid grid-cols-3 gap-2 border border-dashed p-3 rounded-sm',
+              'border-border-default bg-background/50'
+            )}
+          >
+            {albumImages.map((src, index) => (
+              <div
+                key={index}
+                className={cn(
+                  'aspect-square relative rounded-xs overflow-hidden border group',
+                  'border-border-default'
+                )}
+              >
+                <img
+                  src={src}
+                  alt="Preview"
+                  className={cn('w-full h-full object-cover')}
+                />
+                <button
+                  type="button"
+                  onClick={() => onRemoveImage(index)}
+                  className={cn(
+                    'absolute inset-0 bg-black/40 text-white font-bold opacity-0 flex items-center justify-center text-xs cursor-pointer transition-opacity duration-200',
+                    'group-hover:opacity-100',
+                    'active:scale-95 transform'
+                  )}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            <label
+              className={cn(
+                'aspect-square flex flex-col items-center justify-center border border-dashed rounded-xs transition-colors cursor-pointer',
+                'border-border-default bg-surface text-text-muted hover:bg-background hover:text-text-secondary'
+              )}
+            >
+              <span className={cn('text-lg font-light')}>+</span>
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                className={cn('hidden')}
+                onChange={onAddImages}
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div className={cn('flex flex-col w-full h-full')}>
+        <label
+          className={cn('block text-xs font-bold text-text-primary mb-1.5')}
+        >
+          Description
+        </label>
+        <textarea
+          rows={9}
+          placeholder="Album Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className={cn(
+            'w-full flex-1 bg-surface border rounded-sm px-3 py-2 text-xs focus:outline-none placeholder-text-muted text-text-primary resize-none leading-relaxed transition-all min-h-[220px]',
+            'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+          )}
+          required
+        />
+      </div>
+    </>
+  );
+}

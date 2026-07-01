@@ -1,9 +1,0 @@
-@import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
-  margin: 0;
-  background-color: #f5f6f7; 
-}

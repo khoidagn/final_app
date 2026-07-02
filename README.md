@@ -84,13 +84,17 @@ Fotobook allows users to:
 ![Axios](https://img.shields.io/badge/Axios-1.18.1-5A29E4?logo=axios&logoColor=white)
 ![Lucide React](https://img.shields.io/badge/Lucide_React-1.21.0-F56565)
 
-### Backend (Planned)
+### Backend 
 
-![Node.js](https://img.shields.io/badge/Node.js-Planned-339933?logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/Express.js-Planned-000000?logo=express&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Planned-4169E1?logo=postgresql&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-Planned-2D3748?logo=prisma&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-Planned-000000?logo=jsonwebtokens&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.2.1-000000?logo=express&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-7.8.0-2D3748?logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-9.0.3-000000?logo=jsonwebtokens&logoColor=white)
+![Passport](https://img.shields.io/badge/Passport-0.7.0-34E27A?logo=passport&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-4.4.3-3E67B1)
+![TSX](https://img.shields.io/badge/TSX-4.22.4-3178C6)
+
 
 ### Development Tools
 
@@ -106,8 +110,25 @@ Fotobook allows users to:
 
 ```text
 final_app/
-├── be/                     # Backend (planned)
-│
+├── be/
+│   ├── src/
+│   │   ├── app.ts                  # Application entry point
+│   │   ├── config/                 # Global configurations
+│   │   ├── controllers/            # Handle HTTP requests & responses
+│   │   ├── services/               # Business logic layer
+│   │   ├── routes/                 # Express route definitions
+│   │   ├── middlewares/            # Custom Express middlewares
+│   │   ├── validations/            # Zod validation schemas
+│   │   └── views/                  # Pug templates
+│   │
+│   ├── .env.example                # Environment variable template
+│   ├── auth_test.http              # REST Client API testing file
+│   ├── eslint.config.js            # ESLint Flat Config
+│   ├── package.json                # Project metadata & dependencies
+│   ├── prisma.config.ts            # Prisma configuration
+│   ├── tsconfig.json               # TypeScript configuration
+│   └── README.md                   # Project documentation│
+│ 
 └── fe/
     ├── public/
     ├── src/

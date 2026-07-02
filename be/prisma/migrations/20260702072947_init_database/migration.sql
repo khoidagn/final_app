@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "likeable_type" AS ENUM ('PHOTO', 'ALBUM');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" SERIAL NOT NULL,
@@ -12,8 +15,8 @@ CREATE TABLE "users" (
     "last_login" TIMESTAMP,
     "followings_count" INTEGER NOT NULL DEFAULT 0,
     "followers_count" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -21,9 +24,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "media" (
     "id" SERIAL NOT NULL,
-    "user_id" INTEGER NOT NULL,
     "image_url" VARCHAR(255) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "media_pkey" PRIMARY KEY ("id")
 );
@@ -37,8 +38,8 @@ CREATE TABLE "photos" (
     "description" VARCHAR(300) NOT NULL,
     "sharing_mode" VARCHAR(20) NOT NULL DEFAULT 'public',
     "likes_count" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "photos_pkey" PRIMARY KEY ("id")
 );
@@ -51,45 +52,36 @@ CREATE TABLE "albums" (
     "description" VARCHAR(300) NOT NULL,
     "sharing_mode" VARCHAR(20) NOT NULL DEFAULT 'public',
     "likes_count" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "albums_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "album_photo" (
+CREATE TABLE "album_media" (
     "album_id" INTEGER NOT NULL,
     "media_id" INTEGER NOT NULL,
     "position" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "album_photo_pkey" PRIMARY KEY ("album_id","media_id")
+    CONSTRAINT "album_media_pkey" PRIMARY KEY ("album_id","media_id")
 );
 
 -- CreateTable
-CREATE TABLE "photo_likes" (
+CREATE TABLE "likes" (
     "user_id" INTEGER NOT NULL,
-    "photo_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "likeable_type" "likeable_type" NOT NULL,
+    "likeable_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "photo_likes_pkey" PRIMARY KEY ("user_id","photo_id")
-);
-
--- CreateTable
-CREATE TABLE "album_likes" (
-    "user_id" INTEGER NOT NULL,
-    "album_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "album_likes_pkey" PRIMARY KEY ("user_id","album_id")
+    CONSTRAINT "likes_pkey" PRIMARY KEY ("user_id","likeable_type","likeable_id")
 );
 
 -- CreateTable
 CREATE TABLE "follows" (
     "follower_id" INTEGER NOT NULL,
     "following_id" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "follows_pkey" PRIMARY KEY ("follower_id","following_id")
 );
@@ -97,8 +89,8 @@ CREATE TABLE "follows" (
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
--- AddForeignKey
-ALTER TABLE "media" ADD CONSTRAINT "media_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- CreateIndex
+CREATE UNIQUE INDEX "photos_media_id_key" ON "photos"("media_id");
 
 -- AddForeignKey
 ALTER TABLE "photos" ADD CONSTRAINT "photos_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -110,22 +102,13 @@ ALTER TABLE "photos" ADD CONSTRAINT "photos_media_id_fkey" FOREIGN KEY ("media_i
 ALTER TABLE "albums" ADD CONSTRAINT "albums_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "album_photo" ADD CONSTRAINT "album_photo_album_id_fkey" FOREIGN KEY ("album_id") REFERENCES "albums"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "album_media" ADD CONSTRAINT "album_media_album_id_fkey" FOREIGN KEY ("album_id") REFERENCES "albums"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "album_photo" ADD CONSTRAINT "album_photo_media_id_fkey" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "album_media" ADD CONSTRAINT "album_media_media_id_fkey" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "photo_likes" ADD CONSTRAINT "photo_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "photo_likes" ADD CONSTRAINT "photo_likes_photo_id_fkey" FOREIGN KEY ("photo_id") REFERENCES "photos"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "album_likes" ADD CONSTRAINT "album_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "album_likes" ADD CONSTRAINT "album_likes_album_id_fkey" FOREIGN KEY ("album_id") REFERENCES "albums"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "likes" ADD CONSTRAINT "likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "follows" ADD CONSTRAINT "follows_follower_id_fkey" FOREIGN KEY ("follower_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "SharingMode" AS ENUM ('PUBLIC', 'PRIVATE');
+
+-- CreateEnum
 CREATE TYPE "likeable_type" AS ENUM ('PHOTO', 'ALBUM');
 
 -- CreateTable
@@ -36,7 +39,7 @@ CREATE TABLE "photos" (
     "media_id" INTEGER NOT NULL,
     "title" VARCHAR(140) NOT NULL,
     "description" VARCHAR(300) NOT NULL,
-    "sharing_mode" VARCHAR(20) NOT NULL DEFAULT 'public',
+    "sharing_mode" "SharingMode" NOT NULL DEFAULT 'PUBLIC',
     "likes_count" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,7 +53,7 @@ CREATE TABLE "albums" (
     "user_id" INTEGER NOT NULL,
     "title" VARCHAR(140) NOT NULL,
     "description" VARCHAR(300) NOT NULL,
-    "sharing_mode" VARCHAR(20) NOT NULL DEFAULT 'public',
+    "sharing_mode" "SharingMode" NOT NULL DEFAULT 'PUBLIC',
     "likes_count" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

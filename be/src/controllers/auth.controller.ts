@@ -89,7 +89,11 @@ export const authController = {
     }
   },
 
-  getMe: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  getMe: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       res.status(200).json({
         status: 'success',

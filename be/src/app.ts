@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+app.use('/uploads', express.static('uploads'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1', rootRouter);
 app.get('/', (req: Request, res: Response) => {

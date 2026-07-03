@@ -7,6 +7,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum SharingMode {
+  PUBLIC
+  PRIVATE
+}
+
 enum LikeableType {
   PHOTO
   ALBUM
@@ -50,15 +55,15 @@ model Media {
 }
 
 model Photo {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id") 
-  mediaId     Int      @unique @map("media_id")
-  title       String   @db.VarChar(140)
-  description String   @db.VarChar(300)
-  sharingMode String   @default("public") @map("sharing_mode") @db.VarChar(20)
-  likesCount  Int      @default(0) @map("likes_count")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  id          Int         @id @default(autoincrement())
+  userId      Int         @map("user_id") 
+  mediaId     Int         @unique @map("media_id")
+  title       String      @db.VarChar(140)
+  description String      @db.VarChar(300)
+  sharingMode SharingMode @default(PUBLIC) @map("sharing_mode")
+  likesCount  Int         @default(0) @map("likes_count")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
@@ -67,14 +72,14 @@ model Photo {
 }
 
 model Album {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id")
-  title       String   @db.VarChar(140)
-  description String   @db.VarChar(300)
-  sharingMode String   @default("public") @map("sharing_mode") @db.VarChar(20)
-  likesCount  Int      @default(0) @map("likes_count")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  id          Int         @id @default(autoincrement())
+  userId      Int         @map("user_id")
+  title       String      @db.VarChar(140)
+  description String      @db.VarChar(300)
+  sharingMode SharingMode @default(PUBLIC) @map("sharing_mode")
+  likesCount  Int         @default(0) @map("likes_count")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   albumMedias AlbumMedia[]

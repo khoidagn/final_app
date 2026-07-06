@@ -3,14 +3,12 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './config/swagger.js';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import rootRouter from './routes/index.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 import './config/passport.js';
-
-dotenv.config();
+import { logInfo } from './utils/logging.js';
+import config from './config/env.js';
 const app = express();
-const PORT = process.env.PORT || 3002;
 
 app.use(cors());
 app.use(express.json());
@@ -26,8 +24,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use(errorMiddleware);
-app.listen(PORT, () => {
-  console.log(`Server is running on: http://localhost:${PORT}`);
+app.listen(config.app.port, () => {
+  logInfo('Server', `Server is running on port ${config.app.port}`);
 });
 
 export default app;

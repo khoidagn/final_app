@@ -1,4 +1,4 @@
-# Fotobook - Backend Architecture 
+# Fotobook - Backend Architecture
 
 This is the core Backend service for the Fotobook Enterprise application, built using **Node.js** with native **ES Modules (ESM)**, **TypeScript**, **Express**, and **Prisma 7** connected to a PostgreSQL database.
 
@@ -48,7 +48,7 @@ cd be
 All required libraries are already listed in `package.json`.
 
 ```bash
-npm install 
+npm install
 ```
 
 ---
@@ -108,11 +108,11 @@ npm run seed
 
 # 🏃 Available Scripts
 
-| Command | Description |
-|----------|-------------|
-| `npm run dev` | Starts the Express development server using **tsx** in watch mode on port **3002**. |
-| `npm run lint` | Runs ESLint using the ESM Flat Config to check code quality. |
-<!-- | `npm run build` | Compiles the TypeScript source into the `dist/` directory. | -->
+| Command        | Description                                                                         |
+| -------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------- | --- |
+| `npm run dev`  | Starts the Express development server using **tsx** in watch mode on port **3002**. |
+| `npm run lint` | Runs ESLint using the ESM Flat Config to check code quality.                        |
+| <!--           | `npm run build`                                                                     | Compiles the TypeScript source into the `dist/` directory. | --> |
 
 ---
 
@@ -199,16 +199,16 @@ be/
 
 ## 📂 Folder Responsibilities
 
-| Folder | Responsibility |
-|---------|----------------|
-| **prisma/** | Contains the database schema, migrations, and seed scripts. |
-| **config/** | Stores global configurations such as Prisma Client, Passport JWT, and Swagger. |
-| **controllers/** | Receives HTTP requests, validates inputs, invokes services, and returns responses. |
-| **services/** | Implements the application's business logic and communicates with the database. |
-| **routes/** | Maps API endpoints to their corresponding controllers. |
+| Folder           | Responsibility                                                                         |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| **prisma/**      | Contains the database schema, migrations, and seed scripts.                            |
+| **config/**      | Stores global configurations such as Prisma Client, Passport JWT, and Swagger.         |
+| **controllers/** | Receives HTTP requests, validates inputs, invokes services, and returns responses.     |
+| **services/**    | Implements the application's business logic and communicates with the database.        |
+| **routes/**      | Maps API endpoints to their corresponding controllers.                                 |
 | **middlewares/** | Houses reusable Express middleware (authentication, validation, error handling, etc.). |
-| **validations/** | Defines request validation schemas using Zod. |
-| **views/** | Stores Pug templates used for server-rendered pages (if applicable). |
+| **validations/** | Defines request validation schemas using Zod.                                          |
+| **views/**       | Stores Pug templates used for server-rendered pages (if applicable).                   |
 
 ---
 

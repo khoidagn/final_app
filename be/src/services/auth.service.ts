@@ -2,7 +2,7 @@ import prisma from '../config/prisma.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AppError } from '../middlewares/error.middleware.js';
-
+import { logError } from '../utils/logging.js';
 const generateAccessToken = (userId: number, role: string): string => {
   return jwt.sign(
     { id: userId, role: role },
@@ -109,6 +109,10 @@ export const authService = {
       const newAccessToken = generateAccessToken(user.id, user.role);
       return { accessToken: newAccessToken };
     } catch (error) {
+      logError(
+        'AuthService',
+        'Failed to refresh session: ' + (error as Error).message
+      );
       throw new AppError(401, 'Invalid or expired refresh token');
     }
   },

@@ -6,8 +6,7 @@ const options: swaggerJSDoc.Options = {
     info: {
       title: 'Fotobook API Documentation',
       version: '1.0.0',
-      description:
-        'Tài liệu API hệ thống.',
+      description: 'Tài liệu API hệ thống.',
     },
     servers: [
       {
@@ -120,11 +119,11 @@ const options: swaggerJSDoc.Options = {
       },
       '/auth/admin-dashboard': {
         get: {
-          tags: ['Authorization'], 
+          tags: ['Authorization'],
           summary: 'Cổng thông tin tối cao dành riêng cho Admin',
           description:
             'Yêu cầu Access Token phải thuộc về tài khoản có chức vụ quyền hạn là admin.',
-          security: [{ BearerAuth: [] }], 
+          security: [{ BearerAuth: [] }],
           responses: {
             200: { description: 'Chào mừng Admin truy cập thành công.' },
             403: {

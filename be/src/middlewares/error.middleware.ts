@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-
+import { logError } from '../utils/logging.js';
 export class AppError extends Error {
   constructor(
     public statusCode: number,
@@ -57,7 +57,10 @@ export const errorMiddleware = (
   }
 
   //Handle Unknown Internal Server Errors (500)
-  console.error('INTERNAL SERVER ERROR:', err);
+  logError(
+    'ErrorMiddleware',
+    'Unexpected internal server error: ' + err.message
+  );
   res.status(500).json({
     status: 'error',
     message:

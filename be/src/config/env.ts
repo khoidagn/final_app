@@ -1,15 +1,11 @@
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+import { logError } from '../utils/logging.js';
+dotenv.config();
 
 const getEnvVar = (key: string, required = true): string => {
   const value = process.env[key];
   if (required && (!value || value.trim() === '')) {
+    logError('Config', `Missing required environment variable: ${key}`);
     throw new Error(`Missing required environment variable: ${key}`);
   }
   return value || '';

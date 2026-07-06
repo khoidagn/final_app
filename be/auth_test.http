@@ -1,0 +1,84 @@
+# @name HealthCheck
+### 1. SYSTEM HEALTH CHECK (GET)
+GET http://localhost:3002/
+Accept: application/json
+
+### -----------------------------------------------------------------
+
+# @name RegisterNewUser
+### 2. REGISTER A NEW USER ACCOUNT (POST)
+POST http://localhost:3002/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Dang",
+  "lastName": "Khoi",
+  "email": "khoi.vo2026@example.com",
+  "password": "mysecurepassword123"
+}
+
+### -----------------------------------------------------------------
+
+# @name LoginSuccess
+### 3. USER LOGIN SUCCESS (POST)
+# Note: This will automatically receive and store the 'refreshToken' inside HttpOnly Cookie
+POST http://localhost:3002/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "khoi.vo2026@example.com",
+  "password": "mysecurepassword123"
+}
+
+### -----------------------------------------------------------------
+
+# @name RegisterValidationFailed
+### 4. TEST REGISTER VALIDATION FAILURE (POST)
+# Expected Result: 400 Bad Request with English Zod validation feedback
+POST http://localhost:3002/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "",
+  "lastName": "Khoi",
+  "email": "invalid-email-format",
+  "password": "123"
+}
+
+### -----------------------------------------------------------------
+
+# @name SilentRefreshSession
+### 5. REQUEST NEW ACCESS TOKEN VIA SILENT REFRESH (POST)
+# Note: REST Client automatically attaches the cookie from the Login step above!
+POST http://localhost:3002/api/v1/auth/refresh
+Accept: application/json
+
+### -----------------------------------------------------------------
+
+# @name UserLogout
+### 6. USER LOGOUT / CLEAR SESSION COOKIE (POST)
+POST http://localhost:3002/api/v1/auth/logout
+
+### -----------------------------------------------------------------
+
+### 1. ĐĂNG NHẬP ĐỂ LẤY ACCESS TOKEN TRONG JSON BODY
+# @name LoginSession
+POST http://localhost:3002/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "khoi.vo2026@example.com",
+  "password": "mysecurepassword123"
+}
+
+### -----------------------------------------------------------------
+### 2. TEST XEM PROFILE CÁ NHÂN (CẦN ACCESS TOKEN)
+# Copy chuỗi accessToken dài ngoằng từ kết quả Login ở trên dán vào sau chữ Bearer
+GET http://localhost:3002/api/v1/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3ODI5NzkxNTEsImV4cCI6MTc4Mjk4MDA1MX0.61JMCAbEOND7mausYhFO_kvuZnyIz9fE7CqKLlKrb-A
+
+### -----------------------------------------------------------------
+### 3. TEST PHÂN QUYỀN ADMIN (VỚI TOKEN USER THƯỜNG)
+# Expected Result: 403 Forbidden vì tài khoản của bạn đang có role: 'user'
+GET http://localhost:3002/api/v1/auth/admin-dashboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6InVzZXIiLCJpYXQiOjE3ODI5NzkxNTEsImV4cCI6MTc4Mjk4MDA1MX0.61JMCAbEOND7mausYhFO_kvuZnyIz9fE7CqKLlKrb-A

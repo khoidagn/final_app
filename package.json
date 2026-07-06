@@ -1,22 +1,5 @@
 {
-  "name": "final_app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-"scripts": {
-  "lint": "eslint \"**/*.{js,ts,jsx,tsx}\"",
-  "lint:fix": "eslint \"**/*.{js,ts,jsx,tsx}\" --fix",
-  "format": "prettier --write \"**/*.{js,ts,jsx,tsx,json,md}\""
-},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/khoidagn/final_app.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/khoidagn/final_app/issues"
-  },
-  "homepage": "https://github.com/khoidagn/final_app#readme"
+  "devDependencies": {
+    "eslint": "^10.6.0"
+  }
 }

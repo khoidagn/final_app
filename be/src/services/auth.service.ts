@@ -1,5 +1,7 @@
 import prisma from '../config/prisma.js';
 import bcrypt from 'bcryptjs';
+import { MailService } from '../utils/mail.js';
+import { MailTemplates } from '../utils/mail-templates.js';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { AppError } from '../middlewares/error.middleware.js';
 import { logError } from '../utils/logging.js';
@@ -23,46 +25,103 @@ const generateRefreshToken = (userId: number): string => {
 };
 
 export const authService = {
-  register: async (userData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }) => {
+  register: async (signupData: any) => {
     const existingUser = await prisma.user.findUnique({
-      where: { email: userData.email },
+      where: { email: signupData.email },
     });
     if (existingUser) {
-      throw new AppError(400, 'This email address is already in use');
+      throw new AppError(400, 'Email is already registered.');
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(userData.password, salt);
+    const hashedPassword = await bcrypt.hash(signupData.password, 10);
 
     const newUser = await prisma.user.create({
       data: {
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        passwordHash: passwordHash,
-        role: Role.USER,
+        firstName: signupData.firstName,
+        lastName: signupData.lastName,
+        email: signupData.email,
+        passwordHash: hashedPassword,
+        isActive: true,
       },
     });
 
-    const accessToken = generateAccessToken(newUser.id, newUser.role);
-    const refreshToken = generateRefreshToken(newUser.id);
+    const verificationToken = jwt.sign(
+      { userId: newUser.id, email: newUser.email },
+      config.jwt.verificationSecret,
+      { expiresIn: '1h' }
+    );
 
-    return {
-      accessToken,
-      refreshToken,
-      user: {
-        id: newUser.id,
-        email: newUser.email,
+    const verificationUrl = `${config.app.host}/api/v1/auth/verify-email?token=${verificationToken}`;
+
+    MailService.sendEmail({
+      to: newUser.email,
+      subject: '[Fotobook] Verify your email address',
+      html: MailTemplates.getVerificationEmail({
         firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        role: newUser.role,
-      },
-    };
+        verificationUrl,
+      }),
+    });
+
+    return { user: newUser };
+  },
+
+  verifyEmail: async (token: string) => {
+    try {
+      const decoded = jwt.verify(token, config.jwt.verificationSecret) as {
+        userId: number;
+        email: string;
+      };
+
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+      if (!user) {
+        throw new AppError(404, 'User not found.');
+      }
+
+      if (user.confirmedAt) {
+        throw new AppError(400, 'Email is already verified.');
+      }
+
+      await prisma.user.update({
+        where: { id: decoded.userId },
+        data: { confirmedAt: new Date() },
+      });
+
+      return { message: 'Email verified successfully. You can now log in.' };
+    } catch (_error: any) {
+      throw new AppError(400, 'Verification link is invalid or has expired.');
+    }
+  },
+
+  resendVerification: async (email: string) => {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new AppError(404, 'User not found.');
+    }
+
+    if (user.confirmedAt) {
+      throw new AppError(400, 'Email is already verified.');
+    }
+
+    const verificationToken = jwt.sign(
+      { userId: user.id, email: user.email },
+      config.jwt.verificationSecret,
+      { expiresIn: '1h' }
+    );
+
+    const verificationUrl = `${config.app.host || 'http://localhost:3002'}/api/v1/auth/verify-email?token=${verificationToken}`;
+
+    await MailService.sendEmail({
+      to: user.email,
+      subject: '[Fotobook] Verify your email address',
+      html: MailTemplates.getVerificationEmail({
+        firstName: user.firstName,
+        verificationUrl,
+      }),
+    });
+
+    return { message: 'Verification email resent successfully.' };
   },
 
   login: async (credentials: { email: string; password: string }) => {
@@ -72,7 +131,12 @@ export const authService = {
     if (!user || !user.isActive) {
       throw new AppError(401, 'Account does not exist or has been deactivated');
     }
-
+    if (!user.confirmedAt) {
+      throw new AppError(
+        401,
+        'Please verify your email address before signing in.'
+      );
+    }
     const isPasswordMatch = await bcrypt.compare(
       credentials.password,
       user.passwordHash

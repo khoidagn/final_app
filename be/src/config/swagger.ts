@@ -28,7 +28,7 @@ const options: swaggerJSDoc.Options = {
       '/auth/register': {
         post: {
           tags: ['Authentication'],
-          summary: 'Đăng ký tài khoản người dùng mới',
+          summary: 'Register a new user account',
           requestBody: {
             required: true,
             content: {
@@ -53,15 +53,75 @@ const options: swaggerJSDoc.Options = {
             },
           },
           responses: {
-            201: { description: 'Đăng ký thành công.' },
-            400: { description: 'Dữ liệu không hợp lệ.' },
+            201: {
+              description: 'Registration successful. Verification email sent.',
+            },
+            400: {
+              description: 'Email already registered or invalid input data.',
+            },
+          },
+        },
+      },
+      '/auth/verify-email': {
+        get: {
+          tags: ['Authentication'],
+          summary: 'Verify user email address via token',
+          parameters: [
+            {
+              name: 'token',
+              in: 'query',
+              required: true,
+              description:
+                'The expiring secure JWT verification token sent to user email',
+              schema: {
+                type: 'string',
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description:
+                'Email verified successfully. Account is now ready for login.',
+            },
+            400: {
+              description: 'Verification link is invalid or has expired.',
+            },
+            404: { description: 'User account not found.' },
+          },
+        },
+      },
+      '/auth/resend-verification': {
+        post: {
+          tags: ['Authentication'],
+          summary: 'Resend verification email for unverified account',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['email'],
+                  properties: {
+                    email: {
+                      type: 'string',
+                      example: 'khoi.vo2026@example.com',
+                    },
+                  },
+                },
+              },
+            },
+            responses: {
+              200: { description: 'Verification email resent successfully.' },
+              400: { description: 'Email is already verified.' },
+              404: { description: 'User with this email address not found.' },
+            },
           },
         },
       },
       '/auth/login': {
         post: {
           tags: ['Authentication'],
-          summary: 'Đăng nhập hệ thống',
+          summary: 'Log into the system',
           requestBody: {
             required: true,
             content: {
@@ -84,53 +144,44 @@ const options: swaggerJSDoc.Options = {
             },
           },
           responses: {
-            200: { description: 'Đăng nhập thành công, cấp cặp đôi Token.' },
+            200: {
+              description:
+                'Login successful. Access token and refresh token generated.',
+            },
+            401: {
+              description:
+                'Incorrect credentials, account deactivated, or unverified email.',
+            },
           },
         },
       },
       '/auth/refresh': {
         post: {
           tags: ['Authentication'],
-          summary: 'Gia hạn Access Token tự động (Silent Refresh)',
+          summary: 'Renew Access Token automatically (Silent Refresh)',
           responses: {
-            200: { description: 'Trả về Access Token mới.' },
+            200: { description: 'Returns a new valid Access Token.' },
+            401: { description: 'Invalid or expired refresh token.' },
           },
         },
       },
       '/auth/logout': {
         post: {
           tags: ['Authentication'],
-          summary: 'Đăng xuất khỏi hệ thống',
+          summary: 'Log out from the system',
           responses: {
-            200: { description: 'Xóa sạch Session Cookie thành công.' },
+            200: { description: 'Session cookies cleared successfully.' },
           },
         },
       },
       '/auth/me': {
         get: {
           tags: ['Authentication'],
-          summary: 'Lấy thông tin hồ sơ cá nhân hiện tại',
+          summary: 'Retrieve current authenticated user profile',
           security: [{ BearerAuth: [] }],
           responses: {
-            200: { description: 'Lấy thông tin thành công.' },
-            401: { description: 'Token hết hạn hoặc không hợp lệ.' },
-          },
-        },
-      },
-      '/auth/admin-dashboard': {
-        get: {
-          tags: ['Authorization'],
-          summary: 'Cổng thông tin tối cao dành riêng cho Admin',
-          description:
-            'Yêu cầu Access Token phải thuộc về tài khoản có chức vụ quyền hạn là admin.',
-          security: [{ BearerAuth: [] }],
-          responses: {
-            200: { description: 'Chào mừng Admin truy cập thành công.' },
-            403: {
-              description:
-                'Lỗi phân quyền: Bạn là User thường, không có quyền vào.',
-            },
-            401: { description: 'Chưa đăng nhập hoặc token không hợp lệ.' },
+            200: { description: 'Profile data retrieved successfully.' },
+            401: { description: 'Token is expired or invalid.' },
           },
         },
       },
@@ -676,6 +727,29 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
+      '/admin/photos/{id}': {
+        delete: {
+          tags: ['Admin Management'],
+          summary:
+            'Xóa bất kỳ bức ảnh nào vi phạm tiêu chuẩn trên toàn hệ thống',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của bức ảnh cần xóa vĩnh viễn',
+            },
+          ],
+          responses: {
+            200: { description: 'Photo deleted successfully by Admin.' },
+            401: { description: 'Authentication required.' },
+            403: { description: 'Access denied. Admin role required.' },
+            404: { description: 'Photo not found.' },
+          },
+        },
+      },
       '/admin/albums': {
         get: {
           tags: ['Admin Management'],
@@ -691,6 +765,32 @@ const options: swaggerJSDoc.Options = {
           ],
           responses: {
             200: { description: 'Trả về danh sách album master thành công.' },
+          },
+        },
+      },
+      '/admin/albums/{id}': {
+        delete: {
+          tags: ['Admin Management'],
+          summary:
+            'Xóa bất kỳ album nào kèm dọn dẹp sạch file vật lý trên Cloudinary',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của album cần xóa vĩnh viễn',
+            },
+          ],
+          responses: {
+            200: {
+              description:
+                'Album and its associated media files deleted successfully.',
+            },
+            401: { description: 'Authentication required.' },
+            403: { description: 'Access denied. Admin role required.' },
+            404: { description: 'Album not found.' },
           },
         },
       },

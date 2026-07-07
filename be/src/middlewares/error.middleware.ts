@@ -15,7 +15,7 @@ export const errorMiddleware = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   //Handle Zod Validation Errors
   if (err instanceof ZodError) {

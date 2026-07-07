@@ -4,6 +4,7 @@ import { SharingMode } from '@prisma/client';
 import cloudinary from '../config/cloudinary.js';
 import { getPublicIdFromUrl } from '../utils/cloudinary.helper.js';
 import { logError } from '../utils/logging.js';
+import { Role } from '@prisma/client';
 
 interface CreatePhotoInput {
   title: string;
@@ -230,7 +231,11 @@ export const photoService = {
     });
   },
 
-  deletePhoto: async (photoId: number) => {
+  deletePhoto: async (
+    photoId: number,
+    currentUserId: number,
+    currentUserRole: Role
+  ) => {
     const photo = await prisma.photo.findUnique({
       where: { id: photoId },
       include: { media: true },
@@ -239,9 +244,20 @@ export const photoService = {
     if (!photo) {
       logError(
         'PhotoService',
-        `GetPhoto - Photo not found with ID: ${photoId}`
+        `DeletePhoto - Photo not found with ID: ${photoId}`
       );
       throw new AppError(404, 'Photo not found.');
+    }
+
+    if (photo.userId !== currentUserId && currentUserRole !== Role.ADMIN) {
+      logError(
+        'PhotoService',
+        `Forbidden delete attempt - User ID: ${currentUserId} with role: ${currentUserRole} tried to delete Photo ID: ${photoId}`
+      );
+      throw new AppError(
+        403,
+        'You do not have permission to delete this photo.'
+      );
     }
 
     if (photo.media?.imageUrl) {

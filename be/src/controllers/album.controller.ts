@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { albumService } from '../services/album.service.js';
+import { AppError } from '../middlewares/error.middleware.js';
+import { Role } from '@prisma/client';
 
 export const albumController = {
   createAlbum: async (req: Request, res: Response, next: NextFunction) => {
@@ -84,15 +86,27 @@ export const albumController = {
       next(error);
     }
   },
-  deleteAlbum: async (req: Request, res: Response, next: NextFunction) => {
+
+  deleteAlbum: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const albumId = parseInt(req.params.id as string, 10);
-      const userId = (req as any).user?.id;
+      if (isNaN(albumId)) {
+        throw new AppError(400, 'Invalid album ID.');
+      }
 
-      await albumService.deleteAlbum(albumId, userId);
+      if (!req.user) {
+        throw new AppError(401, 'Authentication required.');
+      }
+      const user = req.user as { id: number; role: Role };
+      await albumService.deleteAlbum(albumId, user.id, user.role);
 
       res.status(200).json({
-        message: 'Album deleted successfully',
+        status: 'success',
+        message: 'Album deleted successfully.',
       });
     } catch (error) {
       next(error);

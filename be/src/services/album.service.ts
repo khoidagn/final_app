@@ -4,6 +4,7 @@ import cloudinary from '../config/cloudinary.js';
 import { getPublicIdFromUrl } from '../utils/cloudinary.helper.js';
 import { logError, logInfo } from '../utils/logging.js';
 import { SharingMode } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 interface CreateAlbumInput {
   title: string;
@@ -101,12 +102,10 @@ export const albumService = {
     };
   },
 
-  // 2. Lấy Album từ những người dùng đang theo dõi (Feeds)
   getFeedsAlbums: async (userId: number, page: number, limit: number) => {
     logInfo('AlbumService', `Fetching feeds albums for User ID: ${userId}`);
     const skip = (page - 1) * limit;
 
-    // Lấy danh sách ID của những người mà user này đang follow
     const following = await prisma.follow.findMany({
       where: { followerId: userId },
       select: { followingId: true },
@@ -151,7 +150,6 @@ export const albumService = {
     };
   },
 
-  // 3. Lấy danh sách Album cá nhân của chính mình
   getMyAlbums: async (userId: number, page: number, limit: number) => {
     logInfo('AlbumService', `Fetching personal albums for User ID: ${userId}`);
     const skip = (page - 1) * limit;
@@ -178,7 +176,6 @@ export const albumService = {
     };
   },
 
-  // 4. Chỉnh sửa thông tin cơ bản của Album (Chỉ chủ sở hữu)
   updateAlbum: async (
     albumId: number,
     userId: number,
@@ -211,7 +208,11 @@ export const albumService = {
     });
   },
 
-  deleteAlbum: async (albumId: number, userId: number) => {
+  deleteAlbum: async (
+    albumId: number,
+    currentUserId: number,
+    currentUserRole: Role
+  ) => {
     const album = await prisma.album.findUnique({
       where: { id: albumId },
       include: {
@@ -224,12 +225,15 @@ export const albumService = {
       throw new AppError(404, 'Album not found.');
     }
 
-    if (album.userId !== userId) {
+    if (album.userId !== currentUserId && currentUserRole !== Role.ADMIN) {
       logError(
         'AlbumService',
-        `DeleteAlbum - Forbidden: User ${userId} requested to delete Album ${albumId}`
+        `DeleteAlbum - Forbidden: User ${currentUserId} with role ${currentUserRole} requested to delete Album ${albumId}`
       );
-      throw new AppError(403, 'You do not own this album.');
+      throw new AppError(
+        403,
+        'You do not have permission to delete this album.'
+      );
     }
 
     const mediaIds = album.albumMedias.map((am) => am.mediaId);

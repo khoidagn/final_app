@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { photoService } from '../services/photo.service.js';
 import { AppError } from '../middlewares/error.middleware.js';
+import { Role } from '@prisma/client';
 
 export const photoController = {
   uploadPhoto: async (
@@ -117,13 +118,19 @@ export const photoController = {
     next: NextFunction
   ): Promise<void> => {
     try {
-      const userId = (req.user as any).id;
-      const photoId = parseInt(String(req.params.id), 10);
-      await photoService.getPhotoAndVerifyOwner(photoId, userId);
-      await photoService.deletePhoto(photoId);
+      const photoId = parseInt(req.params.id as string, 10);
+      if (isNaN(photoId)) {
+        throw new AppError(400, 'Invalid photo ID.');
+      }
+      if (!req.user) {
+        throw new AppError(401, 'Authentication required.');
+      }
+
+      const user = req.user as { id: number; role: Role };
+      await photoService.deletePhoto(photoId, user.id, user.role);
       res.status(200).json({
         status: 'success',
-        message: 'Photo has been deleted successfully.',
+        message: 'Photo deleted successfully.',
       });
     } catch (error) {
       next(error);

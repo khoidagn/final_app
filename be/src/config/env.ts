@@ -27,6 +27,9 @@ export const config = {
     accessExpiresIn: getEnvVar('JWT_ACCESS_EXPIRES_IN', false) || '15m',
     refreshSecret: getEnvVar('JWT_REFRESH_SECRET'),
     refreshExpiresIn: getEnvVar('JWT_REFRESH_EXPIRES_IN', false) || '7d',
+    verificationSecret:
+      getEnvVar('JWT_VERIFICATION_SECRET', false) ||
+      'default_verification_secret_key',
   },
   cloudinary: {
     cloudName: getEnvVar('CLOUDINARY_CLOUD_NAME'),

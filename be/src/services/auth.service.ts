@@ -1,22 +1,25 @@
 import prisma from '../config/prisma.js';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { AppError } from '../middlewares/error.middleware.js';
 import { logError } from '../utils/logging.js';
-const generateAccessToken = (userId: number, role: string): string => {
-  return jwt.sign(
-    { id: userId, role: role },
-    process.env.JWT_ACCESS_SECRET || 'default_access_secret',
-    { expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '15m' }
-  );
+import { config } from '../config/env.js';
+import { Role } from '@prisma/client';
+
+const generateAccessToken = (userId: number, role: Role): string => {
+  const options: SignOptions = {
+    expiresIn: config.jwt.accessExpiresIn as SignOptions['expiresIn'],
+  };
+
+  return jwt.sign({ id: userId, role }, config.jwt.accessSecret, options);
 };
 
 const generateRefreshToken = (userId: number): string => {
-  return jwt.sign(
-    { id: userId },
-    process.env.JWT_REFRESH_SECRET || 'default_refresh_secret',
-    { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
-  );
+  const options: SignOptions = {
+    expiresIn: config.jwt.refreshExpiresIn as SignOptions['expiresIn'],
+  };
+
+  return jwt.sign({ id: userId }, config.jwt.refreshSecret, options);
 };
 
 export const authService = {
@@ -42,7 +45,7 @@ export const authService = {
         lastName: userData.lastName,
         email: userData.email,
         passwordHash: passwordHash,
-        role: 'user',
+        role: Role.USER,
       },
     });
 

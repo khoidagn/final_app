@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import passport from 'passport';
 import { AppError } from './error.middleware.js';
+import { Role } from '@prisma/client';
 
 export const requireAuth = (
   req: Request,
@@ -10,12 +11,18 @@ export const requireAuth = (
   passport.authenticate('jwt', { session: false }, (err: Error, user: any) => {
     if (err) return next(err);
     if (!user) {
-      return next(
-        new AppError(
-          401,
-          'Access token is invalid or expired. Please login again.'
-        )
-      );
+      req.user = { id: null, role: Role.USER };
+      const isPublicRoute =
+        req.path.includes('/discovery_photos') ||
+        req.path.includes('/discovery_albums);');
+      if (!isPublicRoute) {
+        return next(
+          new AppError(
+            401,
+            'Access token is invalid or expired. Please login again.'
+          )
+        );
+      }
     }
     req.user = user;
     next();

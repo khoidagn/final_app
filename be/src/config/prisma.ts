@@ -1,9 +1,9 @@
-import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import config from './env.js';
 
-const connectionString = process.env.DATABASE_URL;
+const connectionString = config.database.url;
 
 if (!connectionString) {
   throw new Error('DATABASE_URL is not set. Please check your .env file.');

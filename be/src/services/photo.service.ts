@@ -3,6 +3,7 @@ import { AppError } from '../middlewares/error.middleware.js';
 import { SharingMode } from '@prisma/client';
 import cloudinary from '../config/cloudinary.js';
 import { getPublicIdFromUrl } from '../utils/cloudinary.helper.js';
+import { logError } from '../utils/logging.js';
 
 interface CreatePhotoInput {
   title: string;
@@ -235,7 +236,13 @@ export const photoService = {
       include: { media: true },
     });
 
-    if (!photo) throw new AppError(404, 'Photo not found.');
+    if (!photo) {
+      logError(
+        'PhotoService',
+        `GetPhoto - Photo not found with ID: ${photoId}`
+      );
+      throw new AppError(404, 'Photo not found.');
+    }
 
     if (photo.media?.imageUrl) {
       const publicId = getPublicIdFromUrl(photo.media.imageUrl);

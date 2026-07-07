@@ -28,6 +28,12 @@ export const config = {
     refreshSecret: getEnvVar('JWT_REFRESH_SECRET'),
     refreshExpiresIn: getEnvVar('JWT_REFRESH_EXPIRES_IN', false) || '7d',
   },
+  cloudinary: {
+    cloudName: getEnvVar('CLOUDINARY_CLOUD_NAME'),
+    apiKey: getEnvVar('CLOUDINARY_API_KEY'),
+    apiSecret: getEnvVar('CLOUDINARY_API_SECRET'),
+    folder: getEnvVar('CLOUDINARY_FOLDER', false) || 'upload-finalapp',
+  },
 } as const;
 
 export default config;

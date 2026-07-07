@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { AppError } from './error.middleware.js';
 import cloudinary from '../config/cloudinary.js';
+import { logError } from '../utils/logging.js';
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -30,19 +31,20 @@ const fileFilter = (
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(
-      new AppError(
-        400,
-        'Invalid file type. Only JPEG, JPG, PNG, and GIF are allowed.'
-      )
-    );
+    const errorMsg = `Invalid file type: ${file.mimetype}. Only JPEG, JPG, PNG, and GIF are allowed.`;
+    logError('UploadMiddleware', errorMsg);
+    cb(new AppError(400, errorMsg));
   }
 };
 
-export const upload = multer({
+export const uploadSingle = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // < 5MB
-  },
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
+
+export const uploadMultiple = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+}).array('images', 25);

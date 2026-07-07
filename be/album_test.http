@@ -1,0 +1,69 @@
+@baseUrl = http://localhost:3002/api/v1
+
+### 1. Đăng nhập hệ thống để lấy Access Token tự động
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "khoi.vo2026@example.com",
+  "password": "mysecurepassword123"
+}
+
+### Gán token nhận về vào biến dùng chung
+@token = {{login.response.body.accessToken}}
+
+
+### 2. Tạo Album mới (Multipart Form-Data)
+# Lưu ý: Bạn cần tạo sẵn hoặc copy 2 file ảnh bất kỳ đặt cạnh file .http này, 
+# đặt tên là photo1.jpg và photo2.jpg để REST Client bốc file upload lên nhé.
+POST {{baseUrl}}/albums
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=boundary123
+
+--boundary123
+Content-Disposition: form-data; name="title"
+
+Kỷ niệm Mùa Hè 2026
+--boundary123
+Content-Disposition: form-data; name="description"
+
+Tổng hợp hình ảnh chuyến đi thực tập và teambuilding tại NUS Technology
+--boundary123
+Content-Disposition: form-data; name="sharingMode"
+
+PUBLIC
+--boundary123
+Content-Disposition: form-data; name="images"; filename="photo1.jpg"
+Content-Type: image/jpeg
+
+< ./photo1.jpg
+--boundary123
+Content-Disposition: form-data; name="images"; filename="photo2.jpg"
+Content-Type: image/jpeg
+
+< ./photo2.jpg
+--boundary123--
+
+
+### 3. Thả tim (Like / Unlike Toggle) cho Album vừa tạo
+# Hãy điền ID Album bạn nhận được từ response của API tạo album ở trên vào đây (ví dụ: /albums/1/like)
+POST {{baseUrl}}/albums/1/like
+Authorization: Bearer {{token}}
+
+
+### 4. Thả tim (Like / Unlike Toggle) cho một bức ảnh lẻ
+POST {{baseUrl}}/photos/1/like
+Authorization: Bearer {{token}}
+
+
+### 5. Theo dõi (Follow / Unfollow Toggle) người dùng khác
+# Điền ID của người dùng bạn muốn follow (ví dụ: ID của đồng nghiệp hoặc tài khoản test khác)
+POST {{baseUrl}}/users/2/follow
+Authorization: Bearer {{token}}
+
+
+### 6. Xóa Album (Kích hoạt Cascade Delete xóa sạch Media trong DB & Cloudinary)
+# Điền ID Album bạn muốn test xóa vào đây
+DELETE {{baseUrl}}/albums/1
+Authorization: Bearer {{token}}

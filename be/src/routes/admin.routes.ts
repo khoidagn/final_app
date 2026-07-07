@@ -24,5 +24,17 @@ router.delete(
   authorizeRoles(Role.ADMIN),
   photoController.deletePhoto
 );
+router.put(
+  '/users/:id',
+  requireAuth,
+  authorizeRoles(Role.ADMIN),
+  adminController.adminUpdateUser
+);
+router.delete(
+  '/users/:id',
+  requireAuth,
+  authorizeRoles(Role.ADMIN),
+  adminController.adminDeleteUser
+);
 
 export default router;

@@ -185,6 +185,141 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
+
+      /* ---------------- MODULE USER ---------------- */
+      '/users/profile': {
+        put: {
+          tags: ['User Profile'],
+          summary: 'Người dùng tự cập nhật thông tin hồ sơ cá nhân',
+          security: [{ BearerAuth: [] }],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    firstName: { type: 'string', example: 'Dang' },
+                    lastName: { type: 'string', example: 'Khoi' },
+                    email: { type: 'string', example: 'khoidagn@example.com' },
+                    password: { type: 'string', example: 'mypassword123' },
+                    avatarUrl: {
+                      type: 'string',
+                      example:
+                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: { description: 'Cập nhật hồ sơ cá nhân thành công.' },
+            400: {
+              description: 'Email đã được sử dụng hoặc dữ liệu không hợp lệ.',
+            },
+            401: { description: 'Yêu cầu đăng nhập.' },
+          },
+        },
+      },
+      '/users/account': {
+        delete: {
+          tags: ['User Profile'],
+          summary: 'Người dùng tự xóa vĩnh viễn tài khoản cá nhân',
+          security: [{ BearerAuth: [] }],
+          responses: {
+            200: { description: 'Xóa tài khoản cá nhân thành công.' },
+            401: { description: 'Yêu cầu đăng nhập.' },
+          },
+        },
+      },
+      '/users/my-followers': {
+        get: {
+          tags: ['User Connections'],
+          summary: 'Xem danh sách những người đang theo dõi TÔI',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Trả về danh sách người theo dõi thành công.' },
+          },
+        },
+      },
+      '/users/my-following': {
+        get: {
+          tags: ['User Connections'],
+          summary: 'Xem danh sách những người TÔI đang theo dõi',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Trả về danh sách đang theo dõi thành công.' },
+          },
+        },
+      },
+      // ==================== OTHER USER CONNECTIONS (USER BẤT KỲ QUA ID) ====================
+      '/users/{id}/followers': {
+        get: {
+          tags: ['User Connections'],
+          summary: 'Xem danh sách những người đang theo dõi một User bất kỳ',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của người dùng cần xem danh sách followers',
+            },
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Trả về danh sách followers thành công.' },
+            404: { description: 'Không tìm thấy người dùng.' },
+          },
+        },
+      },
+      '/users/{id}/following': {
+        get: {
+          tags: ['User Connections'],
+          summary: 'Xem danh sách những người một User bất kỳ đang theo dõi',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của người dùng cần xem danh sách following',
+            },
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+          ],
+          responses: {
+            200: { description: 'Trả về danh sách following thành công.' },
+            404: { description: 'Không tìm thấy người dùng.' },
+          },
+        },
+      },
+
+      /* ---------------- MODULE PHOTO ---------------- */
       '/photos/discovery_photos': {
         get: {
           tags: ['Photos'],
@@ -409,6 +544,8 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
+
+      /* ---------------- MODULE ALBUM ---------------- */
       '/albums/discovery_albums': {
         get: {
           tags: ['Albums'],
@@ -835,6 +972,85 @@ const options: swaggerJSDoc.Options = {
             400: {
               description:
                 'Tham số không hợp lệ hoặc cố tình tác động tài khoản Admin khác.',
+            },
+            404: { description: 'Không tìm thấy người dùng.' },
+          },
+        },
+        put: {
+          tags: ['Admin Management'],
+          summary: 'Admin chỉnh sửa thông tin hồ sơ của bất kỳ người dùng nào',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID người dùng cần sửa đổi',
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    firstName: { type: 'string', example: 'Dang Updated' },
+                    lastName: { type: 'string', example: 'Khoi' },
+                    email: {
+                      type: 'string',
+                      example: 'updated.email@example.com',
+                    },
+                    password: {
+                      type: 'string',
+                      example: 'newsecurepassword123',
+                    },
+                    avatarUrl: {
+                      type: 'string',
+                      example:
+                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Admin cập nhật thông tin người dùng thành công.',
+            },
+            400: {
+              description: 'Dữ liệu đầu vào hoặc định dạng Email không hợp lệ.',
+            },
+            401: { description: 'Yêu cầu đăng nhập.' },
+            403: { description: 'Từ chối truy cập: Bạn không phải Admin.' },
+            404: { description: 'Không tìm thấy người dùng.' },
+          },
+        },
+        delete: {
+          tags: ['Admin Management'],
+          summary:
+            'Admin xóa vĩnh viễn một tài khoản và tự động gửi email thông báo gỡ bỏ',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID tài khoản cần xóa bỏ hoàn toàn khỏi hệ thống',
+            },
+          ],
+          responses: {
+            200: {
+              description:
+                'Xóa tài khoản thành công và email thông báo đã được gửi.',
+            },
+            401: { description: 'Yêu cầu đăng nhập.' },
+            403: {
+              description:
+                'Từ chối truy cập: Không thể tự xóa chính mình hoặc bạn không phải Admin.',
             },
             404: { description: 'Không tìm thấy người dùng.' },
           },

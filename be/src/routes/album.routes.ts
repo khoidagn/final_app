@@ -8,6 +8,7 @@ const router = Router();
 router.get('/discovery_albums', albumController.getDiscoveryAlbums);
 router.get('/feeds_albums', requireAuth, albumController.getFeedsAlbums);
 router.get('/my_albums', requireAuth, albumController.getMyAlbums);
+router.get('/user/:userId', requireAuth, albumController.getUserAlbums);
 
 router.post(
   '/upload',

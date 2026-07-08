@@ -4,14 +4,14 @@ import { requireAuth } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
+router.get('/me', requireAuth, userController.getMyProfile);
 router.put('/profile', requireAuth, userController.updateMyProfile);
 router.delete('/account', requireAuth, userController.deleteMyAccount);
 
-// Xem danh sách follower/following của CHÍNH MÌNH
 router.get('/my-followers', requireAuth, userController.getFollowers);
 router.get('/my-following', requireAuth, userController.getFollowing);
 
-// Xem danh sách follower/following của MỘT USER BẤT KỲ qua ID
+router.get('/:id', requireAuth, userController.getUserProfileById);
 router.get('/:id/followers', requireAuth, userController.getFollowers);
 router.get('/:id/following', requireAuth, userController.getFollowing);
 

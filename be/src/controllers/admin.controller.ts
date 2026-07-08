@@ -13,7 +13,6 @@ export const adminController = {
       next(error);
     }
   },
-
   getAlbums: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const page = parseInt(req.query.page as string, 10) || 1;
@@ -23,7 +22,6 @@ export const adminController = {
       next(error);
     }
   },
-
   patchUserStatus: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const targetUserId = parseInt(req.params.id as string, 10);
@@ -69,7 +67,6 @@ export const adminController = {
       next(error);
     }
   },
-
   adminDeleteUser: async (
     req: Request,
     res: Response,

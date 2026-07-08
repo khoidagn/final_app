@@ -42,7 +42,6 @@ export const albumController = {
       next(error);
     }
   },
-
   getFeedsAlbums: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = (req as any).user?.id;
@@ -54,19 +53,46 @@ export const albumController = {
       next(error);
     }
   },
-
   getMyAlbums: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = (req as any).user?.id;
       const page = parseInt(req.query.page as string, 10) || 1;
       const limit = parseInt(req.query.limit as string, 10) || 10;
-      const result = await albumService.getMyAlbums(userId, page, limit);
+
+      const result = await albumService.getAlbumsByUserId(
+        userId,
+        userId,
+        page,
+        limit
+      );
       res.status(200).json(result);
     } catch (error) {
       next(error);
     }
   },
+  getUserAlbums: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const currentUserId = (req as any).user?.id;
+      const targetUserId = parseInt(req.params.userId as string, 10);
 
+      if (isNaN(targetUserId)) {
+        throw new AppError(400, 'Invalid user ID.');
+      }
+
+      const page = parseInt(req.query.page as string, 10) || 1;
+      const limit = parseInt(req.query.limit as string, 10) || 10;
+
+      const result = await albumService.getAlbumsByUserId(
+        targetUserId,
+        currentUserId,
+        page,
+        limit
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
   updateAlbum: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const albumId = parseInt(req.params.id as string, 10);
@@ -86,7 +112,6 @@ export const albumController = {
       next(error);
     }
   },
-
   deleteAlbum: async (
     req: Request,
     res: Response,

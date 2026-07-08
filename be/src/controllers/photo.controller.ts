@@ -32,7 +32,6 @@ export const photoController = {
       next(error);
     }
   },
-
   getFeedsPhotos: async (
     req: Request,
     res: Response,
@@ -48,7 +47,6 @@ export const photoController = {
       next(error);
     }
   },
-
   getDiscoveryPhotos: async (
     req: Request,
     res: Response,
@@ -63,27 +61,53 @@ export const photoController = {
       next(error);
     }
   },
-
   getMyPhotos: async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
-      const userId = (req.user as any).id;
-      const page = parseInt(String(req.query.page), 10) || 1;
-      const limit = parseInt(String(req.query.limit), 10) || 10;
-      const result = await photoService.getMyPhotos(userId, page, limit);
+      if (!req.user) throw new AppError(401, 'Authentication required.');
+      const user = req.user as { id: number };
+      const page = parseInt(req.query.page as string, 10) || 1;
+      const limit = parseInt(req.query.limit as string, 10) || 12;
+      const result = await photoService.getPhotosByUserId(
+        user.id,
+        user.id,
+        page,
+        limit
+      );
 
-      res.status(200).json({
-        status: 'success',
-        data: result,
-      });
+      res.status(200).json({ status: 'success', data: result });
     } catch (error) {
       next(error);
     }
   },
+  getUserPhotos: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      if (!req.user) throw new AppError(401, 'Authentication required.');
+      const currentUser = req.user as { id: number };
+      const targetUserId = parseInt(req.params.userId as string, 10);
+      if (isNaN(targetUserId)) throw new AppError(400, 'Invalid user ID.');
+      const page = parseInt(req.query.page as string, 10) || 1;
+      const limit = parseInt(req.query.limit as string, 10) || 12;
 
+      const result = await photoService.getPhotosByUserId(
+        targetUserId,
+        currentUser.id,
+        page,
+        limit
+      );
+
+      res.status(200).json({ status: 'success', data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
   updatePhoto: async (
     req: Request,
     res: Response,
@@ -111,7 +135,6 @@ export const photoController = {
       next(error);
     }
   },
-
   deletePhoto: async (
     req: Request,
     res: Response,

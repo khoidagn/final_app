@@ -17,7 +17,6 @@ export const interactionController = {
       next(error);
     }
   },
-
   likeAlbum: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const albumId = parseInt(req.params.id as string, 10);
@@ -33,12 +32,10 @@ export const interactionController = {
       next(error);
     }
   },
-
   followUser: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const targetUserId = parseInt(req.params.id as string, 10);
       const followerId = (req as any).user?.id;
-
       const result = await interactionService.toggleFollowUser(
         targetUserId,
         followerId

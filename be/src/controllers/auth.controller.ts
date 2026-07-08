@@ -34,7 +34,6 @@ export const authController = {
       next(error);
     }
   },
-
   verifyEmail: async (
     req: Request,
     res: Response,
@@ -56,7 +55,6 @@ export const authController = {
       next(error);
     }
   },
-
   resendVerification: async (
     req: Request,
     res: Response,
@@ -78,7 +76,6 @@ export const authController = {
       next(error);
     }
   },
-
   login: async (
     req: Request,
     res: Response,
@@ -99,7 +96,6 @@ export const authController = {
       next(error);
     }
   },
-
   logout: async (
     req: Request,
     res: Response,
@@ -115,7 +111,6 @@ export const authController = {
       next(error);
     }
   },
-
   refresh: async (
     req: Request,
     res: Response,
@@ -137,7 +132,6 @@ export const authController = {
       next(error);
     }
   },
-
   getMe: async (
     req: Request,
     res: Response,

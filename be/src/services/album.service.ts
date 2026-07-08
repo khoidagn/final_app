@@ -150,13 +150,28 @@ export const albumService = {
     };
   },
 
-  getMyAlbums: async (userId: number, page: number, limit: number) => {
-    logInfo('AlbumService', `Fetching personal albums for User ID: ${userId}`);
+  getAlbumsByUserId: async (
+    targetUserId: number,
+    currentUserId: number,
+    page: number,
+    limit: number
+  ) => {
+    logInfo(
+      'AlbumService',
+      `Fetching albums for Target User ID: ${targetUserId} requested by User ID: ${currentUserId}`
+    );
     const skip = (page - 1) * limit;
+
+    const isOwner = targetUserId === currentUserId;
+    const whereCondition: any = { userId: targetUserId };
+
+    if (!isOwner) {
+      whereCondition.sharingMode = SharingMode.PUBLIC;
+    }
 
     const [albums, total] = await Promise.all([
       prisma.album.findMany({
-        where: { userId },
+        where: whereCondition,
         include: {
           albumMedias: {
             include: { media: true },
@@ -167,7 +182,7 @@ export const albumService = {
         skip,
         take: limit,
       }),
-      prisma.album.count({ where: { userId } }),
+      prisma.album.count({ where: whereCondition }),
     ]);
 
     return {

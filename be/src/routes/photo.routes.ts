@@ -15,6 +15,7 @@ router.post(
 );
 router.get('/feeds_photos', requireAuth, photoController.getFeedsPhotos);
 router.get('/my_photos', requireAuth, photoController.getMyPhotos);
+router.get('/user/:userId', requireAuth, photoController.getUserPhotos);
 router.put(
   '/:id',
   requireAuth,

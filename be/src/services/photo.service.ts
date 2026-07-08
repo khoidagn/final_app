@@ -149,9 +149,19 @@ export const photoService = {
     return photo;
   },
 
-  getMyPhotos: async (userId: number, page: number, limit: number) => {
+  getPhotosByUserId: async (
+    targetUserId: number,
+    currentUserId: number,
+    page: number,
+    limit: number
+  ) => {
     const skip = (page - 1) * limit;
-    const whereCondition = { userId };
+    const isOwner = targetUserId === currentUserId;
+    const whereCondition: any = { userId: targetUserId };
+
+    if (!isOwner) {
+      whereCondition.sharingMode = SharingMode.PUBLIC;
+    }
 
     const [total, photos] = await Promise.all([
       prisma.photo.count({ where: whereCondition }),

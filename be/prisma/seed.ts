@@ -50,10 +50,10 @@ async function runMasterSeed() {
         firstName: 'Admin',
         lastName: 'Manager',
         email: 'admin.fotobook@example.com',
-        passwordHash: hashedPassword, // Sửa thành trường passwordHash cho đúng schema của bạn
-        role: Role.ADMIN, // Đảm bảo khớp enum Role viết hoa của Prisma
+        passwordHash: hashedPassword,
+        role: Role.ADMIN,
         isActive: true,
-        confirmedAt: new Date(), // 🟢 QUAN TRỌNG: Đóng dấu kích hoạt email để đăng nhập được ngay
+        confirmedAt: new Date(),
         avatarUrl:
           'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
       },
@@ -67,7 +67,7 @@ async function runMasterSeed() {
         passwordHash: hashedPassword,
         role: Role.USER,
         isActive: true,
-        confirmedAt: new Date(), // Tự động xác thực cho user test chính
+        confirmedAt: new Date(),
         avatarUrl:
           'https://images.unsplash.com/photo-1633332755192-727a05c4013d',
       },
@@ -80,11 +80,11 @@ async function runMasterSeed() {
         data: {
           firstName: `UserFirstName_${i}`,
           lastName: `UserLastName_${i}`,
-          email: `user.${i}@example.com`, // Sửa lỗi cú pháp chuỗi ban đầu của bạn
+          email: `user.${i}@example.com`, 
           passwordHash: hashedPassword,
           role: Role.USER,
-          isActive: Math.random() > 0.1, // 90% active, 10% bị khóa ngẫu nhiên để admin vào test
-          confirmedAt: Math.random() > 0.2 ? new Date() : null, // 80% đã verify email
+          isActive: Math.random() > 0.1,
+          confirmedAt: Math.random() > 0.2 ? new Date() : null,
           avatarUrl: `https://i.pravatar.cc/150?img=${i}`,
         },
       });
@@ -103,7 +103,6 @@ async function runMasterSeed() {
       SharingMode.PUBLIC,
       SharingMode.PRIVATE,
     ];
-    // Tỷ lệ: 75% ảnh Public, 25% ảnh Private để kiểm tra tính năng Master Inspection của Admin
 
     for (let i = 1; i <= 120; i++) {
       const randomUser =
@@ -113,7 +112,6 @@ async function runMasterSeed() {
       const mode =
         sharingModes[Math.floor(Math.random() * sharingModes.length)];
 
-      // ✅ Sửa đổi: Chỉ truyền trường imageUrl duy nhất khớp với model Media của bạn
       const media = await prisma.media.create({
         data: {
           imageUrl: randomImageUrl,
@@ -155,7 +153,6 @@ async function runMasterSeed() {
         },
       });
 
-      // Gom ngẫu nhiên từ 3 đến 6 bức ảnh vào Album này
       const photoCount = Math.floor(Math.random() * 4) + 3;
       const shuffledPhotos = [...createdPhotos].sort(() => 0.5 - Math.random());
 
@@ -178,10 +175,9 @@ async function runMasterSeed() {
     // 4. Tạo tương tác chéo ngẫu nhiên (Likes & Follows)
     logInfo(
       SERVICE_NAME,
-      '💖 [TƯƠNG TÁC]: Đang kết nối mạng lưới tương tác chéo ngẫu nhiên...'
+      '👥 [FOLLOW]: Đang thiết lập mạng lưới kết nối và follow chéo nhau...'
     );
 
-    // Tạo tương tác Follow
     for (const user of createdUsers) {
       const potentialTargets = createdUsers.filter((u) => u.id !== user.id);
       const targets = potentialTargets
@@ -189,6 +185,7 @@ async function runMasterSeed() {
         .slice(0, 5);
 
       for (const target of targets) {
+        // Tạo follow một chiều: user -> target
         await prisma.follow
           .create({
             data: {
@@ -196,7 +193,19 @@ async function runMasterSeed() {
               followingId: target.id,
             },
           })
-          .catch(() => {}); // Chặn crash nếu vô tình trùng Unique Compound Key
+          .catch(() => {});
+
+        // 🎲 TẠO FOLLOW CHÉO: Xác suất 50% target sẽ follow ngược lại user
+        if (Math.random() > 0.5) {
+          await prisma.follow
+            .create({
+              data: {
+                followerId: target.id,
+                followingId: user.id,
+              },
+            })
+            .catch(() => {});
+        }
       }
     }
 
@@ -208,22 +217,47 @@ async function runMasterSeed() {
         .slice(0, likeCount);
 
       for (const liker of likers) {
-        // ✅ Sửa đổi: Khớp chuẩn cấu trúc Composite ID [userId, likeableType, likeableId]
         await prisma.like
           .create({
             data: {
               userId: liker.id,
-              likeableType: LikeableType.PHOTO, // Chỉ định rõ đây là Like dành cho PHOTO
-              likeableId: photo.id, // Gắn ID của bức ảnh vào đây
+              likeableType: LikeableType.PHOTO,
+              likeableId: photo.id,
             },
           })
           .catch(() => {});
       }
 
-      // Cập nhật lại bộ đếm likes_count
       await prisma.photo.update({
         where: { id: photo.id },
         data: { likesCount: likers.length },
+      });
+    }
+
+    // 🟢 5. BỔ SUNG QUAN TRỌNG: Đồng bộ đếm và cập nhật ngược lại cache counters trong bảng Users
+    logInfo(
+      SERVICE_NAME,
+      '📊 [COUNTER]: Đang tiến hành đồng bộ bộ đếm followersCount và followingsCount thực tế...'
+    );
+
+    for (const user of createdUsers) {
+      // Đếm tổng số người mà user này đang ấn theo dõi
+      const followingCount = await prisma.follow.count({
+        where: { followerId: user.id },
+      });
+
+      // Đếm tổng số người đang ấn theo dõi user này
+      const followersCount = await prisma.follow.count({
+        where: { followingId: user.id },
+      });
+
+      // Ghi nhận trực tiếp con số tổng vào record User
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          followingsCount: followingCount,
+          followersCount: followersCount,
+        },
       });
     }
 

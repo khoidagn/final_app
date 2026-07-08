@@ -4,6 +4,36 @@ import { userService } from '../services/user.service.js';
 import { AppError } from '../middlewares/error.middleware.js';
 
 export const userController = {
+  getMyProfile: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      if (!req.user) throw new AppError(401, 'Authentication required.');
+      const currentUser = req.user as { id: number };
+
+      const profile = await userService.getUserProfile(currentUser.id);
+      res.status(200).json({ status: 'success', data: profile });
+    } catch (error) {
+      next(error);
+    }
+  },
+  getUserProfileById: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const targetUserId = parseInt(req.params.id as string, 10);
+      if (isNaN(targetUserId)) throw new AppError(400, 'Invalid user ID.');
+
+      const profile = await userService.getUserProfile(targetUserId);
+      res.status(200).json({ status: 'success', data: profile });
+    } catch (error) {
+      next(error);
+    }
+  },
   updateMyProfile: async (
     req: Request,
     res: Response,
@@ -23,7 +53,6 @@ export const userController = {
       next(error);
     }
   },
-
   deleteMyAccount: async (
     req: Request,
     res: Response,
@@ -41,7 +70,6 @@ export const userController = {
       next(error);
     }
   },
-
   getFollowers: async (
     req: Request,
     res: Response,
@@ -67,7 +95,6 @@ export const userController = {
       next(error);
     }
   },
-
   getFollowing: async (
     req: Request,
     res: Response,

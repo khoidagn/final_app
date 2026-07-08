@@ -187,6 +187,39 @@ const options: swaggerJSDoc.Options = {
       },
 
       /* ---------------- MODULE USER ---------------- */
+      '/users/me': {
+        get: {
+          tags: ['User Profile'],
+          summary:
+            'Lấy thông tin profile và các chỉ số thống kê của chính mình',
+          security: [{ BearerAuth: [] }],
+          responses: {
+            200: { description: 'Trả về thông tin cá nhân thành công.' },
+            401: { description: 'Yêu cầu đăng nhập.' },
+          },
+        },
+      },
+      '/users/{id}': {
+        get: {
+          tags: ['User Profile'],
+          summary:
+            'Lấy thông tin profile và các chỉ số thống kê của một người dùng khác',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của người dùng cần xem thông tin',
+            },
+          ],
+          responses: {
+            200: { description: 'Trả về thông tin người dùng thành công.' },
+            404: { description: 'Không tìm thấy người dùng.' },
+          },
+        },
+      },
       '/users/profile': {
         put: {
           tags: ['User Profile'],
@@ -392,6 +425,44 @@ const options: swaggerJSDoc.Options = {
             200: { description: 'Lấy danh sách ảnh cá nhân thành công.' },
             401: { description: 'Chưa đăng nhập hoặc token không hợp lệ.' },
             500: { description: 'Lỗi hệ thống nội bộ.' },
+          },
+        },
+      },
+      '/photos/user/{userId}': {
+        get: {
+          tags: ['Photos'],
+          summary: 'Lấy danh sách hình ảnh của một người dùng bất kỳ theo ID',
+          description:
+            'Hệ thống tự động so sánh ID: Nếu là chính chủ xem thì trả về tất cả ảnh (PUBLIC + PRIVATE). Nếu người khác xem thì chỉ trả về ảnh trạng thái PUBLIC.',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'userId',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của người dùng cần xem danh sách ảnh',
+            },
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+              description: 'Số trang cần lấy',
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              schema: { type: 'integer', default: 12 },
+              description: 'Số lượng ảnh hiển thị trên mỗi trang',
+            },
+          ],
+          responses: {
+            200: {
+              description:
+                'Trả về danh sách hình ảnh và thông tin phân trang thành công.',
+            },
+            400: { description: 'ID người dùng truyền vào không hợp lệ.' },
+            401: { description: 'Yêu cầu đăng nhập (Thiếu Bearer Token).' },
           },
         },
       },
@@ -607,6 +678,42 @@ const options: swaggerJSDoc.Options = {
           ],
           responses: {
             200: { description: 'Lấy danh sách ảnh album cá nhân thành công.' },
+          },
+        },
+      },
+      '/albums/user/{userId}': {
+        get: {
+          tags: ['Albums'],
+          summary: 'Lấy danh sách Album của một người dùng bất kỳ theo ID',
+          description:
+            'Hệ thống tự động kiểm tra quyền sở hữu: Nếu là chính chủ xem thì trả về tất cả album bao gồm cả PRIVATE. Nếu người khác xem thì chỉ hiển thị những bộ sưu tập ở trạng thái PUBLIC.',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'userId',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của người dùng cần xem danh sách Album',
+            },
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              schema: { type: 'integer', default: 10 },
+            },
+          ],
+          responses: {
+            200: {
+              description:
+                'Trả về danh sách bộ sưu tập và siêu dữ liệu phân trang thành công.',
+            },
+            400: { description: 'ID người dùng không hợp lệ.' },
+            401: { description: 'Yêu cầu đăng nhập (Thiếu Bearer Token).' },
           },
         },
       },

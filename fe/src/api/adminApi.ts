@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient } from './api.client';
 import type { PaginatedResponse } from '../services/admin.service';
 
 export const adminApi = {

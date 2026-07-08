@@ -1,8 +1,19 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn';
+import { useLoginActions } from '../../hooks/useLoginActions';
 
 export default function Login() {
+  // Tiêu thụ toàn bộ logic nghiệp vụ từ Custom Hook
+  const {
+    email,
+    password,
+    errorMessage,
+    isLoading,
+    handleEmailChange,
+    handlePasswordChange,
+    handleSubmit,
+  } = useLoginActions();
+
   return (
     <div
       className={cn(
@@ -20,11 +31,14 @@ export default function Login() {
           'bg-surface rounded-md shadow-xs border border-border-default'
         )}
       >
-        <div className={cn('p-5 flex flex-col items-center')}>
-          {' '}
+        {/* Bọc toàn bộ các trường nhập liệu bằng thẻ form thực tế để bắt sự kiện Enter/Submit */}
+        <form
+          onSubmit={handleSubmit}
+          className={cn('p-5 flex flex-col items-center')}
+        >
           <div
             className={cn(
-              'w-16 h-16 rounded-full flex items-center justify-center mb-5 border', 
+              'w-16 h-16 rounded-full flex items-center justify-center mb-5 border',
               'bg-background border-border-muted'
             )}
           >
@@ -42,36 +56,62 @@ export default function Login() {
               />
             </svg>
           </div>
+
+          {/* Hiển thị thông báo lỗi trực quan nếu có */}
+          {errorMessage && (
+            <div
+              className={cn(
+                'w-full mb-3 p-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-xs border border-red-200'
+              )}
+            >
+              {errorMessage}
+            </div>
+          )}
+
           <div className={cn('w-full mb-3.5')}>
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
+              disabled={isLoading}
               className={cn(
                 'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
+                isLoading && 'opacity-60 cursor-not-allowed'
               )}
             />
           </div>
+
           <div className={cn('w-full mb-5')}>
             <input
               type="password"
               placeholder="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              disabled={isLoading}
               className={cn(
                 'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
+                isLoading && 'opacity-60 cursor-not-allowed'
               )}
             />
           </div>
-          <Link
-            to="/feeds"
+
+          {/* Thay thế thẻ <Link> thành thẻ <button type="submit"> thực thụ */}
+          <button
+            type="submit"
+            disabled={isLoading}
             className={cn(
-              'block w-24 mb-3.5 py-1.5 text-center text-decoration-none rounded-xs',
+              'block w-24 mb-3.5 py-1.5 text-center rounded-xs cursor-pointer border-none',
               'text-xs font-semibold text-white bg-brand hover:bg-brand-hover',
-              'shadow-2xs transition-all transform active:scale-95'
+              'shadow-2xs transition-all transform active:scale-95',
+              isLoading && 'opacity-60 cursor-not-allowed active:scale-100'
             )}
           >
-            Login
-          </Link>
+            {isLoading ? 'Loading...' : 'Login'}
+          </button>
+
           <Link
             to="#"
             className={cn(
@@ -81,15 +121,16 @@ export default function Login() {
           >
             Forgot password?
           </Link>
-        </div>
+        </form>
 
         <div
           className={cn(
-            'p-5 pt-0 border-t flex flex-col gap-2.5', 
+            'p-5 pt-0 border-t flex flex-col gap-2.5',
             'border-border-muted bg-background/30'
           )}
         >
           <button
+            disabled={isLoading}
             className={cn(
               'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
               'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
@@ -107,6 +148,7 @@ export default function Login() {
           </button>
 
           <button
+            disabled={isLoading}
             className={cn(
               'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
               'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
@@ -124,6 +166,7 @@ export default function Login() {
           </button>
 
           <button
+            disabled={isLoading}
             className={cn(
               'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
               'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',

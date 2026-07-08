@@ -90,7 +90,10 @@ export const authController = {
       res.status(200).json({
         status: 'success',
         message: 'Logged in successfully',
-        data: { accessToken, user },
+        data: {
+          accessToken,
+          user: { id: user.id, email: user.email, role: user.role },
+        },
       });
     } catch (error) {
       next(error);

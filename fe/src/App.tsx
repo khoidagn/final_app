@@ -25,35 +25,46 @@ import AdminEditAlbum from './pages/Admin/AdminEditAlbum';
 
 import NotFoundPage from './pages/not-found/NotFoundPage';
 
+import { ProtectedRoute } from './components/guards/ProtectedRoute';
+import { AdminRoute } from './components/guards/AdminRoute';
+
 export default function App() {
   return (
     <Routes>
+      {/* PUBLIC ROUTES (Anyone can access) */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
+      {/* SEMI-PUBLIC ROUTES within MainLayout */}
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Navigate to="/feeds" replace />} />
-        <Route path="feeds" element={<Feeds />} />
+        <Route index element={<Navigate to="/discovery" replace />} />
         <Route path="discovery" element={<Discovery />} />
-        <Route path="my-profile" element={<MyProfile />} />
-        <Route path="my-profile/edit" element={<EditProfile />} />
         <Route path="profile/:userId" element={<PublicProfile />} />
-        <Route path="/photos/new" element={<NewPhoto />} />
-        <Route path="/photos/:id/edit" element={<EditPhoto />} />
-        <Route path="/albums/new" element={<NewAlbum />} />
-        <Route path="/albums/:id/edit" element={<EditAlbum />} />
+
+        {/* PROTECTED USER ROUTES (Must log in) */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="feeds" element={<Feeds />} />
+          <Route path="my-profile" element={<MyProfile />} />
+          <Route path="my-profile/edit" element={<EditProfile />} />
+          <Route path="photos/new" element={<NewPhoto />} />
+          <Route path="photos/:id/edit" element={<EditPhoto />} />
+          <Route path="albums/new" element={<NewAlbum />} />
+          <Route path="albums/:id/edit" element={<EditAlbum />} />
+        </Route>
       </Route>
 
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Navigate to="/admin/users" replace />} />
-        <Route path="users" element={<AdminUsers />} />
-        <Route path="users/:id/edit" element={<AdminEditUser />} />
-        <Route path="photos" element={<AdminPhotos />} />
-        <Route path="photos/:id/edit" element={<AdminEditPhoto />} />
-        <Route path="albums" element={<AdminAlbums />} />
-        <Route path="albums/:id/edit" element={<AdminEditAlbum />} />
+      {/* STRICTLY PROTECTED ADMIN ROUTES (Must log in & have ADMIN Role) */}
+      <Route path="/admin" element={<AdminRoute />}>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="/admin/users" replace />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="users/:id/edit" element={<AdminEditUser />} />
+          <Route path="photos" element={<AdminPhotos />} />
+          <Route path="photos/:id/edit" element={<AdminEditPhoto />} />
+          <Route path="albums" element={<AdminAlbums />} />
+          <Route path="albums/:id/edit" element={<AdminEditAlbum />} />
+        </Route>
       </Route>
-
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

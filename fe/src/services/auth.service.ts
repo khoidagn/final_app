@@ -1,21 +1,59 @@
-import { authApi } from '../api/authApi';
-
-export interface AuthUser {
-  id: number;
-  first_name: string;
-  last_name: string;
-  avatar_url?: string;
-  role: 'guest' | 'user' | 'admin';
-}
-
-export interface AuthSessionResponse {
-  isLoggedIn: boolean;
-  user: AuthUser | null;
-}
+import { authApi } from '../api/auth.api';
+import type {
+  LoginInput,
+  LoginResponse,
+  RegisterInput,
+  SessionResponse,
+} from '../types/auth.types';
 
 export const authService = {
-  getCurrentSession: async (): Promise<AuthSessionResponse> => {
-    const response = await authApi.fetchCurrentSession();
+  async register(data: RegisterInput): Promise<unknown> {
+    const response = await authApi.register(data);
     return response.data;
+  },
+
+  async verifyEmail(token: string): Promise<unknown> {
+    const response = await authApi.verifyEmail(token);
+    return response.data;
+  },
+
+  async resendVerification(email: string): Promise<unknown> {
+    const response = await authApi.resendVerification(email);
+    return response.data;
+  },
+
+  async login(credentials: LoginInput): Promise<LoginResponse> {
+    const response = await authApi.login(credentials);
+
+    if (response.data.data.accessToken) {
+      localStorage.setItem('accessToken', response.data.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.data.refreshToken);
+      localStorage.setItem('role', response.data.data.user.role)
+    }
+    return response.data;
+  },
+
+  async logout(): Promise<void> {
+    try {
+      await authApi.logout();
+    } catch {
+      //
+    } finally {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+    }
+  },
+
+  async getCurrentSession(): Promise<SessionResponse> {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      return { isLoggedIn: false, user: null };
+    }
+    try {
+      const response = await authApi.getCurrentUser();
+      return { isLoggedIn: true, user: response.data };
+    } catch {
+      return { isLoggedIn: false, user: null };
+    }
   },
 };

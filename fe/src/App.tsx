@@ -3,10 +3,15 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layouts/MainLayout';
 import AdminLayout from './components/layouts/AdminLayout';
 
-import Feeds from './pages/Feeds/Feeds';
-import Discovery from './pages/Feeds/Discovery';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
+import VerifyWaiting from './pages/Auth/VerifyWaiting';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassWord';
+
+import Feeds from './pages/Feeds/Feeds';
+import Discovery from './pages/Feeds/Discovery';
+
 import MyProfile from './pages/Profile/MyProfile';
 import PublicProfile from './pages/Profile/PublicProfile';
 import EditProfile from './pages/Profile/EditProfile';
@@ -34,6 +39,9 @@ export default function App() {
       {/* PUBLIC ROUTES (Anyone can access) */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/verify-waiting" element={<VerifyWaiting />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* SEMI-PUBLIC ROUTES within MainLayout */}
       <Route path="/" element={<MainLayout />}>

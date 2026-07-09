@@ -30,16 +30,31 @@ export interface SessionResponse {
   user: AuthUser | null;
 }
 
-export interface RegisterInput {
-  email: string;
-  password?: string;
-  first_name?: string;
-  last_name?: string;
-  [key: string]: unknown;
-}
-
 export interface LoginInput {
   email: string;
   password?: string;
   [key: string]: unknown;
+}
+
+export interface RegisterInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  status: string;
+  message: string;
+  data?: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+export interface ResetPasswordInput {
+  token: string;
+  newPassword: string;
 }

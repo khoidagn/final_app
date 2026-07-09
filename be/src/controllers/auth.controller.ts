@@ -76,6 +76,23 @@ export const authController = {
       next(error);
     }
   },
+  checkStatus: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const email = req.query.email as string;
+      if (!email) {
+        throw new AppError(400, 'Email parameter is required.');
+      }
+
+      const result = await authService.checkVerificationStatus(email);
+      res.status(200).json({ status: 'success', data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
   login: async (
     req: Request,
     res: Response,
@@ -151,4 +168,28 @@ export const authController = {
       next(error);
     }
   },
+  forgotPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { email } = req.body;
+      if (!email) throw new AppError(400, 'Email is required.');
+
+      const result = await authService.forgotPassword(email);
+      res.status(200).json({ status: 'success', data: result });
+    } catch (error) {
+      next(error);
+    }
+  },
+  resetPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword) {
+        throw new AppError(400, 'Token and new password are required.');
+      }
+
+      const result = await authService.resetPassword(token, newPassword);
+      res.status(200).json({ status: 'success', data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
 };

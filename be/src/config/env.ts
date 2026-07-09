@@ -18,6 +18,7 @@ export const config = {
     env: getEnvVar('NODE_ENV', false) || 'development',
     port: port,
     host: process.env.HOST || `http://localhost:${port}`,
+    frontendHost: process.env.FRONTEND_HOST || 'http://localhost:5173',
   },
   database: {
     url: getEnvVar('DATABASE_URL'),
@@ -30,6 +31,9 @@ export const config = {
     verificationSecret:
       getEnvVar('JWT_VERIFICATION_SECRET', false) ||
       'default_verification_secret_key',
+    resetPasswordSecret:
+      getEnvVar('JWT_RESET_PASSWORD_SECRET', false) ||
+      'default_reset_password_secret_key',
   },
   cloudinary: {
     cloudName: getEnvVar('CLOUDINARY_CLOUD_NAME'),

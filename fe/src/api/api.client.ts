@@ -7,10 +7,9 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: true, // Cho phép tự động gửi kèm Cookie (nếu BE thiết lập httponly cookie cho Refresh Token)
+  withCredentials: true, 
 });
 
-// Interceptor tự động đính kèm Access Token vào Header mỗi khi gọi API
 apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -22,7 +21,6 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Quản lý hàng đợi khôi phục Token khi gặp lỗi 401 hết hạn ngầm
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (token: string) => void;
@@ -45,7 +43,6 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Khi mã phản hồi là 401 Unauthorized (Access Token hết hạn)
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
@@ -62,7 +59,6 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Thực hiện Silent Refresh: Đổi Refresh Token lấy Access Token mới
         const currentRefreshToken = localStorage.getItem('refreshToken');
         const res = await axios.post<{
           accessToken: string;

@@ -4,6 +4,7 @@ import type {
   LoginResponse,
   RegisterInput,
   SessionResponse,
+  ResetPasswordInput,
 } from '../types/auth.types';
 
 export const authService = {
@@ -22,13 +23,23 @@ export const authService = {
     return response.data;
   },
 
+  async checkVerificationStatus(email: string): Promise<boolean> {
+    try {
+      const response = await authApi.checkStatus(email);
+      return response.data?.data?.isConfirmed || false;
+    } catch (error) {
+      console.error('Error checking verification status:', error);
+      return false;
+    }
+  },
+
   async login(credentials: LoginInput): Promise<LoginResponse> {
     const response = await authApi.login(credentials);
 
     if (response.data.data.accessToken) {
       localStorage.setItem('accessToken', response.data.data.accessToken);
       localStorage.setItem('refreshToken', response.data.data.refreshToken);
-      localStorage.setItem('role', response.data.data.user.role)
+      localStorage.setItem('role', response.data.data.user.role);
     }
     return response.data;
   },
@@ -41,6 +52,7 @@ export const authService = {
     } finally {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
     }
   },
 
@@ -55,5 +67,15 @@ export const authService = {
     } catch {
       return { isLoggedIn: false, user: null };
     }
+  },
+
+  async forgotPassword(email: string): Promise<unknown> {
+    const response = await authApi.forgotPassword(email);
+    return response.data;
+  },
+
+  async resetPassword(data: ResetPasswordInput): Promise<unknown> {
+    const response = await authApi.resetPassword(data);
+    return response.data;
   },
 };

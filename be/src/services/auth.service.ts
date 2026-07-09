@@ -53,14 +53,21 @@ export const authService = {
 
     const verificationUrl = `${config.app.host}/api/v1/auth/verify-email?token=${verificationToken}`;
 
-    MailService.sendEmail({
-      to: newUser.email,
-      subject: '[Fotobook] Verify your email address',
-      html: MailTemplates.getVerificationEmail({
-        firstName: newUser.firstName,
-        verificationUrl,
-      }),
-    });
+    try {
+      await MailService.sendEmail({
+        to: newUser.email,
+        subject: '[Fotobook] Verify your email address',
+        html: MailTemplates.getVerificationEmail({
+          firstName: newUser.firstName,
+          verificationUrl,
+        }),
+      });
+    } catch (mailError) {
+      logError(
+        'AuthService',
+        `Failed to send verification email to ${newUser.email}: ${mailError}`
+      );
+    }
 
     return { user: newUser };
   },
@@ -124,6 +131,20 @@ export const authService = {
     return { message: 'Verification email resent successfully.' };
   },
 
+  checkVerificationStatus: async (email: string) => {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { confirmedAt: true },
+    });
+    if (!user) {
+      throw new AppError(404, 'User not found.');
+    }
+    return {
+      email,
+      isConfirmed: user.confirmedAt !== null,
+    };
+  },
+
   login: async (credentials: { email: string; password: string }) => {
     const user = await prisma.user.findUnique({
       where: { email: credentials.email },
@@ -181,6 +202,74 @@ export const authService = {
         'Failed to refresh session: ' + (error as Error).message
       );
       throw new AppError(401, 'Invalid or expired refresh token');
+    }
+  },
+
+// 📧 1. Yêu cầu đặt lại mật khẩu (Forgot Password)
+  forgotPassword: async (email: string) => {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      throw new AppError(404, 'Email address not found.');
+    }
+
+    // Sinh Reset Token bằng JWT với thời hạn ngắn (15 phút)
+    const resetToken = jwt.sign(
+      { userId: user.id, email: user.email },
+      config.jwt.resetPasswordSecret || 'your_reset_secret',
+      { expiresIn: '15m' }
+    );
+
+    // Đường dẫn trỏ tới màn hình nhập mật khẩu mới ở giao diện FRONTEND
+    const resetPasswordUrl = `${config.app.frontendHost || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+
+    try {
+      await MailService.sendEmail({
+        to: user.email,
+        subject: '[Fotobook] Reset Your Password',
+        html: MailTemplates.getResetPasswordEmail({
+          firstName: user.firstName,
+          resetPasswordUrl,
+        }),
+      });
+    } catch (mailError) {
+      logError(
+        'AuthService',
+        `Failed to send reset password email to ${user.email}: ${mailError}`
+      );
+      throw new AppError(
+        500,
+        'Could not send reset password email. Please try again later.'
+      );
+    }
+
+    return { message: 'Password reset link has been sent to your email.' };
+  },
+
+  // 🔒 2. Thực hiện đổi mật khẩu bằng token hợp lệ (Reset Password)
+  resetPassword: async (token: string, passwordRaw: string) => {
+    try {
+      // Xác thực token
+      const decoded = jwt.verify(
+        token,
+        config.jwt.resetPasswordSecret || 'your_reset_secret'
+      ) as {
+        userId: number;
+      };
+
+      // Băm mật khẩu mới
+      const hashedPassword = await bcrypt.hash(passwordRaw, 10);
+
+      // Cập nhật vào DB
+      await prisma.user.update({
+        where: { id: decoded.userId },
+        data: { passwordHash: hashedPassword },
+      });
+
+      return {
+        message: 'Password has been successfully reset. You can now log in with your new password.',
+      };
+    } catch (_error) {
+      throw new AppError(400, 'Reset token is invalid or has expired.');
     }
   },
 };

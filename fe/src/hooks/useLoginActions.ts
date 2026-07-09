@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
-import { AUTH_MESSAGES } from '../constants/message';
+import { useToast } from './useToast';
+import { getBackendMessage } from '../utils/error';
+import { LOGIN_CONSTANTS } from '../constants/login.constants';
 import { UserRole } from '../types/auth.types';
 
 export function useLoginActions() {
@@ -9,7 +11,16 @@ export function useLoginActions() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { login, isLoading } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const msg = sessionStorage.getItem('toastMessage');
+    if (msg) {
+      showToast(msg, 'success');
+      sessionStorage.removeItem('toastMessage');
+    }
+  }, [showToast]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -27,15 +38,15 @@ export function useLoginActions() {
     const hasPassword = !!password.trim();
 
     if (!hasEmail && !hasPassword) {
-      setErrorMessage(AUTH_MESSAGES.VALIDATION.BOTH_REQUIRED);
+      setErrorMessage(LOGIN_CONSTANTS.VALIDATION.BOTH_REQUIRED);
       return;
     }
     if (!hasEmail) {
-      setErrorMessage(AUTH_MESSAGES.VALIDATION.EMAIL_REQUIRED);
+      setErrorMessage(LOGIN_CONSTANTS.VALIDATION.EMAIL_REQUIRED);
       return;
     }
     if (!hasPassword) {
-      setErrorMessage(AUTH_MESSAGES.VALIDATION.PASSWORD_REQUIRED);
+      setErrorMessage(LOGIN_CONSTANTS.VALIDATION.PASSWORD_REQUIRED);
       return;
     }
 
@@ -52,9 +63,12 @@ export function useLoginActions() {
         navigate('/feeds');
       }
     } catch (error: unknown) {
-      setErrorMessage(AUTH_MESSAGES.API_ERROR.LOGIN_FAILED);
+      setErrorMessage(
+        getBackendMessage(error, 'LOGIN_CONSTANTS.API_RESPONSE.LOGIN_FAILED')
+      );
     }
   };
+
   return {
     email,
     password,

@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { useLoginActions } from '../../hooks/useLoginActions';
+import PasswordField from '../../components/ui/PasswordField';
+import { LOGIN_CONSTANTS } from '../../constants/login.constants';
 
 export default function Login() {
-  // Tiêu thụ toàn bộ logic nghiệp vụ từ Custom Hook
   const {
     email,
     password,
@@ -17,61 +18,43 @@ export default function Login() {
   return (
     <div
       className={cn(
-        'min-h-screen flex flex-col items-center justify-center p-4 font-sans antialiased',
-        'bg-background text-text-primary'
+        'min-h-screen flex flex-col items-center justify-center p-4 font-sans antialiased bg-background text-text-primary overflow-hidden'
       )}
     >
-      <h1 className={cn('text-2xl font-bold mb-5 tracking-wide text-brand')}>
-        Fotobook Login
+      <h1 className={cn('text-3xl font-bold mb-4 tracking-wide text-brand')}>
+        {LOGIN_CONSTANTS.UI.TITLE}
       </h1>
 
       <div
         className={cn(
-          'w-full max-w-sm overflow-hidden',
-          'bg-surface rounded-md shadow-xs border border-border-default'
+          'w-full max-w-[360px] overflow-hidden bg-surface rounded-md shadow-xs border border-border-default'
         )}
       >
-        {/* Bọc toàn bộ các trường nhập liệu bằng thẻ form thực tế để bắt sự kiện Enter/Submit */}
         <form
           onSubmit={handleSubmit}
           className={cn('p-5 flex flex-col items-center')}
         >
-          <div
-            className={cn(
-              'w-16 h-16 rounded-full flex items-center justify-center mb-5 border',
-              'bg-background border-border-muted'
-            )}
-          >
-            <svg
-              className={cn('w-8 h-8 text-text-muted')}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </div>
-
-          {/* Hiển thị thông báo lỗi trực quan nếu có */}
           {errorMessage && (
             <div
               className={cn(
-                'w-full mb-3 p-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-xs border border-red-200'
+                'w-full mb-3 p-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-xs border border-red-200 leading-relaxed'
               )}
             >
               {errorMessage}
             </div>
           )}
 
-          <div className={cn('w-full mb-3.5')}>
+          <div className={cn('w-full mb-3')}>
+            <label
+              className={cn(
+                'block text-xs font-semibold text-text-secondary mb-1'
+              )}
+            >
+              {LOGIN_CONSTANTS.UI.LABEL_EMAIL}
+            </label>
             <input
               type="email"
-              placeholder="Email"
+              placeholder={LOGIN_CONSTANTS.PLACEHOLDERS.EMAIL}
               value={email}
               onChange={handleEmailChange}
               disabled={isLoading}
@@ -83,64 +66,57 @@ export default function Login() {
             />
           </div>
 
-          <div className={cn('w-full mb-5')}>
-            <input
-              type="password"
-              placeholder="Password"
+          <div className={cn('w-full mb-4')}>
+            <PasswordField
+              label={LOGIN_CONSTANTS.UI.LABEL_PASSWORD}
+              placeholder={LOGIN_CONSTANTS.PLACEHOLDERS.PASSWORD}
               value={password}
               onChange={handlePasswordChange}
               disabled={isLoading}
-              className={cn(
-                'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
-                isLoading && 'opacity-60 cursor-not-allowed'
-              )}
             />
           </div>
 
-          {/* Thay thế thẻ <Link> thành thẻ <button type="submit"> thực thụ */}
           <button
             type="submit"
             disabled={isLoading}
             className={cn(
-              'block w-24 mb-3.5 py-1.5 text-center rounded-xs cursor-pointer border-none',
-              'text-xs font-semibold text-white bg-brand hover:bg-brand-hover',
-              'shadow-2xs transition-all transform active:scale-95',
-              isLoading && 'opacity-60 cursor-not-allowed active:scale-100'
+              'w-24 text-white text-center text-xs font-semibold py-1.5 rounded-xs shadow-2xs transition-all focus:outline-none cursor-pointer',
+              'bg-brand hover:bg-brand-hover',
+              'active:scale-95 transform disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
-            {isLoading ? 'Loading...' : 'Login'}
+            {isLoading
+              ? LOGIN_CONSTANTS.UI.BUTTON_LOADING
+              : LOGIN_CONSTANTS.UI.BUTTON_SUBMIT}
           </button>
 
-          <Link
-            to="#"
-            className={cn(
-              'text-[11px] text-decoration-none font-medium text-brand hover:underline',
-              'active:scale-98 transform inline-block'
-            )}
-          >
-            Forgot password?
-          </Link>
+          <div className={cn('text-center')}>
+            <Link
+              to="/forgot-password"
+              className={cn(
+                'text-xs font-semibold text-brand hover:underline text-decoration-none transition-colors'
+              )}
+            >
+              {LOGIN_CONSTANTS.UI.LINK_FORGOT_PASSWORD}
+            </Link>
+          </div>
         </form>
 
         <div
           className={cn(
-            'p-5 pt-0 border-t flex flex-col gap-2.5',
-            'border-border-muted bg-background/30'
+            'p-5 pt-0 border-t flex flex-col gap-2 border-border-muted bg-background/30'
           )}
         >
           <button
             disabled={isLoading}
             className={cn(
-              'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
-              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
-              'active:scale-98 transform'
+              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
             )}
           >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
-              className={cn('w-4 h-4 shrink-0')}
+              className={cn('w-3.5 h-3.5 shrink-0')}
             />
             <span className={cn('text-xs font-medium')}>
               Sign in with Google
@@ -150,15 +126,13 @@ export default function Login() {
           <button
             disabled={isLoading}
             className={cn(
-              'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
-              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
-              'active:scale-98 transform'
+              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
             )}
           >
             <img
               src="https://www.svgrepo.com/show/475647/facebook-color.svg"
               alt="Facebook"
-              className={cn('w-4 h-4 shrink-0')}
+              className={cn('w-3.5 h-3.5 shrink-0')}
             />
             <span className={cn('text-xs font-medium')}>
               Sign in with Facebook
@@ -168,15 +142,13 @@ export default function Login() {
           <button
             disabled={isLoading}
             className={cn(
-              'w-full h-9 border rounded-xs flex items-center justify-center space-x-3 shadow-2xs transition-all focus:outline-none px-4 cursor-pointer',
-              'bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary',
-              'active:scale-98 transform'
+              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
             )}
           >
             <img
               src="https://www.svgrepo.com/show/475689/twitter-color.svg"
               alt="Twitter"
-              className={cn('w-4 h-4 shrink-0')}
+              className={cn('w-3.5 h-3.5 shrink-0')}
             />
             <span className={cn('text-xs font-medium')}>
               Sign in with Twitter
@@ -186,15 +158,14 @@ export default function Login() {
       </div>
 
       <div className={cn('text-xs text-text-muted mt-4 font-normal')}>
-        Don't have an account?{' '}
+        {LOGIN_CONSTANTS.UI.FOOTER_PROMPT}{' '}
         <Link
           to="/signup"
           className={cn(
-            'text-decoration-none font-semibold text-brand hover:underline',
-            'active:scale-98 transform inline-block'
+            'text-decoration-none font-semibold text-brand hover:underline inline-block active:scale-98 transform'
           )}
         >
-          Sign up
+          {LOGIN_CONSTANTS.UI.LINK_SIGN_UP}
         </Link>
       </div>
     </div>

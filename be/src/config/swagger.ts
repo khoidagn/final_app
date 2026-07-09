@@ -118,6 +118,48 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
+      '/auth/check-status': {
+        get: {
+          tags: ['Authentication'],
+          summary:
+            'Kiểm tra trạng thái xác thực email của tài khoản (Dùng cho màn hình chờ FE)',
+          parameters: [
+            {
+              name: 'email',
+              in: 'query',
+              required: true,
+              schema: { type: 'string' },
+              description: 'Email của tài khoản cần check trạng thái kích hoạt',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Trả về trạng thái kích hoạt.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          email: {
+                            type: 'string',
+                            example: 'user@example.com',
+                          },
+                          isConfirmed: { type: 'boolean', example: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            404: { description: 'Không tìm thấy Email này trong hệ thống.' },
+          },
+        },
+      },
       '/auth/login': {
         post: {
           tags: ['Authentication'],
@@ -182,6 +224,123 @@ const options: swaggerJSDoc.Options = {
           responses: {
             200: { description: 'Profile data retrieved successfully.' },
             401: { description: 'Token is expired or invalid.' },
+          },
+        },
+      },
+      '/auth/forgot-password': {
+        post: {
+          tags: ['Authentication'],
+          summary: 'Yêu cầu gửi liên kết đặt lại mật khẩu qua Email',
+          description:
+            'Nhận email của người dùng, kiểm tra hệ thống và gửi email chứa token khôi phục mật khẩu (Hạn dùng 15 phút).',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['email'],
+                  properties: {
+                    email: {
+                      type: 'string',
+                      format: 'email',
+                      example: 'khoi.vo2026@example.com',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Gửi link reset password thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          message: {
+                            type: 'string',
+                            example:
+                              'Password reset link has been sent to your email.',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            404: {
+              description: 'Không tìm thấy địa chỉ Email này trong hệ thống.',
+            },
+            500: { description: 'Lỗi dịch vụ Mail SMTP không thể đẩy thư đi.' },
+          },
+        },
+      },
+      '/auth/reset-password': {
+        post: {
+          tags: ['Authentication'],
+          summary: 'Thực hiện đặt lại mật khẩu mới bằng token khôi phục',
+          description:
+            'FE bốc tách token từ URL để gửi kèm với mật khẩu mới. Backend verify JWT và ghi đè mật khẩu mới vào cơ sở dữ liệu.',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  required: ['token', 'newPassword'],
+                  properties: {
+                    token: {
+                      type: 'string',
+                      description:
+                        'Mã token JWT đính kèm nhận từ hòm thư Email',
+                      example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                    },
+                    newPassword: {
+                      type: 'string',
+                      minLength: 6,
+                      description: 'Mật khẩu mới mong muốn thiết lập',
+                      example: 'newsecurepass123',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Cập nhật lại mật khẩu thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          message: {
+                            type: 'string',
+                            example:
+                              'Password has been successfully reset. You can now log in with your new password.',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description:
+                'Mã token khôi phục không hợp lệ, bị giả mạo hoặc đã hết hạn.',
+            },
           },
         },
       },

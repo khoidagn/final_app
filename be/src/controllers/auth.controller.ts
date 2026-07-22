@@ -18,7 +18,7 @@ export const authController = {
     try {
       const { user } = await authService.register(req.body);
       res.status(201).json({
-        status: 'success',
+        success: true,
         message:
           'Registration successful. Please check your email to verify your account.',
         data: {
@@ -34,6 +34,7 @@ export const authController = {
       next(error);
     }
   },
+
   verifyEmail: async (
     req: Request,
     res: Response,
@@ -48,13 +49,14 @@ export const authController = {
       const result = await authService.verifyEmail(token);
 
       res.status(200).json({
-        status: 'success',
+        success: true,
         message: result.message,
       });
     } catch (error) {
       next(error);
     }
   },
+
   resendVerification: async (
     req: Request,
     res: Response,
@@ -69,13 +71,14 @@ export const authController = {
       const result = await authService.resendVerification(email);
 
       res.status(200).json({
-        status: 'success',
+        success: true,
         message: result.message,
       });
     } catch (error) {
       next(error);
     }
   },
+
   checkStatus: async (
     req: Request,
     res: Response,
@@ -88,11 +91,16 @@ export const authController = {
       }
 
       const result = await authService.checkVerificationStatus(email);
-      res.status(200).json({ status: 'success', data: result });
+      res.status(200).json({
+        success: true,
+        message: 'Verification status checked successfully',
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
   },
+
   login: async (
     req: Request,
     res: Response,
@@ -105,10 +113,11 @@ export const authController = {
 
       res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
       res.status(200).json({
-        status: 'success',
+        success: true,
         message: 'Logged in successfully',
         data: {
           accessToken,
+          refreshToken,
           user: { id: user.id, email: user.email, role: user.role },
         },
       });
@@ -116,6 +125,7 @@ export const authController = {
       next(error);
     }
   },
+
   logout: async (
     req: Request,
     res: Response,
@@ -124,13 +134,14 @@ export const authController = {
     try {
       res.clearCookie('refreshToken', { ...COOKIE_OPTIONS, maxAge: 0 });
       res.status(200).json({
-        status: 'success',
+        success: true,
         message: 'Logged out successfully',
       });
     } catch (error) {
       next(error);
     }
   },
+
   refresh: async (
     req: Request,
     res: Response,
@@ -145,13 +156,15 @@ export const authController = {
       const { accessToken } = await authService.refreshSession(tokenFromCookie);
 
       res.status(200).json({
-        status: 'success',
+        success: true,
+        message: 'Token refreshed successfully',
         data: { accessToken },
       });
     } catch (error) {
       next(error);
     }
   },
+
   getMe: async (
     req: Request,
     res: Response,
@@ -159,7 +172,8 @@ export const authController = {
   ): Promise<void> => {
     try {
       res.status(200).json({
-        status: 'success',
+        success: true,
+        message: 'Current user profile retrieved successfully',
         data: {
           user: req.user,
         },
@@ -168,18 +182,32 @@ export const authController = {
       next(error);
     }
   },
-  forgotPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+  forgotPassword: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { email } = req.body;
       if (!email) throw new AppError(400, 'Email is required.');
 
       const result = await authService.forgotPassword(email);
-      res.status(200).json({ status: 'success', data: result });
+      res.status(200).json({
+        success: true,
+        message: 'Password reset link dispatched successfully',
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
   },
-  resetPassword: async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+  resetPassword: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     try {
       const { token, newPassword } = req.body;
       if (!token || !newPassword) {
@@ -187,9 +215,13 @@ export const authController = {
       }
 
       const result = await authService.resetPassword(token, newPassword);
-      res.status(200).json({ status: 'success', data: result });
+      res.status(200).json({
+        success: true,
+        message: 'Password reset successfully',
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
-  }
+  },
 };

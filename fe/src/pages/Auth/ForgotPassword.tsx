@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useForgotPasswordActions } from '../../hooks/useForgotPasswordActions';
-import { FORGOT_PASSWORD_CONSTANTS } from '../../constants/forgot-password.constants';
+import { useForgotPasswordAction } from './hooks/useForgotPasswordAction';
+import { FORGOT_PASSWORD_CONSTANTS } from './constants/forgot-password.constant';
 import { cn } from '../../utils/cn';
 
 export default function ForgotPassword() {
-  const { email, setEmail, isLoading, cooldown, feedback, handleSubmit } =
-    useForgotPasswordActions();
+  const { email, setEmail, isLoading, cooldown, handleSubmit } =
+    useForgotPasswordAction();
 
   return (
     <div
@@ -30,19 +30,6 @@ export default function ForgotPassword() {
         >
           {FORGOT_PASSWORD_CONSTANTS.UI.SUBTITLE}
         </p>
-
-        {feedback && (
-          <div
-            className={cn(
-              'w-full p-2 mb-3 text-xs border rounded-xs leading-relaxed text-center',
-              feedback.type === 'success'
-                ? 'text-green-600 bg-green-50 border-green-200'
-                : 'text-red-600 bg-red-50 border-red-200'
-            )}
-          >
-            {feedback.message}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className={cn('flex flex-col gap-3')}>
           <div className={cn('w-full')}>
@@ -72,7 +59,7 @@ export default function ForgotPassword() {
             disabled={isLoading || cooldown > 0}
             className={cn(
               'w-full block text-center text-decoration-none text-xs font-bold transition-all transform rounded-xs shadow-2xs bg-brand hover:bg-brand-hover text-white py-1.5',
-              'active:scale-98 disabled:opacity-60 disabled:pointer-events-none'
+              'active:scale-98 disabled:opacity-60 disabled:pointer-events-none cursor-pointer'
             )}
           >
             {cooldown > 0

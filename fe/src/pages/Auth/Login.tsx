@@ -1,19 +1,18 @@
 import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn';
-import { useLoginActions } from '../../hooks/useLoginActions';
+import { useLoginAction } from './hooks/useLoginAction';
 import PasswordField from '../../components/ui/PasswordField';
-import { LOGIN_CONSTANTS } from '../../constants/login.constants';
+import { LOGIN_CONSTANTS } from './constants/login.constant';
 
 export default function Login() {
   const {
     email,
     password,
-    errorMessage,
     isLoading,
     handleEmailChange,
     handlePasswordChange,
     handleSubmit,
-  } = useLoginActions();
+  } = useLoginAction();
 
   return (
     <div
@@ -34,16 +33,6 @@ export default function Login() {
           onSubmit={handleSubmit}
           className={cn('p-5 flex flex-col items-center')}
         >
-          {errorMessage && (
-            <div
-              className={cn(
-                'w-full mb-3 p-2 text-center text-xs font-medium text-red-600 bg-red-50 rounded-xs border border-red-200 leading-relaxed'
-              )}
-            >
-              {errorMessage}
-            </div>
-          )}
-
           <div className={cn('w-full mb-3')}>
             <label
               className={cn(
@@ -80,7 +69,7 @@ export default function Login() {
             type="submit"
             disabled={isLoading}
             className={cn(
-              'w-24 text-white text-center text-xs font-semibold py-1.5 rounded-xs shadow-2xs transition-all focus:outline-none cursor-pointer',
+              'w-24 text-white text-center text-xs font-semibold py-1.5 rounded-xs shadow-2xs transition-all focus:outline-none cursor-pointer mb-3',
               'bg-brand hover:bg-brand-hover',
               'active:scale-95 transform disabled:opacity-50 disabled:cursor-not-allowed'
             )}
@@ -104,7 +93,7 @@ export default function Login() {
 
         <div
           className={cn(
-            'p-5 pt-0 border-t flex flex-col gap-2 border-border-muted bg-background/30'
+            'p-5 pt-3 border-t flex flex-col gap-2 border-border-muted bg-background/30'
           )}
         >
           <button
@@ -158,7 +147,7 @@ export default function Login() {
       </div>
 
       <div className={cn('text-xs text-text-muted mt-4 font-normal')}>
-        {LOGIN_CONSTANTS.UI.FOOTER_PROMPT}{' '}
+        {LOGIN_CONSTANTS.UI.FOOTER_PROMPT}
         <Link
           to="/signup"
           className={cn(

@@ -1,11 +1,25 @@
 import { apiClient } from './api.client';
 import type {
-  AuthUser,
   LoginInput,
   LoginResponse,
   RegisterInput,
   ResetPasswordInput,
-} from '../types/auth.types';
+} from '../types/auth.type';
+export interface UserResponseData {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarUrl: string | null;
+  role: 'ADMIN' | 'USER';
+  isActive: boolean;
+}
+
+export interface AuthWrappedResponse {
+  success: boolean;
+  message: string;
+  data: UserResponseData;
+}
 
 export const authApi = {
   register(data: RegisterInput) {
@@ -36,8 +50,8 @@ export const authApi = {
     return apiClient.post('/auth/logout');
   },
 
-  getCurrentUser() {
-    return apiClient.get<AuthUser>('/auth/me');
+  getCurrentUser: () => {
+    return apiClient.get('/users/me');
   },
 
   forgotPassword(email: string) {
@@ -46,5 +60,15 @@ export const authApi = {
 
   resetPassword(data: ResetPasswordInput) {
     return apiClient.post('/auth/reset-password', data);
+  },
+
+  refreshToken() {
+    return apiClient.post<{
+      status: string;
+      data: {
+        accessToken: string;
+        refreshToken?: string;
+      };
+    }>('/auth/refresh');
   },
 };

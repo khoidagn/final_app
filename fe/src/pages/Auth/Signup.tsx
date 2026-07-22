@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn';
-import { useSignUpActions } from '../../hooks/useSignupActions';
+import { useSignUpAction } from './hooks/useSignupAction';
 import PasswordField from '../../components/ui/PasswordField';
-import { SIGNUP_CONSTANTS } from '../../constants/signup.constants';
+import { SIGNUP_CONSTANTS } from './constants/signup.constant';
 
 export default function SignUp() {
   const {
@@ -11,8 +11,6 @@ export default function SignUp() {
     lastName,
     password,
     confirmPassword,
-    errorMessage,
-    successMessage,
     isLoading,
     setEmail,
     setFirstName,
@@ -20,7 +18,7 @@ export default function SignUp() {
     setPassword,
     setConfirmPassword,
     handleSubmit,
-  } = useSignUpActions();
+  } = useSignUpAction();
 
   return (
     <div
@@ -41,26 +39,6 @@ export default function SignUp() {
           onSubmit={handleSubmit}
           className={cn('p-5 flex flex-col items-center')}
         >
-          {errorMessage && (
-            <div
-              className={cn(
-                'w-full p-2 mb-3 text-xs text-center text-red-600 bg-red-50 border border-red-200 rounded-xs leading-relaxed'
-              )}
-            >
-              {errorMessage}
-            </div>
-          )}
-
-          {successMessage && (
-            <div
-              className={cn(
-                'w-full p-2 mb-3 text-xs text-center text-green-600 bg-green-50 border border-green-200 rounded-xs leading-relaxed'
-              )}
-            >
-              {successMessage}
-            </div>
-          )}
-
           <div className={cn('w-full flex gap-3 mb-3')}>
             <div className={cn('flex-1')}>
               <label
@@ -133,7 +111,6 @@ export default function SignUp() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
-              error={!!errorMessage}
             />
           </div>
 
@@ -144,7 +121,6 @@ export default function SignUp() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
-              error={!!errorMessage}
             />
           </div>
 
@@ -165,7 +141,7 @@ export default function SignUp() {
 
         <div
           className={cn(
-            'p-5 pt-0 border-t flex flex-col gap-2 border-border-muted bg-background/30'
+            'p-5 pt-3 border-t flex flex-col gap-2 border-border-muted bg-background/30'
           )}
         >
           <button
@@ -219,7 +195,7 @@ export default function SignUp() {
       </div>
 
       <div className={cn('text-xs text-text-muted mt-4 font-normal')}>
-        {SIGNUP_CONSTANTS.UI.FOOTER_PROMPT}{' '}
+        {SIGNUP_CONSTANTS.UI.FOOTER_PROMPT}
         <Link
           to="/login"
           className={cn(

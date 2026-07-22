@@ -1,5 +1,5 @@
-import { useVerifyWaitingActions } from '../../hooks/useVerifyWaitingActions';
-import { VERIFY_WAITING_CONSTANTS } from '../../constants/verify-waiting.constants';
+import { useVerifyWaitingAction } from './hooks/useVerifyWaitingAction';
+import { VERIFY_WAITING_CONSTANTS } from './constants/verify-waiting.constant';
 import { cn } from '../../utils/cn';
 
 export default function VerifyWaiting() {
@@ -9,7 +9,7 @@ export default function VerifyWaiting() {
     resendLoading,
     cooldown,
     handleResend,
-  } = useVerifyWaitingActions();
+  } = useVerifyWaitingAction();
 
   return (
     <div
@@ -56,7 +56,7 @@ export default function VerifyWaiting() {
                 className={cn(
                   'w-3.5 h-3.5 border-2 border-brand border-t-transparent rounded-full animate-spin'
                 )}
-              ></div>
+              />
               {VERIFY_WAITING_CONSTANTS.UI.STATUS_WAITING}
             </div>
 

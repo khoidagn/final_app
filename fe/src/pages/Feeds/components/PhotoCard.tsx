@@ -1,41 +1,52 @@
-import type { PhotoData } from '../../../types/feeds';
+import type { PhotoData } from '../../../types/photo.type';
 import FollowButton from '../../../components/ui/FollowButton';
 import LikeButton from '../../../components/ui/LikeButton';
 import AuthorBadge from './AuthorBadge';
+import { getFullName } from '../../../utils/string';
 import { cn } from '../../../utils/cn';
 
 interface PhotoCardProps {
   data: PhotoData;
-  onFollowToggle?: (authorId: number, currentStatus: boolean) => void;
+  onFollowToggle?: (
+    authorId: number,
+    currentStatus: boolean,
+    authorName: string
+  ) => void;
   onCardClick?: () => void;
+  onLikeToggle?: (type: 'photo' | 'album', id: number) => void;
+  hideFollowButton?: boolean;
 }
 
 export default function PhotoCard({
   data,
   onFollowToggle,
   onCardClick,
+  onLikeToggle,
+  hideFollowButton = false,
 }: PhotoCardProps) {
-  if (!data || !data.author) return null;
+  if (!data || !data.user) return null;
+
+  const authorInfo = data.user;
+  const authorName = getFullName(authorInfo.firstName, authorInfo.lastName);
+  const displayImageUrl = data.media?.imageUrl || '/placeholder.jpg';
 
   return (
     <div
       onClick={onCardClick}
       className={cn(
-        'flex flex-col w-full overflow-hidden transition-all duration-200',
-        'md:flex-row',
+        'flex flex-col w-full overflow-hidden transition-all duration-200 md:flex-row',
         'bg-background border border-border-default rounded-md shadow-2xs hover:shadow-sm',
         onCardClick && 'cursor-pointer active:scale-[0.99] transform'
       )}
     >
       <div
         className={cn(
-          'w-full aspect-square flex items-center justify-center relative shrink-0 overflow-hidden select-none',
-          'md:w-1/2',
+          'w-full aspect-square flex items-center justify-center relative shrink-0 overflow-hidden select-none md:w-1/2',
           'bg-background/40'
         )}
       >
         <img
-          src={data.image_url}
+          src={displayImageUrl}
           alt={data.title}
           className={cn('w-full h-full object-cover')}
         />
@@ -48,14 +59,18 @@ export default function PhotoCard({
       >
         <div>
           <div className={cn('flex items-center justify-between mb-3')}>
-            <AuthorBadge author={data.author} />
+            <AuthorBadge author={authorInfo} />
 
-            {onFollowToggle && (
+            {!hideFollowButton && onFollowToggle && (
               <div onClick={(e) => e.stopPropagation()}>
                 <FollowButton
-                  isFollowing={data.author.is_following}
+                  isFollowing={authorInfo.isFollowing || false}
                   onToggle={() =>
-                    onFollowToggle(data.author.id, data.author.is_following)
+                    onFollowToggle(
+                      authorInfo.id,
+                      authorInfo.isFollowing || false,
+                      authorName
+                    )
                   }
                 />
               </div>
@@ -74,23 +89,26 @@ export default function PhotoCard({
               'text-[11px] text-text-secondary leading-relaxed line-clamp-4 break-words'
             )}
           >
-            {data.description}
+            {data.description || 'No description provided.'}
           </p>
         </div>
 
         <div
           className={cn(
-            'flex items-center justify-between text-[10px] mt-4 pt-2 border-t',
-            'md:mt-2',
-            'text-text-muted border-border-muted'
+            'flex items-center justify-between text-[10px] mt-4 pt-2 border-t md:mt-2 text-text-muted border-border-muted'
           )}
         >
-          <LikeButton
-            initialLikes={data.likes_count}
-            initialIsLiked={false}
-            photoId={data.id}
-          />
-          <span>{data.created_at}</span>
+          <time dateTime={data.createdAt}>
+            {new Date(data.createdAt).toLocaleDateString()}
+          </time>
+
+          <div onClick={(e) => e.stopPropagation()}>
+            <LikeButton
+              initialLikes={data.likesCount || 0}
+              initialIsLiked={data.isLiked || false}
+              onToggle={() => onLikeToggle?.('photo', data.id)}
+            />
+          </div>
         </div>
       </div>
     </div>

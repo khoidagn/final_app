@@ -12,11 +12,17 @@ export const interactionController = {
         'PHOTO',
         userId
       );
-      res.status(200).json(result);
+
+      res.status(200).json({
+        success: true,
+        message: 'Photo like toggled successfully',
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
   },
+
   likeAlbum: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const albumId = parseInt(req.params.id as string, 10);
@@ -27,20 +33,32 @@ export const interactionController = {
         'ALBUM',
         userId
       );
-      res.status(200).json(result);
+
+      res.status(200).json({
+        success: true,
+        message: 'Album like toggled successfully',
+        data: result,
+      });
     } catch (error) {
       next(error);
     }
   },
+
   followUser: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const targetUserId = parseInt(req.params.id as string, 10);
       const followerId = (req as any).user?.id;
+
       const result = await interactionService.toggleFollowUser(
         targetUserId,
         followerId
       );
-      res.status(200).json(result);
+
+      res.status(200).json({
+        success: true,
+        message: 'User follow status toggled successfully',
+        data: result,
+      });
     } catch (error) {
       next(error);
     }

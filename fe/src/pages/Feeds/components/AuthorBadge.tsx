@@ -2,11 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '../../../components/ui/Avatar';
 import { getFullName } from '../../../utils/string';
-import { type Author } from '../../../types/feeds';
+import { type UserSummary } from '../../../types/feeds.type';
 import { cn } from '../../../utils/cn';
 
 interface AuthorBadgeProps {
-  author: Author;
+  author: UserSummary;
   sizeClass?: string;
   textSizeClass?: string;
 }
@@ -18,10 +18,16 @@ export default function AuthorBadge({
 }: AuthorBadgeProps) {
   const navigate = useNavigate();
 
+  if (!author) return null;
+
   const handleBadgeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     navigate(`/profile/${author.id}`);
   };
+
+  const fName = author.firstName || '';
+  const lName = author.lastName || '';
+  const url = author.avatarUrl || null;
 
   return (
     <div
@@ -32,9 +38,9 @@ export default function AuthorBadge({
       )}
     >
       <Avatar
-        firstName={author.first_name}
-        lastName={author.last_name}
-        avatarUrl={author.avatar_url}
+        firstName={fName}
+        lastName={lName}
+        avatarUrl={url}
         sizeClass={sizeClass}
         textSizeClass={textSizeClass}
         bgColorClass="bg-brand"
@@ -46,7 +52,7 @@ export default function AuthorBadge({
           'text-brand decoration-brand'
         )}
       >
-        {getFullName(author.first_name, author.last_name)}
+        {getFullName(fName, lName) || `User #${author.id}`}
       </span>
     </div>
   );

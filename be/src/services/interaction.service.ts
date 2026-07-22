@@ -3,6 +3,8 @@ import { AppError } from '../middlewares/error.middleware.js';
 import { logError, logInfo } from '../utils/logging.js';
 import { LikeableType } from '@prisma/client';
 
+const SERVICE_NAME = 'InteractionService';
+
 export const interactionService = {
   toggleLike: async (
     likeableId: number,
@@ -52,18 +54,17 @@ export const interactionService = {
         }
 
         logInfo(
-          'InteractionService',
+          SERVICE_NAME,
           `User ${userId} unliked ${likeableType} ${likeableId}`
         );
         return { liked: false, message: 'Unliked successfully.' };
       }
 
-      // Tăng bộ đếm và tạo bản ghi Like
       await tx.like.create({
         data: { userId, likeableType, likeableId },
       });
 
-      if (likeableType === 'PHOTO') {
+      if (likeableType === LikeableType.PHOTO) {
         await tx.photo.update({
           where: { id: likeableId },
           data: { likesCount: { increment: 1 } },
@@ -76,18 +77,17 @@ export const interactionService = {
       }
 
       logInfo(
-        'InteractionService',
+        SERVICE_NAME,
         `User ${userId} liked ${likeableType} ${likeableId}`
       );
       return { liked: true, message: 'Liked successfully.' };
     });
   },
 
-  // Toggle Follow / Unfollow người dùng khác
   toggleFollowUser: async (targetUserId: number, followerId: number) => {
     if (targetUserId === followerId) {
       logError(
-        'InteractionService',
+        SERVICE_NAME,
         `FollowAction - User ${followerId} tried to follow themselves`
       );
       throw new AppError(400, 'You cannot follow yourself.');
@@ -98,7 +98,7 @@ export const interactionService = {
     });
     if (!targetUser) {
       logError(
-        'InteractionService',
+        SERVICE_NAME,
         `FollowAction - Target user ${targetUserId} not found`
       );
       throw new AppError(404, 'User to follow not found.');
@@ -118,7 +118,6 @@ export const interactionService = {
           },
         });
 
-        // Cập nhật bộ đếm follow của cả 2 user
         await tx.user.update({
           where: { id: followerId },
           data: { followingsCount: { decrement: 1 } },
@@ -129,7 +128,7 @@ export const interactionService = {
         });
 
         logInfo(
-          'InteractionService',
+          SERVICE_NAME,
           `User ${followerId} unfollowed User ${targetUserId}`
         );
         return { followed: false, message: 'Unfollowed successfully.' };
@@ -148,10 +147,7 @@ export const interactionService = {
         data: { followersCount: { increment: 1 } },
       });
 
-      logInfo(
-        'InteractionService',
-        `User ${followerId} followed User ${targetUserId}`
-      );
+      logInfo(SERVICE_NAME, `User ${followerId} followed User ${targetUserId}`);
       return { followed: true, message: 'Followed successfully.' };
     });
   },

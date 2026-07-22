@@ -1,6 +1,5 @@
-import React from 'react';
 import SharedFeedLayout from '../../components/layouts/SharedFeedLayout';
-import { useFeedData } from '../../hooks/useFeedData';
+import { useFeedData } from './hooks/useFeedData';
 
 export default function Discover() {
   const {
@@ -10,13 +9,10 @@ export default function Discover() {
     displayedAlbums,
     isLoading,
     handleFollowToggle,
+    handleLikeToggle,
   } = useFeedData({
+    mode: 'discovery',
     itemsPerPage: 4,
-    onFollowAlert: (authorId, nextStatus) => {
-      alert(
-        `[API Discover] Đã thay đổi trạng thái follow của user ${authorId} thành: ${nextStatus}`
-      );
-    },
   });
 
   return (
@@ -27,6 +23,8 @@ export default function Discover() {
       activeTab={activeTab}
       onChangeTab={setActiveTab}
       onFollowToggle={handleFollowToggle}
+      onLikeToggle={handleLikeToggle}
+      hideFollowButton={false} 
     />
   );
 }

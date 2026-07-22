@@ -1,38 +1,60 @@
-import React from 'react';
-import BaseFormLayout from '../../components/layouts/BaseFormLayout';
+import MediaFormLayout from '../../components/layouts/MediaFormLayout';
 import PhotoFormFields from '../../components/forms/PhotoFormFields';
-import { usePhotoForm } from '../../hooks/usePhotoForm';
+import ConfirmModal from '../../components/ui/ConfirmModal';
+import { usePhotoForm } from '../Photos/hooks/usePhotoForm';
+import { ADMIN_CONSTANTS } from '../../constants/admin.constant';
 import { cn } from '../../utils/cn';
 
 export default function AdminEditPhoto() {
-  const { id, formData, setFormData, isLoading, handleSubmit, navigate } = usePhotoForm(true);
-
-  const handleAdminUpdateSubmit = async () => {
-    console.log('Gọi API ADMIN cưỡng chế cập nhật ảnh:', id, formData);
-    // await adminService.updateUserPhoto(id, formData);
-    navigate('/admin/photos');
-  };
-
-  const handleAdminDelete = async () => {
-    if (window.confirm('Admin có chắc chắn muốn gỡ bỏ bức ảnh này của User khỏi hệ thống?')) {
-      console.log('Gợi API ADMIN gỡ ảnh:', id);
-      // await adminService.deleteUserPhoto(id);
-      navigate('/admin/photos');
-    }
-  };
+  const {
+    formData,
+    setFormData,
+    isLoading,
+    isSubmitting,
+    isDeleting,
+    isConfirmOpen,
+    setIsConfirmOpen,
+    handleFileChange,
+    handleSubmit,
+    handleDelete,
+    handleConfirmDelete,
+  } = usePhotoForm(true, true);
 
   if (isLoading) {
-    return <div className={cn("p-6 text-center text-xs text-text-muted")}>Loading photo content for Admin...</div>;
+    return (
+      <div className={cn('p-6 text-center text-xs text-text-muted')}>
+        Loading photo content for Admin...
+      </div>
+    );
   }
 
   return (
-    <BaseFormLayout
-      title="Edit Photo - Admin Mode"
-      isEdit={true}
-      onSubmit={(e) => handleSubmit(e, handleAdminUpdateSubmit)}
-      onDelete={handleAdminDelete}
-    >
-      <PhotoFormFields formData={formData} setFormData={setFormData} />
-    </BaseFormLayout>
+    <>
+      <MediaFormLayout
+        title="Edit Photo - Admin Mode"
+        isEdit={true}
+        isSubmitting={isSubmitting}
+        onSubmit={handleSubmit}
+        onDelete={handleDelete}
+      >
+        <PhotoFormFields
+          formData={formData}
+          setFormData={setFormData}
+          onFileChange={handleFileChange}
+        />
+      </MediaFormLayout>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="Delete Photo (Admin)?"
+        description={ADMIN_CONSTANTS.CONFIRM.DELETE_PHOTO}
+        confirmText="Delete Photo"
+        cancelText="Cancel"
+        isDanger={true}
+        isLoading={isDeleting}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
   );
 }

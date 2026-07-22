@@ -1,99 +1,81 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import type { AdminPhotoData } from '../../types/admin';
-import { useAdminPagination } from '../../hooks/useAdminPagination';
+import { useState } from 'react';
+import type { AdminPhotoData } from '../../types/admin.type';
+import { useAdminPagination } from './hooks/useAdminPagination';
+import { useAdminPhotoAction } from './hooks/useAdminPhotoAction';
+import AdminPhotoGrid from './components/AdminPhotoGrid';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import PhotoModal from '../Photos/PhotoModal';
 import Pagination from '../../components/ui/Pagination';
-import { SquarePen } from 'lucide-react';
+import ConfirmModal from '../../components/ui/ConfirmModal';
+import { ADMIN_CONSTANTS } from '../../constants/admin.constant';
 import { cn } from '../../utils/cn';
 
 export default function AdminPhotos() {
+  const [previewPhoto, setPreviewPhoto] = useState<AdminPhotoData | null>(null);
+
   const {
     dataList: photos,
     currentPage,
     setCurrentPage,
     totalPages,
     isLoading,
+    resetCache,
   } = useAdminPagination<AdminPhotoData>({
-    endpoint: 'admin_photos',
-    itemsPerPage: 40,
+    endpoint: 'admin/photos',
+    uiItemsPerPage: 40,
+    bePagesPerBatch: 2,
   });
 
+  const {
+    deletePhoto,
+    handleConfirmDelete,
+    isConfirmOpen,
+    setIsConfirmOpen,
+    isDeleting,
+  } = useAdminPhotoAction(resetCache);
+
   if (isLoading) {
-    return (
-      <div
-        className={cn(
-          'w-full min-h-[500px] flex items-center justify-center p-6',
-          'bg-surface border border-border-default rounded-md'
-        )}
-      >
-        <div
-          className={cn(
-            'w-8 h-8 border-4 rounded-full animate-spin',
-            'border-border-default border-t-brand'
-          )}
-        />
-      </div>
-    );
+    return <LoadingSpinner minHeight="min-h-[500px]" />;
   }
 
   return (
     <div
       className={cn(
-        'w-full min-h-125 flex flex-col justify-between p-6',
+        'w-full min-h-[500px] flex flex-col justify-between p-6',
         'bg-surface border border-border-default rounded-md shadow-xs'
       )}
     >
-      <div
-        className={cn(
-          'grid grid-cols-2 gap-4',
-          'sm:grid-cols-3',
-          'lg:grid-cols-4'
-        )}
-      >
-        {photos.map((photo) => (
-          <div
-            key={photo.id}
-            className={cn(
-              'w-full aspect-square relative rounded-sm overflow-hidden shrink-0 select-none group',
-              'bg-background border border-border-default shadow-2xs'
-            )}
-          >
-            <img
-              src={photo.image_url}
-              alt={photo.title}
-              className={cn('absolute inset-0 w-full h-full object-cover')}
-            />
-
-            <div
-              className={cn(
-                'absolute top-0 left-0 right-0 bg-black/40 text-white px-2 py-1.5 flex items-center justify-between z-10'
-              )}
-            >
-              <span
-                className={cn(
-                  'text-[10px] truncate pr-2 font-medium w-full block text-left'
-                )}
-              >
-                {photo.title}
-              </span>
-              <Link
-                to={`/admin/photos/${photo.id}/edit`}
-                className={cn(
-                  'text-white hover:text-white/80 shrink-0',
-                  'active:scale-90 transform transition-transform'
-                )}
-              >
-                <SquarePen size={16} strokeWidth={1.25} />
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+      <AdminPhotoGrid
+        photos={photos}
+        isDeleting={isDeleting}
+        onPreviewPhoto={(p) => setPreviewPhoto(p as AdminPhotoData)}
+        onDeletePhoto={deletePhoto}
+      />
 
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
+      />
+
+      <PhotoModal
+        isOpen={Boolean(previewPhoto)}
+        imageUrl={previewPhoto?.media?.imageUrl || ''}
+        title={previewPhoto?.title || ''}
+        description={previewPhoto?.description || 'No description provided.'}
+        onClose={() => setPreviewPhoto(null)}
+      />
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="Delete Photo (Admin)?"
+        description={ADMIN_CONSTANTS.CONFIRM.DELETE_PHOTO}
+        confirmText="Delete Photo"
+        cancelText="Cancel"
+        isDanger={true}
+        isLoading={isDeleting}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
       />
     </div>
   );

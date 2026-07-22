@@ -46,8 +46,9 @@ model User {
   photos    Photo[]
   albums    Album[]
   likes     Like[]
-  following Follow[] @relation("UserFollowing")
+
   followers Follow[] @relation("UserFollowers")
+  followings Follow[] @relation("UserFollowings")
 
   @@map("users")
 }
@@ -124,9 +125,8 @@ model Follow {
   followingId Int      @map("following_id")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
 
-  follower  User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
-  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
-
+  follower  User @relation("UserFollowings", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
   @@id([followerId, followingId])
   @@map("follows")
 }

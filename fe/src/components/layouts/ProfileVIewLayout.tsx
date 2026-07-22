@@ -1,9 +1,9 @@
 import React from 'react';
 import ProfileHeader from '../../pages/Profile/components/ProfileHeader';
-import type { ProfileTab, ProfileStats } from '../../types/profile';
+import type { ProfileTab, ProfileStats } from '../../types/profile.type';
 import { cn } from '../../utils/cn';
 
-interface ProfileLayoutProps {
+interface ProfileViewLayoutProps {
   firstName: string | undefined;
   lastName: string | undefined;
   avatarUrl: string;
@@ -14,7 +14,7 @@ interface ProfileLayoutProps {
   renderTabContent: (activeTab: ProfileTab) => React.ReactNode;
 }
 
-export default function ProfileLayout({
+export default function ProfileViewLayout({
   firstName,
   lastName,
   avatarUrl,
@@ -23,7 +23,7 @@ export default function ProfileLayout({
   onChangeTab,
   renderHeaderActions,
   renderTabContent,
-}: ProfileLayoutProps) {
+}: ProfileViewLayoutProps) {
   return (
     <div
       className={cn(

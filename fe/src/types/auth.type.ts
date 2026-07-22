@@ -1,29 +1,22 @@
-export const UserRole = {
-  GUEST: 'GUEST',
-  USER: 'USER',
-  ADMIN: 'ADMIN',
-} as const;
-
-export type UserRoleType = (typeof UserRole)[keyof typeof UserRole];
+import { type ApiResponse } from './common.type';
+import type { UserRoleType } from './enum.type';
 
 export interface AuthUser {
   id: number;
   email: string;
-  first_name?: string;
-  last_name?: string;
-  avatar_url?: string | null;
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string | null;
   role: UserRoleType;
 }
 
-export interface LoginResponse {
-  status: string;
-  message: string;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-    user: AuthUser;
-  };
-}
+export type LoginResponse = ApiResponse<{
+  accessToken: string;
+  refreshToken: string;
+  user: AuthUser;
+}>;
+
+export type CurrentUserResponse = ApiResponse<AuthUser>;
 
 export interface SessionResponse {
   isLoggedIn: boolean;

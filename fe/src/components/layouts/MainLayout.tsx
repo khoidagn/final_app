@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
@@ -17,7 +16,7 @@ const MainLayout = () => {
 
       <div
         className={cn(
-          'w-full px-6 py-8 flex-1 items-start gap-6 grid',
+          'w-full sm:px-6 sm:py-8 flex-1 items-start gap-6 grid',
           'grid-cols-1',
           'md:grid-cols-[180px_1fr]',
           'lg:grid-cols-[120px_1fr_120px]'

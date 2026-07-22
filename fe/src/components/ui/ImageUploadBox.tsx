@@ -1,14 +1,15 @@
-import React from 'react';
 import { cn } from '../../utils/cn';
 
 interface ImageUploadBoxProps {
   imageSrc?: string;
   onRemove?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function ImageUploadBox({
   imageSrc,
   onRemove,
+  onChange,
 }: ImageUploadBoxProps) {
   return (
     <div className={cn('w-32 h-32 relative shrink-0')}>
@@ -43,7 +44,12 @@ export default function ImageUploadBox({
             'border-border-default bg-background/50 hover:bg-background'
           )}
         >
-          <input type="file" accept="image/*" className={cn('hidden')} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={onChange}
+            className={cn('hidden')}
+          />
           <span
             className={cn(
               'text-3xl font-light transition-colors',

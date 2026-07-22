@@ -21,14 +21,13 @@ export default function FollowButton({
         'font-bold px-3 py-1 rounded-full border cursor-pointer focus:outline-none',
         'transition-all duration-200 transform',
         textSizeClass,
-        isFollowing &&
-          'bg-accent text-white border-accent hover:bg-accent-hover',
+        isFollowing && 'bg-surface text-accent border-accent hover:bg-accent/5',
         !isFollowing &&
-          'bg-surface text-accent border-accent hover:bg-accent/5',
+          'bg-accent text-white border-accent hover:bg-accent-hover',
         'active:scale-95'
       )}
     >
-      {isFollowing ? 'Following' : 'Follow'}
+      {isFollowing ? 'Unfollow' : 'Follow'}
     </button>
   );
 }

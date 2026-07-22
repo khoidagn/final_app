@@ -1,25 +1,29 @@
 import React from 'react';
 import ImageUploadBox from '../ui/ImageUploadBox';
 import { cn } from '../../utils/cn';
-
-interface PhotoFormData {
-  title: string;
-  sharingMode: string;
-  description: string;
-  previewSrc: string;
-}
+import { SharingMode, type SharingModeType } from '../../types/enum.type';
+import type { PhotoFormData } from '../../types/photo.type';
 
 interface PhotoFormFieldsProps {
   formData: PhotoFormData;
   setFormData: React.Dispatch<React.SetStateAction<PhotoFormData>>;
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function PhotoFormFields({
   formData,
   setFormData,
+  onFileChange,
 }: PhotoFormFieldsProps) {
-  const handleChange = (field: keyof PhotoFormData, value: string) => {
+  const handleChange = <K extends keyof PhotoFormData>(
+    field: K,
+    value: PhotoFormData[K]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({ ...prev, previewSrc: '', imageFile: null }));
   };
 
   return (
@@ -52,19 +56,25 @@ export default function PhotoFormFields({
           </label>
           <select
             value={formData.sharingMode}
-            onChange={(e) => handleChange('sharingMode', e.target.value)}
+            onChange={(e) =>
+              handleChange('sharingMode', e.target.value as SharingModeType)
+            }
             className={cn(
               'w-36 bg-surface border rounded-sm px-3 py-1.5 text-xs focus:outline-none text-text-primary cursor-pointer transition-all',
               'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
             )}
           >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
+            <option value={SharingMode.PUBLIC}>Public</option>
+            <option value={SharingMode.PRIVATE}>Private</option>
           </select>
         </div>
 
         <div className={cn('mt-2')}>
-          <ImageUploadBox imageSrc={formData.previewSrc} />
+          <ImageUploadBox
+            imageSrc={formData.previewSrc}
+            onChange={onFileChange}
+            onRemove={handleRemoveImage}
+          />
         </div>
       </div>
 

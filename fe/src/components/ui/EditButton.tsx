@@ -1,4 +1,4 @@
-import React, { type MouseEvent } from 'react';
+import { type MouseEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 

@@ -5,7 +5,7 @@ import { logInfo, logError } from '../src/utils/logging.js'; // Sử dụng bộ
 const SERVICE_NAME = 'MasterSeed';
 
 // Mật khẩu chung mã hóa cho tất cả tài khoản test để tiện đăng nhập thử nghiệm
-const PASSWORD_RAW = 'mysecurepassword123';
+const PASSWORD_RAW = 'khoi123';
 
 // Kho ảnh ảo mock từ Unsplash chất lượng cao theo nhiều chủ đề
 const MOCK_IMAGES = [
@@ -28,13 +28,6 @@ async function runMasterSeed() {
   );
 
   try {
-    // 0. Dọn sạch dữ liệu cũ theo thứ tự ưu tiên ràng buộc (Tránh lỗi Foreign Key)
-    await prisma.like.deleteMany({});
-    await prisma.follow.deleteMany({});
-    await prisma.albumMedia.deleteMany({});
-    await prisma.photo.deleteMany({});
-    await prisma.album.deleteMany({});
-    await prisma.media.deleteMany({});
     await prisma.user.deleteMany({});
 
     logInfo(
@@ -78,9 +71,9 @@ async function runMasterSeed() {
     for (let i = 1; i <= 30; i++) {
       const user = await prisma.user.create({
         data: {
-          firstName: `UserFirstName_${i}`,
-          lastName: `UserLastName_${i}`,
-          email: `user.${i}@example.com`, 
+          firstName: `FiName_${i}`,
+          lastName: `LaName_${i}`,
+          email: `user.${i}@example.com`,
           passwordHash: hashedPassword,
           role: Role.USER,
           isActive: Math.random() > 0.1,

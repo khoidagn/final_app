@@ -12,8 +12,8 @@ This project is currently under development.
 
 - ✅ Frontend implementation completed
 - ✅ Mock API using JSON Server
-- 🚧 Backend implementation in progress
-- 🚧 Authentication and database integration planned
+- ✅ Backend implementation in progress
+- ✅ Authentication and database integration planned
 
 ---
 

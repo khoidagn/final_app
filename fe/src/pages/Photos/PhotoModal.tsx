@@ -1,31 +1,34 @@
 import React, { useState } from 'react';
-import { type PhotoData } from '../../types/feeds';
 import { cn } from '../../utils/cn';
 
 interface PhotoModalProps {
-  data: PhotoData | null;
+  isOpen: boolean;
+  imageUrl: string;
+  title: string;
+  description?: string;
   onClose: () => void;
 }
 
-export default function PhotoModal({ data, onClose }: PhotoModalProps) {
+export default function PhotoModal({
+  isOpen,
+  imageUrl,
+  title,
+  description = '',
+  onClose,
+}: PhotoModalProps) {
   const [isSuperVertical, setIsSuperVertical] = useState(false);
 
-  if (!data) return null;
+  if (!isOpen) return null;
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { naturalWidth, naturalHeight } = e.currentTarget;
-
-    if (naturalHeight / naturalWidth > 1.2) {
-      setIsSuperVertical(true);
-    } else {
-      setIsSuperVertical(false);
-    }
+    setIsSuperVertical(naturalHeight / naturalWidth > 1.2);
   };
 
   return (
     <div
       className={cn(
-        'fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50'
+        'fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-100'
       )}
       onClick={onClose}
     >
@@ -42,7 +45,7 @@ export default function PhotoModal({ data, onClose }: PhotoModalProps) {
           )}
         >
           <h2 className={cn('text-sm font-bold text-text-primary truncate')}>
-            {data.title}
+            {title}
           </h2>
           <button
             onClick={onClose}
@@ -62,8 +65,8 @@ export default function PhotoModal({ data, onClose }: PhotoModalProps) {
           )}
         >
           <img
-            src={data.image_url}
-            alt={data.title}
+            src={imageUrl}
+            alt={title}
             onLoad={handleImageLoad}
             className={cn(
               'w-auto h-full max-h-[calc(60vh-24px)] object-contain block rounded-sm'
@@ -81,7 +84,7 @@ export default function PhotoModal({ data, onClose }: PhotoModalProps) {
               'text-xs text-text-secondary leading-relaxed break-words whitespace-normal pt-2'
             )}
           >
-            {data.description}
+            {description}
           </p>
         </div>
       </div>

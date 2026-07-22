@@ -1,5 +1,5 @@
-import React from 'react';
-import { type FeedTabType } from '../../../types/feeds';
+import { type FeedTabType } from '../../../types/feeds.type';
+import { FEED_CONSTANTS } from '../../../constants/feed.constant';
 import { cn } from '../../../utils/cn';
 
 interface FeedTabsProps {
@@ -16,6 +16,7 @@ export default function FeedTabs({ activeTab, onChangeTab }: FeedTabsProps) {
       )}
     >
       <button
+        type="button"
         onClick={() => onChangeTab('photo')}
         className={cn(
           'px-4 py-2 uppercase tracking-wider focus:outline-none cursor-pointer transition-all transform',
@@ -25,9 +26,10 @@ export default function FeedTabs({ activeTab, onChangeTab }: FeedTabsProps) {
             : 'bg-surface text-brand hover:bg-background'
         )}
       >
-        Photo
+        {FEED_CONSTANTS.UI.PHOTOS_TAB}
       </button>
       <button
+        type="button"
         onClick={() => onChangeTab('album')}
         className={cn(
           'px-4 py-2 uppercase tracking-wider focus:outline-none cursor-pointer transition-all transform',
@@ -37,7 +39,7 @@ export default function FeedTabs({ activeTab, onChangeTab }: FeedTabsProps) {
             : 'bg-surface text-brand hover:bg-background'
         )}
       >
-        Album
+        {FEED_CONSTANTS.UI.ALBUMS_TAB}
       </button>
     </div>
   );

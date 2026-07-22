@@ -10,10 +10,19 @@ import { logInfo } from './utils/logging.js';
 import config from './config/env.js';
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    // origin: 'http://localhost:5173',
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
+app.use('/uploads', express.static('uploads'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/v1', rootRouter);
 app.get('/', (req: Request, res: Response) => {

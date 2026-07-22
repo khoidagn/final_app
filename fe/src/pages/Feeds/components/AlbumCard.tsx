@@ -1,86 +1,83 @@
-import React, { type MouseEvent } from 'react';
-import type { AlbumData } from '../../../types/feeds';
+import type { AlbumData } from '../../../types/album.type';
 import FollowButton from '../../../components/ui/FollowButton';
 import LikeButton from '../../../components/ui/LikeButton';
 import AuthorBadge from './AuthorBadge';
+import { getFullName } from '../../../utils/string';
 import { cn } from '../../../utils/cn';
 
 interface AlbumCardProps {
   data: AlbumData;
-  onFollowToggle?: (authorId: number, currentStatus: boolean) => void;
+  onFollowToggle?: (
+    authorId: number,
+    currentStatus: boolean,
+    authorName: string
+  ) => void;
   onCardClick?: () => void;
+  onLikeToggle?: (type: 'photo' | 'album', id: number) => void;
+  hideFollowButton?: boolean;
 }
 
 export default function AlbumCard({
   data,
   onFollowToggle,
   onCardClick,
+  onLikeToggle,
+  hideFollowButton = false,
 }: AlbumCardProps) {
-  if (!data || !data.author) return null;
+  if (!data || !data.user) return null;
 
-  const images = data?.images || [];
-  const [coverImg, secondImg, thirdImg] = images;
-
-  const layer2 = secondImg || coverImg || '/placeholder.jpg';
-  const layer3 = thirdImg || coverImg || '/placeholder.jpg';
-
-  const stopPropagation = (e: MouseEvent) => {
-    e.stopPropagation();
-  };
+  const authorInfo = data.user;
+  const albumMedias = data.albumMedias || [];
+  const authorName = getFullName(authorInfo.firstName, authorInfo.lastName);
+  const coverImg = albumMedias[0]?.media?.imageUrl || '/placeholder.jpg';
+  const layer2 = albumMedias[1]?.media?.imageUrl || coverImg;
+  const layer3 = albumMedias[2]?.media?.imageUrl || coverImg;
 
   return (
     <div
       onClick={onCardClick}
       className={cn(
-        'flex flex-col w-full overflow-hidden transition-all duration-200',
-        'md:flex-row',
+        'flex flex-col w-full overflow-hidden transition-all duration-200 md:flex-row',
         'bg-background border border-border-default rounded-md shadow-2xs hover:shadow-sm',
         onCardClick && 'cursor-pointer active:scale-[0.99] transform'
       )}
     >
       <div
         className={cn(
-          'w-full aspect-square flex items-center justify-center p-4 relative shrink-0 overflow-hidden select-none',
-          'md:w-1/2',
-          'bg-background/40'
+          'w-full aspect-square flex items-center justify-center p-4 relative shrink-0 overflow-hidden select-none md:w-1/2 bg-background/40'
         )}
       >
         <div
           className={cn(
-            'absolute w-[80%] h-[80%] rounded-xs overflow-hidden border shadow-xs opacity-60',
-            'border-surface bg-surface transform rotate-12'
+            'absolute w-[80%] h-[80%] rounded-xs overflow-hidden border shadow-xs opacity-60 border-surface bg-surface transform rotate-12'
           )}
         >
           <img
             src={layer3}
             alt="Layer 3"
-            className={cn('w-full h-full object-cover')}
+            className="w-full h-full object-cover"
           />
         </div>
-
         <div
           className={cn(
-            'absolute w-[80%] h-[80%] rounded-xs overflow-hidden border shadow-xs opacity-80',
-            'border-surface bg-surface transform rotate-6'
+            'absolute w-[80%] h-[80%] rounded-xs overflow-hidden border shadow-xs opacity-80 border-surface bg-surface transform rotate-6'
           )}
         >
           <img
             src={layer2}
             alt="Layer 2"
-            className={cn('w-full h-full object-cover')}
+            className="w-full h-full object-cover"
           />
         </div>
-
         <div
           className={cn(
-            'absolute w-[83%] h-[83%] rounded-xs overflow-hidden border-2 shadow-md z-10',
-            'border-surface bg-surface transform'
+            'absolute w-[83%] h-[83%] rounded-xs overflow-hidden border-2 shadow-md z-10 border-surface bg-surface'
           )}
         >
           <img
-            src={coverImg || '/placeholder.jpg'}
+            src={coverImg}
             alt="Cover"
-            className={cn('w-full h-full object-cover')}
+            className="w-full h-full object-cover"
           />
         </div>
       </div>
@@ -92,14 +89,18 @@ export default function AlbumCard({
       >
         <div>
           <div className={cn('flex items-center justify-between mb-3')}>
-            <AuthorBadge author={data.author} />
+            <AuthorBadge author={authorInfo} />
 
-            {onFollowToggle && (
-              <div onClick={stopPropagation}>
+            {!hideFollowButton && onFollowToggle && (
+              <div onClick={(e) => e.stopPropagation()}>
                 <FollowButton
-                  isFollowing={data.author.is_following}
+                  isFollowing={authorInfo.isFollowing || false}
                   onToggle={() =>
-                    onFollowToggle(data.author.id, data.author.is_following)
+                    onFollowToggle(
+                      authorInfo.id,
+                      authorInfo.isFollowing || false,
+                      authorName
+                    )
                   }
                 />
               </div>
@@ -116,23 +117,25 @@ export default function AlbumCard({
               'text-[11px] text-text-secondary leading-tight line-clamp-4 break-words'
             )}
           >
-            {data.description}
+            {data.description || 'No description provided.'}
           </p>
         </div>
 
         <div
           className={cn(
-            'flex items-center justify-between text-[10px] mt-4 pt-2 border-t',
-            'md:mt-2',
-            'text-text-muted border-border-muted'
+            'flex items-center justify-between text-[10px] mt-4 pt-2 border-t md:mt-2 text-text-muted border-border-muted'
           )}
         >
-          <LikeButton
-            initialLikes={data.likes_count}
-            initialIsLiked={false}
-            photoId={data.id}
-          />
-          <div>{data.created_at}</div>
+          <time dateTime={data.createdAt}>
+            {new Date(data.createdAt).toLocaleDateString()}
+          </time>
+          <div onClick={(e) => e.stopPropagation()}>
+            <LikeButton
+              initialLikes={data.likesCount || 0}
+              initialIsLiked={data.isLiked || false}
+              onToggle={() => onLikeToggle?.('album', data.id)}
+            />
+          </div>
         </div>
       </div>
     </div>

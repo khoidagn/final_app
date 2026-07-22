@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ProfileTab, ProfileStats } from '../../../types/profile';
+import type { ProfileTab, ProfileStats } from '../../../types/profile.type';
 import { cn } from '../../../utils/cn';
 
 interface ProfileTabsProps {

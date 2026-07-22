@@ -1,6 +1,5 @@
-import React from 'react';
 import SharedFeedLayout from '../../components/layouts/SharedFeedLayout';
-import { useFeedData } from '../../hooks/useFeedData';
+import { useFeedData } from './hooks/useFeedData';
 
 export default function Feeds() {
   const {
@@ -9,7 +8,9 @@ export default function Feeds() {
     displayedPhotos,
     displayedAlbums,
     isLoading,
-  } = useFeedData({ itemsPerPage: 4 });
+    handleFollowToggle,
+    handleLikeToggle,
+  } = useFeedData({ mode: 'feed', itemsPerPage: 4 });
 
   return (
     <SharedFeedLayout
@@ -18,6 +19,9 @@ export default function Feeds() {
       isLoading={isLoading}
       activeTab={activeTab}
       onChangeTab={setActiveTab}
+      onFollowToggle={handleFollowToggle}
+      onLikeToggle={handleLikeToggle}
+      hideFollowButton={true} 
     />
   );
 }

@@ -1,16 +1,18 @@
 import React from 'react';
 import { cn } from '../../utils/cn';
+import type { AlbumImageLocal } from '../../types/feeds.type';
+import { SharingMode, type SharingModeType } from '../../types/enum.type';
 
 interface AlbumFormFieldsProps {
   title: string;
   setTitle: (value: string) => void;
-  sharingMode: string;
-  setSharingMode: (value: string) => void;
+  sharingMode: SharingModeType;
+  setSharingMode: React.Dispatch<React.SetStateAction<SharingModeType>>;
   description: string;
   setDescription: (value: string) => void;
-  albumImages: string[];
+  albumImages: AlbumImageLocal[];
   onAddImages: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onRemoveImage: (index: number) => void;
+  onRemoveImage: (id: string | number) => void;
 }
 
 export default function AlbumFormFields({
@@ -54,14 +56,14 @@ export default function AlbumFormFields({
           </label>
           <select
             value={sharingMode}
-            onChange={(e) => setSharingMode(e.target.value)}
+            onChange={(e) => setSharingMode(e.target.value as SharingModeType)}
             className={cn(
               'w-36 bg-surface border rounded-sm px-3 py-1.5 text-xs focus:outline-none text-text-primary cursor-pointer transition-all',
               'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
             )}
           >
-            <option value="public">Public</option>
-            <option value="private">Private</option>
+            <option value={SharingMode.PUBLIC}>Public</option>
+            <option value={SharingMode.PRIVATE}>Private</option>
           </select>
         </div>
 
@@ -76,22 +78,22 @@ export default function AlbumFormFields({
               'border-border-default bg-background/50'
             )}
           >
-            {albumImages.map((src, index) => (
+            {albumImages.map((img) => (
               <div
-                key={index}
+                key={img.id}
                 className={cn(
                   'aspect-square relative rounded-xs overflow-hidden border group',
                   'border-border-default'
                 )}
               >
                 <img
-                  src={src}
+                  src={img.previewUrl}
                   alt="Preview"
                   className={cn('w-full h-full object-cover')}
                 />
                 <button
                   type="button"
-                  onClick={() => onRemoveImage(index)}
+                  onClick={() => onRemoveImage(img.id)}
                   className={cn(
                     'absolute inset-0 bg-black/40 text-white font-bold opacity-0 flex items-center justify-center text-xs cursor-pointer transition-opacity duration-200',
                     'group-hover:opacity-100',

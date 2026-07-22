@@ -4,7 +4,10 @@ import PhotoGrid from '../../pages/Feeds/components/PhotoGrid';
 import AlbumGrid from '../../pages/Feeds/components/AlbumGrid';
 import PhotoModal from '../../pages/Photos/PhotoModal';
 import AlbumModal from '../../pages/Albums/AlbumModal';
-import type { FeedTabType, PhotoData, AlbumData } from '../../types/feeds';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import type { FeedTabType } from '../../types/feeds.type';
+import type { PhotoData } from '../../types/photo.type';
+import type { AlbumData } from '../../types/album.type';
 import { cn } from '../../utils/cn';
 
 interface SharedFeedLayoutProps {
@@ -14,6 +17,8 @@ interface SharedFeedLayoutProps {
   activeTab: FeedTabType;
   onChangeTab: (tab: FeedTabType) => void;
   onFollowToggle?: (authorId: number, currentStatus: boolean) => void;
+  onLikeToggle?: (type: 'photo' | 'album', id: number) => void;
+  hideFollowButton?: boolean;
 }
 
 export default function SharedFeedLayout({
@@ -23,20 +28,32 @@ export default function SharedFeedLayout({
   activeTab,
   onChangeTab,
   onFollowToggle,
+  onLikeToggle,
+  hideFollowButton = false,
 }: SharedFeedLayoutProps) {
   const [selectedPhotoId, setSelectedPhotoId] = useState<number | null>(null);
   const [selectedAlbumId, setSelectedAlbumId] = useState<number | null>(null);
 
-  const currentSelectedPhoto =
-    photos.find((p) => p.id === selectedPhotoId) || null;
-  const currentSelectedAlbum =
-    albums.find((a) => a.id === selectedAlbumId) || null;
+  const currentSelectedPhoto = Array.isArray(photos)
+    ? photos.find((p) => p.id === selectedPhotoId) || null
+    : null;
+
+  const currentSelectedAlbum = Array.isArray(albums)
+    ? albums.find((a) => a.id === selectedAlbumId) || null
+    : null;
+
+  const currentAlbumImageUrls =
+    (currentSelectedAlbum?.albumMedias
+      ?.map((item) => item.media?.imageUrl)
+      .filter(Boolean) as string[]) || [];
 
   return (
     <div
       className={cn(
-        'w-full flex flex-col items-center pt-6 p-4',
-        'bg-surface border border-border-default rounded-md shadow-xs'
+        'w-full flex flex-col items-center',
+        'pt-4 pb-4 px-0 sm:p-6',
+        'bg-surface',
+        'border-0 sm:border sm:border-border-default rounded-none sm:rounded-md shadow-none sm:shadow-xs'
       )}
     >
       <FeedTabs activeTab={activeTab} onChangeTab={onChangeTab} />
@@ -46,35 +63,35 @@ export default function SharedFeedLayout({
           photos={photos}
           onSelectPhoto={setSelectedPhotoId}
           onFollowToggle={onFollowToggle}
+          onLikeToggle={onLikeToggle}
+          hideFollowButton={hideFollowButton}
         />
       ) : (
         <AlbumGrid
           albums={albums}
           onSelectAlbum={setSelectedAlbumId}
           onFollowToggle={onFollowToggle}
+          onLikeToggle={onLikeToggle}
+          hideFollowButton={hideFollowButton}
         />
       )}
 
-      {isLoading && (
-        <div className={cn('mb-4')}>
-          <div
-            className={cn(
-              'w-8 h-8 border-4 rounded-full animate-spin',
-              'border-border-default border-t-brand'
-            )}
-          />
-        </div>
-      )}
+      {isLoading && <LoadingSpinner />}
 
-      {selectedPhotoId && (
-        <PhotoModal
-          data={currentSelectedPhoto}
-          onClose={() => setSelectedPhotoId(null)}
-        />
-      )}
-      {selectedAlbumId && (
+      <PhotoModal
+        isOpen={selectedPhotoId !== null && currentSelectedPhoto !== null}
+        title={currentSelectedPhoto?.title || ''}
+        description={currentSelectedPhoto?.description}
+        imageUrl={currentSelectedPhoto?.media?.imageUrl || ''}
+        onClose={() => setSelectedPhotoId(null)}
+      />
+
+      {selectedAlbumId && currentSelectedAlbum && (
         <AlbumModal
-          data={currentSelectedAlbum}
+          isOpen={selectedAlbumId !== null && currentSelectedAlbum !== null}
+          title={currentSelectedAlbum?.title || ''}
+          description={currentSelectedAlbum?.description}
+          imageUrls={currentAlbumImageUrls}
           onClose={() => setSelectedAlbumId(null)}
         />
       )}

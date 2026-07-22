@@ -13,8 +13,16 @@ export default [
       '@typescript-eslint': tsPlugin,
     },
     rules: {
+      'no-unused-vars': 'off',
       'no-console': 'warn',
-      '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       semi: ['error', 'always'],
     },
   },

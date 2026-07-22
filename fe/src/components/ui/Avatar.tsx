@@ -1,11 +1,10 @@
-import React from 'react';
 import { getAvatarInitials } from '../../utils/string';
 import { cn } from '../../utils/cn';
 
 interface AvatarProps {
   firstName: string | undefined;
   lastName: string | undefined;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
   sizeClass?: string;
   textSizeClass?: string;
   bgColorClass?: string;
@@ -21,7 +20,7 @@ export default function Avatar({
   bgColorClass = 'bg-surface',
   textColorClass = 'text-brand',
 }: AvatarProps) {
-  if (avatarUrl) {
+  if (avatarUrl && avatarUrl.trim() !== '') {
     return (
       <div
         className={cn(
@@ -33,6 +32,9 @@ export default function Avatar({
           src={avatarUrl}
           alt="User Avatar"
           className={cn('w-full h-full object-cover')}
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
         />
       </div>
     );
@@ -41,14 +43,14 @@ export default function Avatar({
   return (
     <div
       className={cn(
-        'rounded-full font-bold flex items-center justify-center shrink-0 select-none',
+        'rounded-full font-bold flex items-center justify-center shrink-0 select-none uppercase',
         sizeClass,
         bgColorClass,
         textColorClass,
         textSizeClass
       )}
     >
-      {getAvatarInitials(firstName, lastName)}
+      {getAvatarInitials(firstName, lastName) || '?'}
     </div>
   );
 }

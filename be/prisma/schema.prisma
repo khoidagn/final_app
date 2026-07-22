@@ -7,6 +7,19 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  GUEST
+  USER
+  ADMIN
+
+  @@map("role")
+}
+
+enum SharingMode {
+  PUBLIC
+  PRIVATE
+}
+
 enum LikeableType {
   PHOTO
   ALBUM
@@ -21,7 +34,7 @@ model User {
   email           String    @unique @db.VarChar(255)
   passwordHash    String    @map("password_hash") @db.VarChar(255)
   avatarUrl       String?   @map("avatar_url") @db.VarChar(255)
-  role            String    @default("user") @db.VarChar(20)
+  role            Role      @default(USER)
   isActive        Boolean   @default(true) @map("is_active") 
   confirmedAt     DateTime? @map("confirmed_at") @db.Timestamp
   lastLogin       DateTime? @map("last_login") @db.Timestamp
@@ -33,8 +46,9 @@ model User {
   photos    Photo[]
   albums    Album[]
   likes     Like[]
-  following Follow[] @relation("UserFollowing")
+
   followers Follow[] @relation("UserFollowers")
+  followings Follow[] @relation("UserFollowings")
 
   @@map("users")
 }
@@ -50,15 +64,15 @@ model Media {
 }
 
 model Photo {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id") 
-  mediaId     Int      @unique @map("media_id")
-  title       String   @db.VarChar(140)
-  description String   @db.VarChar(300)
-  sharingMode String   @default("public") @map("sharing_mode") @db.VarChar(20)
-  likesCount  Int      @default(0) @map("likes_count")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  id          Int         @id @default(autoincrement())
+  userId      Int         @map("user_id") 
+  mediaId     Int         @unique @map("media_id")
+  title       String      @db.VarChar(140)
+  description String      @db.VarChar(300)
+  sharingMode SharingMode @default(PUBLIC) @map("sharing_mode")
+  likesCount  Int         @default(0) @map("likes_count")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp
 
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   media Media @relation(fields: [mediaId], references: [id], onDelete: Cascade)
@@ -67,14 +81,14 @@ model Photo {
 }
 
 model Album {
-  id          Int      @id @default(autoincrement())
-  userId      Int      @map("user_id")
-  title       String   @db.VarChar(140)
-  description String   @db.VarChar(300)
-  sharingMode String   @default("public") @map("sharing_mode") @db.VarChar(20)
-  likesCount  Int      @default(0) @map("likes_count")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp
+  id          Int         @id @default(autoincrement())
+  userId      Int         @map("user_id")
+  title       String      @db.VarChar(140)
+  description String      @db.VarChar(300)
+  sharingMode SharingMode @default(PUBLIC) @map("sharing_mode")
+  likesCount  Int         @default(0) @map("likes_count")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamp
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamp
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   albumMedias AlbumMedia[]
@@ -111,9 +125,8 @@ model Follow {
   followingId Int      @map("following_id")
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp
 
-  follower  User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
-  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
-
+  follower  User @relation("UserFollowings", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
   @@id([followerId, followingId])
   @@map("follows")
 }

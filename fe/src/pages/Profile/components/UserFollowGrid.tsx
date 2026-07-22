@@ -1,5 +1,5 @@
-import React from 'react';
-import type { UserFollowData, ProfileTab } from '../../../types/profile';
+import type { ProfileTab } from '../../../types/profile.type';
+import type { UserFollowData } from '../../../types/user.type';
 import UserCard from './UserCard';
 import { cn } from '../../../utils/cn';
 

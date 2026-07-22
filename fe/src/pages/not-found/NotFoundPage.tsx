@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileQuestion } from 'lucide-react';
 import { cn } from '../../utils/cn';

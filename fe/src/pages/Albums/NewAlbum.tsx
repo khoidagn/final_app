@@ -1,6 +1,6 @@
-import BaseFormLayout from '../../components/layouts/BaseFormLayout';
+import MediaFormLayout from '../../components/layouts/MediaFormLayout';
 import AlbumFormFields from '../../components/forms/AlbumFormFields';
-import { useAlbumForm } from '../../hooks/useAlbumForm';
+import { useAlbumForm } from './hooks/useAlbumForm';
 
 export default function NewAlbum() {
   const {
@@ -14,12 +14,14 @@ export default function NewAlbum() {
     handleAddImages,
     handleRemoveImage,
     handleSubmit,
+    isSubmitting,
   } = useAlbumForm(false);
 
   return (
-    <BaseFormLayout
+    <MediaFormLayout
       title="New Album"
       isEdit={false}
+      isSubmitting={isSubmitting}
       onSubmit={handleSubmit}
       backTo="/my-profile?tab=albums"
     >
@@ -34,6 +36,6 @@ export default function NewAlbum() {
         onAddImages={handleAddImages}
         onRemoveImage={handleRemoveImage}
       />
-    </BaseFormLayout>
+    </MediaFormLayout>
   );
 }

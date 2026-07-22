@@ -25,6 +25,7 @@ const options: swaggerJSDoc.Options = {
       },
     },
     paths: {
+      /* ---------------- MODULE AUTH ---------------- */
       '/auth/register': {
         post: {
           tags: ['Authentication'],
@@ -174,7 +175,7 @@ const options: swaggerJSDoc.Options = {
                   properties: {
                     email: {
                       type: 'string',
-                      example: 'khoi.vo2026@example.com',
+                      example: 'admin.fotobook@example.com',
                     },
                     password: {
                       type: 'string',
@@ -213,17 +214,6 @@ const options: swaggerJSDoc.Options = {
           summary: 'Log out from the system',
           responses: {
             200: { description: 'Session cookies cleared successfully.' },
-          },
-        },
-      },
-      '/auth/me': {
-        get: {
-          tags: ['Authentication'],
-          summary: 'Retrieve current authenticated user profile',
-          security: [{ BearerAuth: [] }],
-          responses: {
-            200: { description: 'Profile data retrieved successfully.' },
-            401: { description: 'Token is expired or invalid.' },
           },
         },
       },
@@ -353,7 +343,55 @@ const options: swaggerJSDoc.Options = {
             'Lấy thông tin profile và các chỉ số thống kê của chính mình',
           security: [{ BearerAuth: [] }],
           responses: {
-            200: { description: 'Trả về thông tin cá nhân thành công.' },
+            200: {
+              description: 'Trả về thông tin cá nhân thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example: 'Profile retrieved successfully',
+                      },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer', example: 102 },
+                          firstName: { type: 'string', example: 'John' },
+                          lastName: { type: 'string', example: 'Doe' },
+                          email: {
+                            type: 'string',
+                            example: 'john.doe@example.com',
+                          },
+                          avatarUrl: {
+                            type: 'string',
+                            example:
+                              'https://res.cloudinary.com/demo/image/upload/avatar.jpg',
+                          },
+                          role: { type: 'string', example: 'USER' },
+                          followersCount: { type: 'integer', example: 6 },
+                          followingsCount: { type: 'integer', example: 7 },
+                          isFollowing: {
+                            type: 'boolean',
+                            example: false,
+                            description: 'Mặc định false đối với chính chủ',
+                          },
+                          _count: {
+                            type: 'object',
+                            properties: {
+                              photos: { type: 'integer', example: 4 },
+                              albums: { type: 'integer', example: 1 },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             401: { description: 'Yêu cầu đăng nhập.' },
           },
         },
@@ -362,8 +400,8 @@ const options: swaggerJSDoc.Options = {
         get: {
           tags: ['User Profile'],
           summary:
-            'Lấy thông tin profile và các chỉ số thống kê của một người dùng khác',
-          security: [{ BearerAuth: [] }],
+            'Lấy thông tin profile và các chỉ số thống kê của một người dùng khác [Hỗ trợ Guest & User]',
+          security: [{}, { BearerAuth: [] }],
           parameters: [
             {
               name: 'id',
@@ -374,7 +412,61 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Trả về thông tin người dùng thành công.' },
+            200: {
+              description: 'Trả về thông tin người dùng thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example: 'User profile retrieved successfully',
+                      },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer', example: 102 },
+                          firstName: {
+                            type: 'string',
+                            example: 'UserFirstName_27',
+                          },
+                          lastName: {
+                            type: 'string',
+                            example: 'UserLastName_27',
+                          },
+                          email: {
+                            type: 'string',
+                            example: 'user.27@example.com',
+                          },
+                          avatarUrl: {
+                            type: 'string',
+                            example: 'https://i.pravatar.cc/150?img=27',
+                          },
+                          role: { type: 'string', example: 'USER' },
+                          followersCount: { type: 'integer', example: 6 },
+                          followingsCount: { type: 'integer', example: 7 },
+                          isFollowing: {
+                            type: 'boolean',
+                            example: true,
+                            description:
+                              'Trạng thái người dùng hiện tại có đang theo dõi target user này không',
+                          },
+                          _count: {
+                            type: 'object',
+                            properties: {
+                              photos: { type: 'integer', example: 4 },
+                              albums: { type: 'integer', example: 1 },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             404: { description: 'Không tìm thấy người dùng.' },
           },
         },
@@ -383,22 +475,40 @@ const options: swaggerJSDoc.Options = {
         put: {
           tags: ['User Profile'],
           summary: 'Người dùng tự cập nhật thông tin hồ sơ cá nhân',
+          description:
+            'Yêu cầu điền mật khẩu hiện tại (oldPassword) để xác thực nếu muốn cập nhật mật khẩu mới.',
           security: [{ BearerAuth: [] }],
           requestBody: {
             required: true,
             content: {
-              'application/json': {
+              'multipart/form-data': {
                 schema: {
                   type: 'object',
                   properties: {
-                    firstName: { type: 'string', example: 'Dang' },
-                    lastName: { type: 'string', example: 'Khoi' },
-                    email: { type: 'string', example: 'khoidagn@example.com' },
-                    password: { type: 'string', example: 'mypassword123' },
-                    avatarUrl: {
+                    firstName: { type: 'string', example: 'Nguyễn' },
+                    lastName: { type: 'string', example: 'An' },
+                    email: {
                       type: 'string',
-                      example:
-                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+                      format: 'email',
+                      example: 'an.nguyen@example.com',
+                    },
+                    oldPassword: {
+                      type: 'string',
+                      description:
+                        'Mật khẩu hiện tại (Bắt buộc phải nhập chính xác nếu muốn thay đổi mật khẩu mới)',
+                      example: 'oldsecure123',
+                    },
+                    password: {
+                      type: 'string',
+                      description:
+                        'Mật khẩu mới muốn thay đổi. Để trống nếu giữ nguyên mật khẩu cũ.',
+                      example: 'newsecure456',
+                    },
+                    avatar: {
+                      type: 'string',
+                      format: 'binary',
+                      description:
+                        'Tải tệp tin hình ảnh đại diện (avatar) mới lên hệ thống',
                     },
                   },
                 },
@@ -406,9 +516,27 @@ const options: swaggerJSDoc.Options = {
             },
           },
           responses: {
-            200: { description: 'Cập nhật hồ sơ cá nhân thành công.' },
+            200: {
+              description: 'Cập nhật hồ sơ cá nhân thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example: 'Profile updated successfully',
+                      },
+                      data: { type: 'object' },
+                    },
+                  },
+                },
+              },
+            },
             400: {
-              description: 'Email đã được sử dụng hoặc dữ liệu không hợp lệ.',
+              description:
+                'Mật khẩu cũ không chính xác hoặc email đã được sử dụng.',
             },
             401: { description: 'Yêu cầu đăng nhập.' },
           },
@@ -438,7 +566,41 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Trả về danh sách người theo dõi thành công.' },
+            200: {
+              description: 'Trả về danh sách người theo dõi thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            firstName: { type: 'string' },
+                            lastName: { type: 'string' },
+                            avatarUrl: { type: 'string', nullable: true },
+                            photosCount: {
+                              type: 'integer',
+                              description:
+                                'Số lượng ảnh công khai của user này',
+                            },
+                            albumsCount: {
+                              type: 'integer',
+                              description:
+                                'Số lượng album công khai của user này',
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -455,7 +617,33 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Trả về danh sách đang theo dõi thành công.' },
+            200: {
+              description: 'Trả về danh sách đang theo dõi thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            firstName: { type: 'string' },
+                            lastName: { type: 'string' },
+                            avatarUrl: { type: 'string', nullable: true },
+                            photosCount: { type: 'integer' },
+                            albumsCount: { type: 'integer' },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -480,7 +668,33 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Trả về danh sách followers thành công.' },
+            200: {
+              description: 'Trả về danh sách followers thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            firstName: { type: 'string' },
+                            lastName: { type: 'string' },
+                            avatarUrl: { type: 'string', nullable: true },
+                            photosCount: { type: 'integer' },
+                            albumsCount: { type: 'integer' },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             404: { description: 'Không tìm thấy người dùng.' },
           },
         },
@@ -505,17 +719,43 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Trả về danh sách following thành công.' },
+            200: {
+              description: 'Trả về danh sách following thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            firstName: { type: 'string' },
+                            lastName: { type: 'string' },
+                            avatarUrl: { type: 'string', nullable: true },
+                            photosCount: { type: 'integer' },
+                            albumsCount: { type: 'integer' },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             404: { description: 'Không tìm thấy người dùng.' },
           },
         },
       },
-
       /* ---------------- MODULE PHOTO ---------------- */
       '/photos/discovery_photos': {
         get: {
           tags: ['Photos'],
           summary: 'Khám phá hình ảnh công khai toàn hệ thống (Phân trang)',
+          security: [{ BearerAuth: [] }],
           parameters: [
             {
               name: 'page',
@@ -531,7 +771,67 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Lấy danh sách hình ảnh khám phá thành công.' },
+            200: {
+              description: 'Lấy danh sách hình ảnh khám phá thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      photos: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            title: { type: 'string' },
+                            description: { type: 'string' },
+                            sharingMode: { type: 'string' },
+                            likesCount: { type: 'integer' },
+                            isLiked: {
+                              type: 'boolean',
+                              description:
+                                'Trạng thái đã thích của user hiện tại',
+                            },
+                            createdAt: { type: 'string', format: 'date-time' },
+                            media: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                imageUrl: { type: 'string' },
+                              },
+                            },
+                            user: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                firstName: { type: 'string' },
+                                lastName: { type: 'string' },
+                                avatarUrl: { type: 'string', nullable: true },
+                                isFollowing: {
+                                  type: 'boolean',
+                                  description:
+                                    'True nếu người dùng hiện tại đang theo dõi tác giả này. Luôn False nếu là Guest hoặc chính tác giả.',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      pagination: {
+                        type: 'object',
+                        properties: {
+                          page: { type: 'integer' },
+                          limit: { type: 'integer' },
+                          total: { type: 'integer' },
+                          totalPages: { type: 'integer' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -553,7 +853,67 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Lấy danh sách feed ảnh thành công.' },
+            200: {
+              description: 'Lấy danh sách feed ảnh thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      photos: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            title: { type: 'string' },
+                            description: { type: 'string' },
+                            sharingMode: { type: 'string' },
+                            likesCount: { type: 'integer' },
+                            isLiked: {
+                              type: 'boolean',
+                              description:
+                                'Trạng thái đã thích của user hiện tại',
+                            },
+                            createdAt: { type: 'string', format: 'date-time' },
+                            media: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                imageUrl: { type: 'string' },
+                              },
+                            },
+                            user: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                firstName: { type: 'string' },
+                                lastName: { type: 'string' },
+                                avatarUrl: { type: 'string', nullable: true },
+                                isFollowing: {
+                                  type: 'boolean',
+                                  description:
+                                    'True nếu người dùng hiện tại đang theo dõi tác giả này.',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      pagination: {
+                        type: 'object',
+                        properties: {
+                          page: { type: 'integer' },
+                          limit: { type: 'integer' },
+                          total: { type: 'integer' },
+                          totalPages: { type: 'integer' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
             401: { description: 'Chưa đăng nhập hoặc token hết hạn.' },
           },
         },
@@ -680,6 +1040,57 @@ const options: swaggerJSDoc.Options = {
         },
       },
       '/photos/{id}': {
+        get: {
+          tags: ['Photos'],
+          summary:
+            'Lấy thông tin chi tiết hình ảnh theo ID phục vụ cho chỉnh sửa (Edit)',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của Photo cần lấy chi tiết',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Lấy chi tiết hình ảnh thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'integer' },
+                      title: { type: 'string' },
+                      description: { type: 'string' },
+                      sharingMode: { type: 'string' },
+                      createdAt: { type: 'string', format: 'date-time' },
+                      media: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer' },
+                          imageUrl: { type: 'string' },
+                        },
+                      },
+                      user: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer' },
+                          firstName: { type: 'string' },
+                          lastName: { type: 'string' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            403: { description: 'Không có quyền xem hình ảnh riêng tư này.' },
+            404: { description: 'Không tìm thấy hình ảnh.' },
+          },
+        },
         put: {
           tags: ['Photos'],
           summary: 'Chỉnh sửa thông tin và hình ảnh (Chỉ dành cho chủ sở hữu)',
@@ -774,12 +1185,12 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
-
       /* ---------------- MODULE ALBUM ---------------- */
       '/albums/discovery_albums': {
         get: {
           tags: ['Albums'],
           summary: 'Khám phá album công khai toàn hệ thống (Phân trang)',
+          security: [{ BearerAuth: [] }],
           parameters: [
             {
               name: 'page',
@@ -793,7 +1204,72 @@ const options: swaggerJSDoc.Options = {
             },
           ],
           responses: {
-            200: { description: 'Lấy danh sách album thành công.' },
+            200: {
+              description: 'Lấy danh sách album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      albums: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            title: { type: 'string' },
+                            description: { type: 'string' },
+                            sharingMode: { type: 'string' },
+                            likesCount: { type: 'integer' },
+                            isLiked: { type: 'boolean' },
+                            createdAt: { type: 'string', format: 'date-time' },
+                            albumMedias: {
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  position: { type: 'integer' },
+                                  media: {
+                                    type: 'object',
+                                    properties: {
+                                      id: { type: 'integer' },
+                                      imageUrl: { type: 'string' },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            user: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                firstName: { type: 'string' },
+                                lastName: { type: 'string' },
+                                avatarUrl: { type: 'string', nullable: true },
+                                isFollowing: {
+                                  type: 'boolean',
+                                  description:
+                                    'True nếu người dùng hiện tại đang theo dõi tác giả của album này. Luôn False nếu là Guest hoặc chính tác giả.',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      meta: {
+                        type: 'object',
+                        properties: {
+                          page: { type: 'integer' },
+                          limit: { type: 'integer' },
+                          total: { type: 'integer' },
+                          totalPages: { type: 'integer' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
@@ -814,7 +1290,75 @@ const options: swaggerJSDoc.Options = {
               schema: { type: 'integer', default: 10 },
             },
           ],
-          responses: { 200: { description: 'Lấy feed album thành công.' } },
+          responses: {
+            200: {
+              description: 'Lấy feed album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      albums: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer' },
+                            title: { type: 'string' },
+                            description: { type: 'string' },
+                            sharingMode: { type: 'string' },
+                            likesCount: { type: 'integer' },
+                            isLiked: { type: 'boolean' },
+                            createdAt: { type: 'string', format: 'date-time' },
+                            albumMedias: {
+                              type: 'array',
+                              items: {
+                                type: 'object',
+                                properties: {
+                                  position: { type: 'integer' },
+                                  media: {
+                                    type: 'object',
+                                    properties: {
+                                      id: { type: 'integer' },
+                                      imageUrl: { type: 'string' },
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                            user: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                firstName: { type: 'string' },
+                                lastName: { type: 'string' },
+                                avatarUrl: { type: 'string', nullable: true },
+                                isFollowing: {
+                                  type: 'boolean',
+                                  description:
+                                    'True nếu đang theo dõi tác giả của album này.',
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      meta: {
+                        type: 'object',
+                        properties: {
+                          page: { type: 'integer' },
+                          limit: { type: 'integer' },
+                          total: { type: 'integer' },
+                          totalPages: { type: 'integer' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: { description: 'Chưa đăng nhập hoặc token hết hạn.' },
+          },
         },
       },
       '/albums/my_albums': {
@@ -930,6 +1474,65 @@ const options: swaggerJSDoc.Options = {
         },
       },
       '/albums/{id}': {
+        get: {
+          tags: ['Albums'],
+          summary:
+            'Lấy thông tin chi tiết Album theo ID phục vụ cho chỉnh sửa (Edit)',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của Album cần lấy chi tiết',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Lấy chi tiết album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'integer' },
+                      title: { type: 'string' },
+                      description: { type: 'string' },
+                      sharingMode: { type: 'string' },
+                      createdAt: { type: 'string', format: 'date-time' },
+                      albumMedias: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            position: { type: 'integer' },
+                            media: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                imageUrl: { type: 'string' },
+                              },
+                            },
+                          },
+                        },
+                      },
+                      user: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer' },
+                          firstName: { type: 'string' },
+                          lastName: { type: 'string' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            404: { description: 'Không tìm thấy album.' },
+          },
+        },
         put: {
           tags: ['Albums'],
           summary:
@@ -947,21 +1550,33 @@ const options: swaggerJSDoc.Options = {
           requestBody: {
             required: true,
             content: {
-              'application/json': {
+              'multipart/form-data': {
                 schema: {
                   type: 'object',
                   properties: {
+                    images: {
+                      type: 'array',
+                      description:
+                        'Chọn thêm các file ảnh mới muốn bổ sung vào album (Tối đa 25 ảnh, < 5MB/ảnh)',
+                      items: {
+                        type: 'string',
+                        format: 'binary',
+                      },
+                    },
                     title: {
                       type: 'string',
-                      example: 'Tiêu đề album mới cập nhật',
+                      description: 'Tiêu đề album mới (Tối đa 140 ký tự)',
                     },
                     description: {
                       type: 'string',
-                      example: 'Mô tả mới sau chỉnh sửa',
+                      description:
+                        'Mô tả chi tiết album mới (Tối đa 300 ký tự)',
                     },
                     sharingMode: {
                       type: 'string',
                       enum: ['PUBLIC', 'PRIVATE'],
+                      description:
+                        'Chế độ hiển thị của Album (PUBLIC hoặc PRIVATE)',
                     },
                   },
                 },
@@ -969,9 +1584,46 @@ const options: swaggerJSDoc.Options = {
             },
           },
           responses: {
-            200: { description: 'Cập nhật Album thành công.' },
-            403: { description: 'Bạn không có quyền chỉnh sửa Album này.' },
-            404: { description: 'Không tìm thấy Album.' },
+            200: {
+              description: 'Cập nhật Album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer' },
+                          title: { type: 'string' },
+                          description: { type: 'string' },
+                          sharingMode: { type: 'string' },
+                          albumMedias: {
+                            type: 'array',
+                            items: {
+                              type: 'object',
+                              properties: {
+                                position: { type: 'integer' },
+                                media: {
+                                  type: 'object',
+                                  properties: {
+                                    id: { type: 'integer' },
+                                    imageUrl: { type: 'string' },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            403: { description: 'Bạn không có quyền chỉnh sửa album này.' },
+            404: { description: 'Không tìm thấy Album tương ứng.' },
           },
         },
         delete: {
@@ -1002,7 +1654,6 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
-
       /* ---------------- MODULE INTERACTION ---------------- */
       '/interactions/photos/{id}/like': {
         post: {
@@ -1107,30 +1758,285 @@ const options: swaggerJSDoc.Options = {
         },
       },
       /* ---------------- MODULE ADMIN ---------------- */
-      '/admin/photos': {
+      '/admin/users': {
         get: {
           tags: ['Admin Management'],
           summary:
-            'Giám sát toàn bộ hình ảnh hệ thống (Bao gồm PRIVATE - Phân trang 40 items)',
+            'Lấy toàn bộ danh sách người dùng trong hệ thống (Phân trang động)',
           security: [{ BearerAuth: [] }],
           parameters: [
             {
               name: 'page',
               in: 'query',
               schema: { type: 'integer', default: 1 },
-              description: 'Số trang kiểm tra',
+              description: 'Số trang hiện tại',
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              schema: { type: 'integer', default: 10 },
+              description: 'Số lượng item cần lấy trong 1 trang (Cụm tải BE)',
             },
           ],
           responses: {
             200: {
-              description:
-                'Trả về danh sách hình ảnh kiểm tra master thành công.',
+              description: 'Lấy danh sách thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          users: {
+                            type: 'array',
+                            items: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer' },
+                                firstName: { type: 'string' },
+                                lastName: { type: 'string' },
+                                email: { type: 'string' },
+                                role: { type: 'string' },
+                                isActive: { type: 'boolean' },
+                                createdAt: {
+                                  type: 'string',
+                                  format: 'date-time',
+                                },
+                                photosCount: { type: 'integer' },
+                                albumsCount: { type: 'integer' },
+                              },
+                            },
+                          },
+                          meta: {
+                            type: 'object',
+                            properties: {
+                              total: { type: 'integer' },
+                              page: { type: 'integer' },
+                              limit: { type: 'integer' },
+                              totalPages: { type: 'integer' },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
-            403: { description: 'Từ chối truy cập: Bạn không phải Admin.' },
+          },
+        },
+      },
+      '/admin/photos': {
+        get: {
+          tags: ['Admin Management'],
+          summary: 'Kiểm soát toàn bộ hình ảnh hệ thống (Phân trang động)',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              schema: { type: 'integer', default: 10 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Lấy danh sách ảnh thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          photos: { type: 'array', items: { type: 'object' } },
+                          meta: {
+                            type: 'object',
+                            properties: {
+                              total: { type: 'integer' },
+                              page: { type: 'integer' },
+                              limit: { type: 'integer' },
+                              totalPages: { type: 'integer' },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/admin/albums': {
+        get: {
+          tags: ['Admin Management'],
+          summary: 'Kiểm soát toàn bộ album hệ thống (Phân trang động)',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'page',
+              in: 'query',
+              schema: { type: 'integer', default: 1 },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              schema: { type: 'integer', default: 10 },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Lấy danh sách album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string' },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          albums: { type: 'array', items: { type: 'object' } },
+                          meta: {
+                            type: 'object',
+                            properties: {
+                              total: { type: 'integer' },
+                              page: { type: 'integer' },
+                              limit: { type: 'integer' },
+                              totalPages: { type: 'integer' },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },
       '/admin/photos/{id}': {
+        get: {
+          tags: ['Admin Management'],
+          summary:
+            'Lấy thông tin chi tiết một bức ảnh (Bao gồm cả ảnh ẩn PRIVATE của User) [Quyền ADMIN]',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID bức ảnh cần lấy',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Lấy chi tiết ảnh thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example:
+                          'Photo details retrieved successfully by Admin',
+                      },
+                      data: { type: 'object' },
+                    },
+                  },
+                },
+              },
+            },
+            403: { description: 'Yêu cầu đặc quyền Admin.' },
+            404: { description: 'Không tìm thấy hình ảnh.' },
+          },
+        },
+        put: {
+          tags: ['Admin Management'],
+          summary:
+            'Admin chỉnh sửa thông tin hoặc ghi đè hình ảnh của bất kỳ bài đăng nào [Quyền ADMIN]',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của bức ảnh cần chỉnh sửa',
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    title: {
+                      type: 'string',
+                      description: 'Tiêu đề mới của bức ảnh (Tối đa 140 ký tự)',
+                    },
+                    description: {
+                      type: 'string',
+                      description: 'Mô tả mới của bức ảnh (Tối đa 300 ký tự)',
+                    },
+                    sharingMode: {
+                      type: 'string',
+                      enum: ['PUBLIC', 'PRIVATE'],
+                      description: 'Chế độ hiển thị mới',
+                    },
+                    photo: {
+                      type: 'string',
+                      format: 'binary',
+                      description:
+                        'File ảnh mới tải lên để ghi đè (Tối đa 5MB)',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Admin cập nhật hình ảnh thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      data: {
+                        type: 'object',
+                        description: 'Thông tin bức ảnh sau khi cập nhật',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description: 'Dữ liệu đầu vào không hợp lệ hoặc sai định dạng.',
+            },
+            401: { description: 'Chưa đăng nhập (Thiếu Token).' },
+            403: { description: 'Từ chối truy cập - Yêu cầu đặc quyền Admin.' },
+            404: { description: 'Không tìm thấy hình ảnh yêu cầu.' },
+          },
+        },
         delete: {
           tags: ['Admin Management'],
           summary:
@@ -1153,25 +2059,128 @@ const options: swaggerJSDoc.Options = {
           },
         },
       },
-      '/admin/albums': {
+      '/admin/albums/{id}': {
         get: {
           tags: ['Admin Management'],
           summary:
-            'Giám sát toàn bộ album hệ thống (Bao gồm PRIVATE - Phân trang 40 items)',
+            'Lấy cấu trúc chi tiết một Album (Bao gồm cả Album ẩn PRIVATE của User) [Quyền ADMIN]',
           security: [{ BearerAuth: [] }],
           parameters: [
             {
-              name: 'page',
-              in: 'query',
-              schema: { type: 'integer', default: 1 },
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID Album cần lấy',
             },
           ],
           responses: {
-            200: { description: 'Trả về danh sách album master thành công.' },
+            200: {
+              description: 'Lấy chi tiết Album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example:
+                          'Album details retrieved successfully by Admin',
+                      },
+                      data: { type: 'object' },
+                    },
+                  },
+                },
+              },
+            },
+            403: { description: 'Yêu cầu đặc quyền Admin.' },
+            404: { description: 'Không tìm thấy Album.' },
           },
         },
-      },
-      '/admin/albums/{id}': {
+        put: {
+          tags: ['Admin Management'],
+          summary:
+            'Admin chỉnh sửa thông tin, xóa ảnh cũ hoặc bổ sung ảnh mới vào Album của bất kỳ ai [Quyền ADMIN]',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của Album cần cập nhật',
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'multipart/form-data': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    title: {
+                      type: 'string',
+                      description: 'Tiêu đề mới của Album',
+                    },
+                    description: {
+                      type: 'string',
+                      description: 'Mô tả mới của Album',
+                    },
+                    sharingMode: {
+                      type: 'string',
+                      enum: ['PUBLIC', 'PRIVATE'],
+                      description: 'Chế độ hiển thị của Album',
+                    },
+                    remainingImages: {
+                      type: 'string',
+                      example: '[102, 105]',
+                      description:
+                        'Chuỗi JSON mảng chứa ID các hình ảnh CŨ muốn GIỮ LẠI trong Album. Những ID ảnh cũ nào không nằm trong chuỗi này sẽ tự động bị xóa sạch khỏi DB và Cloudinary.',
+                    },
+                    images: {
+                      type: 'array',
+                      items: { type: 'string', format: 'binary' },
+                      description:
+                        'Mảng các file ảnh mới muốn tải lên và bổ sung thêm vào Album (Tối đa 25 ảnh)',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Admin cập nhật Album thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      status: { type: 'string', example: 'success' },
+                      message: {
+                        type: 'string',
+                        example: 'Album updated by Admin successfully',
+                      },
+                      data: {
+                        type: 'object',
+                        description:
+                          'Thông tin Album và danh sách ảnh hoàn chỉnh sau khi xử lý',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            400: {
+              description:
+                'Lỗi cú pháp parse JSON hoặc vượt quá giới hạn file.',
+            },
+            401: { description: 'Chưa đăng nhập.' },
+            403: { description: 'Từ chối truy cập - Yêu cầu đặc quyền Admin.' },
+            404: { description: 'Không tìm thấy Album yêu cầu.' },
+          },
+        },
         delete: {
           tags: ['Admin Management'],
           summary:
@@ -1198,12 +2207,116 @@ const options: swaggerJSDoc.Options = {
         },
       },
       '/admin/users/{id}': {
+        get: {
+          tags: ['Admin Management'],
+          summary:
+            'Lấy thông tin chi tiết của một người dùng phục vụ trang chỉnh sửa [Quyền ADMIN]',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'id',
+              in: 'path',
+              required: true,
+              schema: { type: 'integer' },
+              description: 'ID của người dùng cần lấy thông tin cấu hình',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Lấy thông tin chi tiết người dùng thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example: 'User details retrieved successfully',
+                      },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer', example: 111 },
+                          firstName: { type: 'string', example: 'Khôi' },
+                          lastName: { type: 'string', example: 'Đăng' },
+                          email: { type: 'string', example: '6@example.com' },
+                          avatarUrl: {
+                            type: 'string',
+                            nullable: true,
+                            example: 'https://...',
+                          },
+                          role: { type: 'string', example: 'USER' },
+                          isActive: { type: 'boolean', example: true },
+                          lastLogin: {
+                            type: 'string',
+                            format: 'date-time',
+                            nullable: true,
+                          },
+                          createdAt: { type: 'string', format: 'date-time' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: {
+              description: 'Chưa đăng nhập (Thiếu Token).',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: false },
+                      error: {
+                        type: 'string',
+                        example: 'Authentication required.',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            403: {
+              description: 'Từ chối truy cập - Yêu cầu đặc quyền ADMIN.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: false },
+                      error: {
+                        type: 'string',
+                        example: 'Access denied. Admins only.',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            404: {
+              description: 'Không tìm thấy người dùng hệ thống.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: false },
+                      error: { type: 'string', example: 'User not found.' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
         patch: {
           tags: ['Admin Management'],
           summary:
             'Thay đổi trạng thái hoạt động (Khóa/Mở khóa) của một tài khoản người dùng',
           description:
-            'Hệ thống tự động biên dịch mẫu thông báo bằng Pug để chuẩn bị gửi cảnh báo email cho User.',
+            'Hệ thống tự động biên dịch mẫu thông báo để chuẩn bị gửi cảnh báo email cho User.',
           security: [{ BearerAuth: [] }],
           parameters: [
             {
@@ -1234,7 +2347,25 @@ const options: swaggerJSDoc.Options = {
             },
           },
           responses: {
-            200: { description: 'Cập nhật trạng thái tài khoản thành công.' },
+            200: {
+              description: 'Cập nhật trạng thái tài khoản thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example:
+                          'User account has been successfully suspended.',
+                      },
+                      data: { type: 'object' },
+                    },
+                  },
+                },
+              },
+            },
             400: {
               description:
                 'Tham số không hợp lệ hoặc cố tình tác động tài khoản Admin khác.',
@@ -1244,7 +2375,10 @@ const options: swaggerJSDoc.Options = {
         },
         put: {
           tags: ['Admin Management'],
-          summary: 'Admin chỉnh sửa thông tin hồ sơ của bất kỳ người dùng nào',
+          summary:
+            'Admin chỉnh sửa thông tin hồ sơ của bất kỳ người dùng nào [Quyền ADMIN]',
+          description:
+            'Cho phép Admin cập nhật thông tin và đặt mật khẩu mới trực tiếp mà không cần cung cấp mật khẩu cũ của người dùng. hỗ trợ upload tệp tin avatar lên Cloudinary.',
           security: [{ BearerAuth: [] }],
           parameters: [
             {
@@ -1258,7 +2392,7 @@ const options: swaggerJSDoc.Options = {
           requestBody: {
             required: true,
             content: {
-              'application/json': {
+              'multipart/form-data': {
                 schema: {
                   type: 'object',
                   properties: {
@@ -1266,16 +2400,20 @@ const options: swaggerJSDoc.Options = {
                     lastName: { type: 'string', example: 'Khoi' },
                     email: {
                       type: 'string',
+                      format: 'email',
                       example: 'updated.email@example.com',
                     },
                     password: {
                       type: 'string',
+                      description:
+                        'Mật khẩu mới gán cho User. Để trống hoặc chuỗi rỗng nếu giữ nguyên mật khẩu cũ.',
                       example: 'newsecurepassword123',
                     },
-                    avatarUrl: {
+                    avatar: {
                       type: 'string',
-                      example:
-                        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde',
+                      format: 'binary',
+                      description:
+                        'Tải tập tin hình ảnh avatar mới lên thay thế cho người dùng',
                     },
                   },
                 },
@@ -1285,9 +2423,35 @@ const options: swaggerJSDoc.Options = {
           responses: {
             200: {
               description: 'Admin cập nhật thông tin người dùng thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example: 'User profile updated successfully by Admin',
+                      },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          id: { type: 'integer' },
+                          firstName: { type: 'string' },
+                          lastName: { type: 'string' },
+                          email: { type: 'string' },
+                          role: { type: 'string' },
+                          avatarUrl: { type: 'string', nullable: true },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
             400: {
-              description: 'Dữ liệu đầu vào hoặc định dạng Email không hợp lệ.',
+              description:
+                'Dữ liệu đầu vào hoặc định dạng Email không hợp lệ / Email đã tồn tại.',
             },
             401: { description: 'Yêu cầu đăng nhập.' },
             403: { description: 'Từ chối truy cập: Bạn không phải Admin.' },
@@ -1312,6 +2476,21 @@ const options: swaggerJSDoc.Options = {
             200: {
               description:
                 'Xóa tài khoản thành công và email thông báo đã được gửi.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example:
+                          'User account has been permanently removed by Admin.',
+                      },
+                    },
+                  },
+                },
+              },
             },
             401: { description: 'Yêu cầu đăng nhập.' },
             403: {
@@ -1319,6 +2498,195 @@ const options: swaggerJSDoc.Options = {
                 'Từ chối truy cập: Không thể tự xóa chính mình hoặc bạn không phải Admin.',
             },
             404: { description: 'Không tìm thấy người dùng.' },
+          },
+        },
+      },
+      /* ---------------- MODULE SEARCH ---------------- */
+      '/search': {
+        get: {
+          tags: ['Global Features'],
+          summary:
+            'Tìm kiếm toàn cục theo từ khóa cho Photo và Album [Hỗ trợ Guest & User]',
+          description:
+            'Kết quả tự động phân thành 2 nhóm độc lập công khai. Trả về trạng thái tương tác isLiked và isFollowing tương ứng với người dùng hiện tại.',
+          security: [{ BearerAuth: [] }],
+          parameters: [
+            {
+              name: 'q',
+              in: 'query',
+              required: false,
+              schema: { type: 'string' },
+              description: 'Từ khóa tìm kiếm (Khớp theo tiêu đề hoặc mô tả)',
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Thực hiện tìm kiếm thành công.',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      success: { type: 'boolean', example: true },
+                      message: {
+                        type: 'string',
+                        example: 'Search operations executed successfully.',
+                      },
+                      data: {
+                        type: 'object',
+                        properties: {
+                          photos: {
+                            type: 'array',
+                            description: 'Danh sách các bức ảnh phù hợp',
+                            items: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer', example: 12 },
+                                title: {
+                                  type: 'string',
+                                  example: 'Sunset in Hoi An',
+                                },
+                                description: {
+                                  type: 'string',
+                                  example: 'Beautiful sunset view',
+                                },
+                                sharingMode: {
+                                  type: 'string',
+                                  example: 'PUBLIC',
+                                },
+                                likesCount: { type: 'integer', example: 5 },
+                                createdAt: {
+                                  type: 'string',
+                                  format: 'date-time',
+                                },
+                                updatedAt: {
+                                  type: 'string',
+                                  format: 'date-time',
+                                },
+                                userId: { type: 'integer', example: 33 },
+                                isLiked: { type: 'boolean', example: true },
+                                media: {
+                                  type: 'object',
+                                  properties: {
+                                    imageUrl: {
+                                      type: 'string',
+                                      example:
+                                        'https://res.cloudinary.com/demo/image/upload/sample.jpg',
+                                    },
+                                  },
+                                },
+                                user: {
+                                  type: 'object',
+                                  properties: {
+                                    id: { type: 'integer', example: 33 },
+                                    firstName: {
+                                      type: 'string',
+                                      example: 'John',
+                                    },
+                                    lastName: {
+                                      type: 'string',
+                                      example: 'Doe',
+                                    },
+                                    avatarUrl: {
+                                      type: 'string',
+                                      example:
+                                        'https://res.cloudinary.com/demo/image/upload/avatar.jpg',
+                                    },
+                                    isFollowing: {
+                                      type: 'boolean',
+                                      example: false,
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                          albums: {
+                            type: 'array',
+                            description: 'Danh sách các Album phù hợp',
+                            items: {
+                              type: 'object',
+                              properties: {
+                                id: { type: 'integer', example: 5 },
+                                title: {
+                                  type: 'string',
+                                  example: 'Summer Vacation 2026',
+                                },
+                                description: {
+                                  type: 'string',
+                                  example: 'Trip to Da Nang',
+                                },
+                                sharingMode: {
+                                  type: 'string',
+                                  example: 'PUBLIC',
+                                },
+                                likesCount: { type: 'integer', example: 10 },
+                                createdAt: {
+                                  type: 'string',
+                                  format: 'date-time',
+                                },
+                                updatedAt: {
+                                  type: 'string',
+                                  format: 'date-time',
+                                },
+                                userId: { type: 'integer', example: 33 },
+                                isLiked: { type: 'boolean', example: false },
+                                albumMedias: {
+                                  type: 'array',
+                                  items: {
+                                    type: 'object',
+                                    properties: {
+                                      id: { type: 'integer', example: 1 },
+                                      albumId: { type: 'integer', example: 5 },
+                                      mediaId: { type: 'integer', example: 20 },
+                                      position: { type: 'integer', example: 0 },
+                                      media: {
+                                        type: 'object',
+                                        properties: {
+                                          id: { type: 'integer', example: 20 },
+                                          imageUrl: {
+                                            type: 'string',
+                                            example:
+                                              'https://res.cloudinary.com/demo/image/upload/album1.jpg',
+                                          },
+                                        },
+                                      },
+                                    },
+                                  },
+                                },
+                                user: {
+                                  type: 'object',
+                                  properties: {
+                                    id: { type: 'integer', example: 33 },
+                                    firstName: {
+                                      type: 'string',
+                                      example: 'John',
+                                    },
+                                    lastName: {
+                                      type: 'string',
+                                      example: 'Doe',
+                                    },
+                                    avatarUrl: {
+                                      type: 'string',
+                                      example:
+                                        'https://res.cloudinary.com/demo/image/upload/avatar.jpg',
+                                    },
+                                    isFollowing: {
+                                      type: 'boolean',
+                                      example: true,
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       },

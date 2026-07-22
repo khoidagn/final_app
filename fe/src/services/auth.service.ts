@@ -5,7 +5,7 @@ import type {
   RegisterInput,
   SessionResponse,
   ResetPasswordInput,
-} from '../types/auth.types';
+} from '../types/auth.type';
 
 export const authService = {
   async register(data: RegisterInput): Promise<unknown> {
@@ -40,6 +40,7 @@ export const authService = {
       localStorage.setItem('accessToken', response.data.data.accessToken);
       localStorage.setItem('refreshToken', response.data.data.refreshToken);
       localStorage.setItem('role', response.data.data.user.role);
+      localStorage.setItem('userId', response.data.data.user.id.toString());
     }
     return response.data;
   },
@@ -77,5 +78,15 @@ export const authService = {
   async resetPassword(data: ResetPasswordInput): Promise<unknown> {
     const response = await authApi.resetPassword(data);
     return response.data;
+  },
+
+  async refreshSessionTokens(): Promise<string> {
+    const response = await authApi.refreshToken();
+    const { accessToken, refreshToken } = response.data.data;
+    localStorage.setItem('accessToken', accessToken);
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    }
+    return accessToken;
   },
 };

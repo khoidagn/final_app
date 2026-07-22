@@ -13,14 +13,18 @@ export const MailService = {
   /**
    * Sends an email via automated Ethereal Email account for development and testing environments.
    */
-  sendEmail: async ({ to, subject, html }: SendMailOptions): Promise<boolean> => {
+  sendEmail: async ({
+    to,
+    subject,
+    html,
+  }: SendMailOptions): Promise<boolean> => {
     try {
       const testAccount = await nodemailer.createTestAccount();
 
       const transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
-        secure: false, 
+        secure: false,
         auth: {
           user: testAccount.user,
           pass: testAccount.pass,
@@ -35,12 +39,18 @@ export const MailService = {
       });
 
       logInfo(SERVICE_NAME, `Email dispatched successfully to: ${to}`);
-      logInfo(SERVICE_NAME, `Ethereal URL: ${nodemailer.getTestMessageUrl(info)}`);
-      
+      logInfo(
+        SERVICE_NAME,
+        `Ethereal URL: ${nodemailer.getTestMessageUrl(info)}`
+      );
+
       return true;
     } catch (error: any) {
-      logError(SERVICE_NAME, `Failed to dispatch email to ${to}. Details: ${error.message}`);
+      logError(
+        SERVICE_NAME,
+        `Failed to dispatch email to ${to}. Details: ${error.message}`
+      );
       return false;
     }
-  }
+  },
 };

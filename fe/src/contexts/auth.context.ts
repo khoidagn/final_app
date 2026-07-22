@@ -1,5 +1,5 @@
-import { createContext } from 'react';
-import type { AuthUser, LoginResponse } from '../types/auth.types';
+import { createContext, useContext } from 'react';
+import type { AuthUser, LoginResponse } from '../types/auth.type';
 
 export interface AuthContextType {
   isLoggedIn: boolean;
@@ -13,3 +13,11 @@ export interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}

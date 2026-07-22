@@ -1,24 +1,29 @@
-import BaseFormLayout from '../../components/layouts/BaseFormLayout';
+import MediaFormLayout from '../../components/layouts/MediaFormLayout';
 import PhotoFormFields from '../../components/forms/PhotoFormFields';
-import { usePhotoForm } from '../../hooks/usePhotoForm';
+import { usePhotoForm } from './hooks/usePhotoForm';
 
 export default function NewPhoto() {
-  const { formData, setFormData, handleSubmit, navigate } = usePhotoForm(false);
-
-  const handleCreateSubmit = async () => {
-    console.log('Gọi API USER thêm mới ảnh:', formData);
-    // await photoService.createPhoto(formData);
-    navigate('/my-profile');
-  };
+  const {
+    formData,
+    setFormData,
+    handleFileChange,
+    handleSubmit,
+    isSubmitting,
+  } = usePhotoForm(false);
 
   return (
-    <BaseFormLayout
+    <MediaFormLayout
       title="New Photo"
       isEdit={false}
-      onSubmit={(e) => handleSubmit(e, handleCreateSubmit)}
+      isSubmitting={isSubmitting}
+      onSubmit={handleSubmit}
       backTo="/my-profile?tab=photos"
     >
-      <PhotoFormFields formData={formData} setFormData={setFormData} />
-    </BaseFormLayout>
+      <PhotoFormFields
+        formData={formData}
+        setFormData={setFormData}
+        onFileChange={handleFileChange}
+      />
+    </MediaFormLayout>
   );
 }

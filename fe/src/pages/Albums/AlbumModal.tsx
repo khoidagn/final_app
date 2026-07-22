@@ -1,26 +1,34 @@
-import React from 'react';
-import { type AlbumData } from '../../types/feeds';
-import { useAlbumCarousel } from '../../hooks/useAlbumCarousel';
+import { useAlbumCarousel } from './hooks/useAlbumCarousel';
 import { CarouselButton } from '../../components/ui/CarouselButton';
+import { ALBUM_CONSTANTS } from '../../constants/album.constant';
 import { cn } from '../../utils/cn';
 
-interface AlbumModalProps {
-  data: AlbumData;
+export interface AlbumModalProps {
+  isOpen: boolean;
+  title: string;
+  description?: string;
+  imageUrls: string[];
   onClose: () => void;
 }
 
-export default function AlbumModal({ data, onClose }: AlbumModalProps) {
-  const { title = 'Album Title', description = '', images = [] } = data;
-
+export default function AlbumModal({
+  isOpen,
+  title,
+  description = '',
+  imageUrls,
+  onClose,
+}: AlbumModalProps) {
   const {
     currentIndex,
     isSuperVertical,
     handlePrev,
     handleNext,
     handleImageLoad,
-  } = useAlbumCarousel(images);
+  } = useAlbumCarousel(imageUrls);
 
-  if (images.length === 0) {
+  if (!isOpen) return null;
+
+  if (imageUrls.length === 0) {
     return (
       <div
         className={cn(
@@ -34,7 +42,7 @@ export default function AlbumModal({ data, onClose }: AlbumModalProps) {
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          Album này hiện chưa có ảnh nào.
+          {ALBUM_CONSTANTS.UI.EMPTY_ALBUM}
           <button
             onClick={onClose}
             className={cn(
@@ -42,7 +50,7 @@ export default function AlbumModal({ data, onClose }: AlbumModalProps) {
               'active:scale-95 transform transition-transform inline-block'
             )}
           >
-            Đóng
+            {ALBUM_CONSTANTS.UI.CLOSE}
           </button>
         </div>
       </div>
@@ -52,7 +60,7 @@ export default function AlbumModal({ data, onClose }: AlbumModalProps) {
   return (
     <div
       className={cn(
-        'fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50'
+        'fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-100'
       )}
       onClick={onClose}
     >
@@ -78,7 +86,7 @@ export default function AlbumModal({ data, onClose }: AlbumModalProps) {
               'text-sm text-text-muted font-semibold mr-4 shrink-0'
             )}
           >
-            {currentIndex + 1} / {images.length}
+            {currentIndex + 1} / {imageUrls.length}
           </span>
           <button
             onClick={onClose}
@@ -97,13 +105,13 @@ export default function AlbumModal({ data, onClose }: AlbumModalProps) {
             isSuperVertical ? 'min-w-[45vh]' : 'min-w-0'
           )}
         >
-          {images.length > 1 && (
+          {imageUrls.length > 1 && (
             <CarouselButton direction="left" onClick={handlePrev} />
           )}
 
           <img
             key={currentIndex}
-            src={images[currentIndex]}
+            src={imageUrls[currentIndex]}
             alt={`Detail index ${currentIndex}`}
             onLoad={handleImageLoad}
             className={cn(
@@ -111,7 +119,7 @@ export default function AlbumModal({ data, onClose }: AlbumModalProps) {
             )}
           />
 
-          {images.length > 1 && (
+          {imageUrls.length > 1 && (
             <CarouselButton direction="right" onClick={handleNext} />
           )}
         </div>

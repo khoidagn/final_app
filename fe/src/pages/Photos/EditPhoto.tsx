@@ -1,43 +1,51 @@
-import BaseFormLayout from '../../components/layouts/BaseFormLayout';
+import MediaFormLayout from '../../components/layouts/MediaFormLayout';
 import PhotoFormFields from '../../components/forms/PhotoFormFields';
-import { usePhotoForm } from '../../hooks/usePhotoForm';
-import { cn } from '../../utils/cn';
+import ConfirmModal from '../../components/ui/ConfirmModal';
+import { usePhotoForm } from './hooks/usePhotoForm';
+import { PHOTO_CONSTANTS } from '../../constants/photo.constant';
 
-export default function UserEditPhoto() {
-  const { id, formData, setFormData, isLoading, handleSubmit, navigate } =
-    usePhotoForm(true);
-
-  const handleUpdateSubmit = async () => {
-    console.log('Gọi API USER cập nhật ảnh với ID:', id, formData);
-    // await photoService.updatePhoto(id, formData);
-    navigate('/my-profile');
-  };
-
-  const handleDelete = async () => {
-    if (window.confirm('Bạn có chắc muốn xóa bức ảnh này không?')) {
-      console.log('Gọi API USER xóa ảnh:', id);
-      // await photoService.deletePhoto(id);
-      navigate('/my-profile');
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className={cn('p-6 text-center text-xs text-text-muted')}>
-        Loading photo content...
-      </div>
-    );
-  }
+export default function EditPhoto() {
+  const {
+    formData,
+    setFormData,
+    handleFileChange,
+    handleSubmit,
+    handleDelete, 
+    handleConfirmDelete,
+    isConfirmOpen,
+    setIsConfirmOpen,
+    isSubmitting,
+    isDeleting,
+  } = usePhotoForm(true);
 
   return (
-    <BaseFormLayout
-      title="Edit Photo"
-      isEdit={true}
-      onSubmit={(e) => handleSubmit(e, handleUpdateSubmit)}
-      onDelete={handleDelete}
-      backTo="/my-profile?tab=photos"
-    >
-      <PhotoFormFields formData={formData} setFormData={setFormData} />
-    </BaseFormLayout>
+    <>
+      <MediaFormLayout
+        title="Edit Photo"
+        isEdit={true}
+        isSubmitting={isSubmitting}
+        onSubmit={handleSubmit}
+        onDelete={handleDelete}
+        backTo="/my-profile?tab=photos"
+      >
+        <PhotoFormFields
+          formData={formData}
+          setFormData={setFormData}
+          onFileChange={handleFileChange}
+        />
+      </MediaFormLayout>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="Delete Photo?"
+        description={PHOTO_CONSTANTS.CONFIRM.DELETE_USER}
+        confirmText="Delete Photo"
+        cancelText="Cancel"
+        isDanger={true}
+        isLoading={isDeleting}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
+    </>
   );
 }

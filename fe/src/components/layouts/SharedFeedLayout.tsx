@@ -76,7 +76,12 @@ export default function SharedFeedLayout({
         />
       )}
 
-      {isLoading && <LoadingSpinner />}
+      {isLoading && (
+        <LoadingSpinner
+          className="border-0 bg-transparent shadow-none p-4"
+          minHeight="min-h-[120px]"
+        />
+      )}
 
       <PhotoModal
         isOpen={selectedPhotoId !== null && currentSelectedPhoto !== null}

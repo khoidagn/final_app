@@ -7,6 +7,10 @@ import { getBackendMessage } from '../../../utils/error';
 import { PHOTO_CONSTANTS } from '../../../constants/photo.constant';
 import { SharingMode, type SharingModeType } from '../../../types/enum.type';
 import type { PhotoFormData } from '../../../types/photo.type';
+import {
+  validatePhotoForm,
+  type PhotoFormErrors,
+} from '../validations/photo.validation';
 
 export function usePhotoForm(isEdit: boolean, isAdmin: boolean = false) {
   const navigate = useNavigate();
@@ -21,6 +25,7 @@ export function usePhotoForm(isEdit: boolean, isAdmin: boolean = false) {
     imageFile: null,
   });
 
+  const [fieldErrors, setFieldErrors] = useState<PhotoFormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -60,43 +65,53 @@ export function usePhotoForm(isEdit: boolean, isAdmin: boolean = false) {
     }
   }, [isEdit, photoId, isAdmin]);
 
+  const handleFieldChange = <K extends keyof PhotoFormData>(
+    field: K,
+    value: PhotoFormData[K]
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (fieldErrors[field as keyof PhotoFormErrors]) {
+      setFieldErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.size > PHOTO_CONSTANTS.LIMITS.MAX_FILE_SIZE_BYTES) {
-        toast.warning(
-          PHOTO_CONSTANTS.VALIDATION.FILE_TOO_LARGE(
-            PHOTO_CONSTANTS.LIMITS.MAX_FILE_SIZE_MB
-          )
-        );
-        return;
-      }
+
       setFormData((prev) => ({
         ...prev,
         imageFile: file,
         previewSrc: URL.createObjectURL(file),
       }));
+
+      if (fieldErrors.file) {
+        setFieldErrors((prev) => ({ ...prev, file: undefined }));
+      }
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title.trim()) {
-      toast.warning(PHOTO_CONSTANTS.VALIDATION.TITLE_REQUIRED);
+    // 🟢 Truyền cả previewSrc vào để chặn Save nếu người dùng xóa hết ảnh
+    const errors = validatePhotoForm(
+      {
+        title: formData.title,
+        description: formData.description,
+        sharingMode: formData.sharingMode,
+        file: formData.imageFile,
+        previewSrc: formData.previewSrc,
+      },
+      isEdit
+    );
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
-    if (!formData.description.trim()) {
-      toast.warning(PHOTO_CONSTANTS.VALIDATION.DESCRIPTION_REQUIRED);
-      return;
-    }
-
-    if (!isEdit && !formData.imageFile) {
-      toast.warning(PHOTO_CONSTANTS.VALIDATION.IMAGE_REQUIRED);
-      return;
-    }
-
+    setFieldErrors({});
     setIsSubmitting(true);
 
     try {
@@ -160,7 +175,9 @@ export function usePhotoForm(isEdit: boolean, isAdmin: boolean = false) {
 
   return {
     formData,
+    fieldErrors,
     setFormData,
+    handleFieldChange,
     handleFileChange,
     handleSubmit,
     handleDelete: handleOpenDeleteModal,

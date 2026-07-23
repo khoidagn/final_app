@@ -8,6 +8,10 @@ import { ALBUM_CONSTANTS } from '../../../constants/album.constant';
 import type { AlbumImageLocal } from '../../../types/feeds.type';
 import type { AlbumDetailData } from '../../../types/album.type';
 import { SharingMode } from '../../../types/enum.type';
+import {
+  validateAlbumForm,
+  type AlbumFormErrors,
+} from '../validations/album.validation';
 
 export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
   const navigate = useNavigate();
@@ -20,11 +24,11 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
     'PUBLIC'
   );
   const [albumImages, setAlbumImages] = useState<AlbumImageLocal[]>([]);
+  const [fieldErrors, setFieldErrors] = useState<AlbumFormErrors>({});
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
@@ -67,6 +71,20 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
     }
   }, [isEdit, albumId, isAdmin]);
 
+  const handleTitleChange = (val: string) => {
+    setTitle(val);
+    if (fieldErrors.title) {
+      setFieldErrors((prev) => ({ ...prev, title: undefined }));
+    }
+  };
+
+  const handleDescriptionChange = (val: string) => {
+    setDescription(val);
+    if (fieldErrors.description) {
+      setFieldErrors((prev) => ({ ...prev, description: undefined }));
+    }
+  };
+
   const handleAddImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -77,11 +95,25 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
       albumImages.length + selectedFiles.length >
       ALBUM_CONSTANTS.LIMITS.MAX_IMAGES
     ) {
-      toast.warning(
-        ALBUM_CONSTANTS.VALIDATION.MAX_IMAGES_EXCEEDED(
+      setFieldErrors((prev) => ({
+        ...prev,
+        images: ALBUM_CONSTANTS.VALIDATION.MAX_IMAGES_EXCEEDED(
           ALBUM_CONSTANTS.LIMITS.MAX_IMAGES
-        )
-      );
+        ),
+      }));
+      e.target.value = '';
+      return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    const hasInvalidType = selectedFiles.some(
+      (file) => !allowedTypes.includes(file.type)
+    );
+    if (hasInvalidType) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        images: 'Accepted formats are jpeg, png, and gif.',
+      }));
       e.target.value = '';
       return;
     }
@@ -90,11 +122,12 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
       (file) => file.size > ALBUM_CONSTANTS.LIMITS.MAX_FILE_SIZE_BYTES
     );
     if (isOverSize) {
-      toast.warning(
-        ALBUM_CONSTANTS.VALIDATION.FILE_TOO_LARGE(
+      setFieldErrors((prev) => ({
+        ...prev,
+        images: ALBUM_CONSTANTS.VALIDATION.FILE_TOO_LARGE(
           ALBUM_CONSTANTS.LIMITS.MAX_FILE_SIZE_MB
-        )
-      );
+        ),
+      }));
       e.target.value = '';
       return;
     }
@@ -106,6 +139,9 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
     }));
 
     setAlbumImages((prev) => [...prev, ...newImages]);
+    if (fieldErrors.images) {
+      setFieldErrors((prev) => ({ ...prev, images: undefined }));
+    }
 
     e.target.value = '';
   };
@@ -121,21 +157,17 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title.trim()) {
-      toast.warning(ALBUM_CONSTANTS.VALIDATION.TITLE_REQUIRED);
+    // Validate Client
+    const errors = validateAlbumForm(
+      { title, description, albumImages },
+      isEdit
+    );
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
-    if (!description.trim()) {
-      toast.warning(ALBUM_CONSTANTS.VALIDATION.DESCRIPTION_REQUIRED);
-      return;
-    }
-
-    if (!isEdit && albumImages.length === 0) {
-      toast.warning(ALBUM_CONSTANTS.VALIDATION.AT_LEAST_ONE_IMAGE);
-      return;
-    }
-
+    setFieldErrors({});
     setIsSubmitting(true);
 
     try {
@@ -214,12 +246,13 @@ export function useAlbumForm(isEdit: boolean, isAdmin: boolean = false) {
 
   return {
     title,
-    setTitle,
+    setTitle: handleTitleChange,
     sharingMode,
     setSharingMode,
     description,
-    setDescription,
+    setDescription: handleDescriptionChange,
     albumImages,
+    fieldErrors,
     handleAddImages,
     handleRemoveImage,
     handleSubmit,

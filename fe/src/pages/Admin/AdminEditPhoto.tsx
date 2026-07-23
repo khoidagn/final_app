@@ -1,19 +1,21 @@
 import MediaFormLayout from '../../components/layouts/MediaFormLayout';
 import PhotoFormFields from '../../components/forms/PhotoFormFields';
 import ConfirmModal from '../../components/ui/ConfirmModal';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { usePhotoForm } from '../Photos/hooks/usePhotoForm';
 import { ADMIN_CONSTANTS } from '../../constants/admin.constant';
-import { cn } from '../../utils/cn';
 
 export default function AdminEditPhoto() {
   const {
     formData,
+    fieldErrors,
     setFormData,
     isLoading,
     isSubmitting,
     isDeleting,
     isConfirmOpen,
     setIsConfirmOpen,
+    handleFieldChange,
     handleFileChange,
     handleSubmit,
     handleDelete,
@@ -22,9 +24,10 @@ export default function AdminEditPhoto() {
 
   if (isLoading) {
     return (
-      <div className={cn('p-6 text-center text-xs text-text-muted')}>
-        Loading photo content for Admin...
-      </div>
+      <LoadingSpinner
+        text="Loading photo content for Admin..."
+        minHeight="min-h-[300px]"
+      />
     );
   }
 
@@ -36,10 +39,13 @@ export default function AdminEditPhoto() {
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
+        backTo="/admin/photos"
       >
         <PhotoFormFields
           formData={formData}
+          fieldErrors={fieldErrors}
           setFormData={setFormData}
+          onFieldChange={handleFieldChange}
           onFileChange={handleFileChange}
         />
       </MediaFormLayout>

@@ -47,6 +47,7 @@ export default function AccountSettingLayout({
       </div>
 
       <form
+        noValidate
         onSubmit={(e) => handleInfoSubmit(e, isChangingPassword)}
         className={cn('w-full flex flex-col items-center')}
       >
@@ -67,6 +68,7 @@ export default function AccountSettingLayout({
           <UserProfileFormFields
             formData={form}
             setFormData={setForm}
+            fieldErrors={errors}
             isLoading={isLoading}
           />
         </div>
@@ -124,10 +126,11 @@ export default function AccountSettingLayout({
               : 'max-h-0 opacity-0 invisible mb-0'
           )}
         >
+          {/* Current Password */}
           <div className="flex flex-col gap-1 w-full">
             <div className="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:gap-4">
               <label className="text-xs font-bold text-text-secondary text-left shrink-0 sm:w-32 sm:text-right">
-                Current Password
+                Current Password <span className="text-red-500">*</span>
               </label>
               <div className="flex-1">
                 <PasswordField
@@ -141,7 +144,7 @@ export default function AccountSettingLayout({
               </div>
             </div>
             {errors.currentPassword && (
-              <p className="text-[10px] font-bold text-danger text-left sm:pl-36 mt-0.5 animate-pulse">
+              <p className="text-[11px] font-medium text-red-500 text-left sm:pl-36 mt-0.5">
                 {errors.currentPassword}
               </p>
             )}
@@ -150,7 +153,7 @@ export default function AccountSettingLayout({
           <div className="flex flex-col gap-1 w-full">
             <div className="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:gap-4">
               <label className="text-xs font-bold text-text-secondary text-left shrink-0 sm:w-32 sm:text-right">
-                New Password
+                New Password <span className="text-red-500">*</span>
               </label>
               <div className="flex-1">
                 <PasswordField
@@ -164,7 +167,7 @@ export default function AccountSettingLayout({
               </div>
             </div>
             {errors.newPassword && (
-              <p className="text-[10px] font-bold text-danger text-left sm:pl-36 mt-0.5 animate-pulse">
+              <p className="text-[11px] font-medium text-red-500 text-left sm:pl-36 mt-0.5">
                 {errors.newPassword}
               </p>
             )}
@@ -173,7 +176,7 @@ export default function AccountSettingLayout({
           <div className="flex flex-col gap-1 w-full">
             <div className="flex flex-col gap-2 w-full sm:flex-row sm:items-center sm:gap-4">
               <label className="text-xs font-bold text-text-secondary text-left shrink-0 sm:w-32 sm:text-right">
-                Confirm Password
+                Confirm Password <span className="text-red-500">*</span>
               </label>
               <div className="flex-1">
                 <PasswordField
@@ -187,7 +190,7 @@ export default function AccountSettingLayout({
               </div>
             </div>
             {errors.confirmPassword && (
-              <p className="text-[10px] font-bold text-danger text-left sm:pl-36 mt-0.5 animate-pulse">
+              <p className="text-[11px] font-medium text-red-500 text-left sm:pl-36 mt-0.5">
                 {errors.confirmPassword}
               </p>
             )}

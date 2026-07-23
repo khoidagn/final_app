@@ -13,7 +13,7 @@ import type { PhotoData } from '../../types/photo.type';
 import type { AlbumData } from '../../types/album.type';
 
 export default function Navbar() {
-  const { isLoggedIn, user, isLoading } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoData | null>(null);
@@ -23,12 +23,6 @@ export default function Navbar() {
     selectedAlbum?.albumMedias
       ?.map((item) => item.media?.imageUrl)
       .filter((url): url is string => Boolean(url)) || [];
-
-  if (isLoading) {
-    return (
-      <nav className={cn('bg-brand h-14 w-full sticky top-0 z-50 shadow-sm')} />
-    );
-  }
 
   return (
     <>

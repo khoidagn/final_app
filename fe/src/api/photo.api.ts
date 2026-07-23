@@ -18,6 +18,7 @@ export const photoApi = {
   uploadPhoto: (formData: FormData) =>
     apiClient.post('/photos/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 30000,
     }),
 
   updatePhoto: (id: number, formData: FormData) =>

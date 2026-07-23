@@ -1,9 +1,10 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { cn } from '../../utils/cn';
 
 export function ProtectedRoute() {
   const { isLoggedIn, isLoading } = useAuth();
+  const location = useLocation();
 
   if (isLoading) {
     return (
@@ -18,5 +19,9 @@ export function ProtectedRoute() {
     );
   }
 
-  return isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
+  return isLoggedIn ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" state={{ from: location }} replace />
+  );
 }

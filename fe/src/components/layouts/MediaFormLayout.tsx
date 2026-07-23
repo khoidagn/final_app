@@ -1,4 +1,5 @@
 import React from 'react';
+import { Trash2 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import BackButton from '../../components/ui/BackButton';
 
@@ -40,6 +41,7 @@ export default function MediaFormLayout({
       </div>
 
       <form
+        noValidate
         onSubmit={onSubmit}
         className={cn(
           'w-full grid grid-cols-1 gap-y-4',
@@ -61,25 +63,13 @@ export default function MediaFormLayout({
               onClick={onDelete}
               disabled={isSubmitting}
               className={cn(
-                'text-white text-xs font-semibold px-3 py-1.5 rounded-sm shadow-2xs transition-all cursor-pointer focus:outline-none flex items-center gap-1',
+                'text-white text-xs font-semibold px-3 py-1.5 rounded-sm shadow-2xs transition-all cursor-pointer focus:outline-none flex items-center gap-1.5',
                 'bg-danger hover:bg-danger-hover',
                 'active:scale-95 transform transition-transform',
                 'disabled:opacity-50 disabled:cursor-not-allowed'
               )}
             >
-              <svg
-                className={cn('w-3.5 h-3.5')}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1-1v3M4 7h16"
-                />
-              </svg>
+              <Trash2 className={cn('w-3.5 h-3.5')} />
               Delete
             </button>
           )}

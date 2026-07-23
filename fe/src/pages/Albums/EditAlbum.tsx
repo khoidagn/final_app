@@ -1,6 +1,7 @@
 import MediaFormLayout from '../../components/layouts/MediaFormLayout';
 import AlbumFormFields from '../../components/forms/AlbumFormFields';
 import ConfirmModal from '../../components/ui/ConfirmModal';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useAlbumForm } from './hooks/useAlbumForm';
 import { ALBUM_CONSTANTS } from '../../constants/album.constant';
 
@@ -13,6 +14,7 @@ export default function EditAlbum() {
     description,
     setDescription,
     albumImages,
+    fieldErrors,
     handleAddImages,
     handleRemoveImage,
     handleSubmit,
@@ -27,9 +29,10 @@ export default function EditAlbum() {
 
   if (isLoading) {
     return (
-      <div className="w-full flex justify-center items-center py-12">
-        <div className="w-8 h-8 border-4 border-border-default border-t-brand rounded-full animate-spin" />
-      </div>
+      <LoadingSpinner
+        text="Loading album details..."
+        minHeight="min-h-[300px]"
+      />
     );
   }
 
@@ -51,6 +54,7 @@ export default function EditAlbum() {
           description={description}
           setDescription={setDescription}
           albumImages={albumImages}
+          fieldErrors={fieldErrors}
           onAddImages={handleAddImages}
           onRemoveImage={handleRemoveImage}
         />

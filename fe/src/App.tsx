@@ -64,7 +64,6 @@ export default function App() {
           <Route path="discovery" element={<Discovery />} />
           <Route path="profile/:userId" element={<PublicProfile />} />
           <Route path="/search" element={<SearchResults />} />
-
           {/* PROTECTED USER ROUTES (Must log in) */}
           <Route element={<ProtectedRoute />}>
             <Route path="feeds" element={<Feeds />} />

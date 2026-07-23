@@ -14,6 +14,7 @@ export default function AdminEditAlbum() {
     description,
     setDescription,
     albumImages,
+    fieldErrors,
     handleAddImages,
     handleRemoveImage,
     handleSubmit,
@@ -27,7 +28,12 @@ export default function AdminEditAlbum() {
   } = useAlbumForm(true, true);
 
   if (isLoading) {
-    return <LoadingSpinner minHeight="min-h-[400px]" />;
+    return (
+      <LoadingSpinner
+        text="Loading album content for Admin..."
+        minHeight="min-h-[300px]"
+      />
+    );
   }
 
   return (
@@ -38,6 +44,7 @@ export default function AdminEditAlbum() {
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
+        backTo="/admin/albums"
       >
         <AlbumFormFields
           title={title}
@@ -47,6 +54,7 @@ export default function AdminEditAlbum() {
           description={description}
           setDescription={setDescription}
           albumImages={albumImages}
+          fieldErrors={fieldErrors}
           onAddImages={handleAddImages}
           onRemoveImage={handleRemoveImage}
         />

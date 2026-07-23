@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '../../../contexts/auth.context';
 import { photoService } from '../../../services/photo.service';
@@ -22,7 +21,6 @@ export function useFeedData({
   itemsPerPage,
   onFollowAlert,
 }: UseFeedDataProps) {
-  const navigate = useNavigate();
   const { isLoggedIn, isLoading: isAuthLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState<FeedTabType>('photo');
@@ -60,7 +58,9 @@ export function useFeedData({
   );
 
   const loadMoreItems = useCallback(async () => {
-    if (isLoading || isAuthLoading) return;
+    if (isLoading) return;
+    if (mode === 'feed' && isAuthLoading) return;
+
     if (activeTab === 'photo' && !hasMorePhotos) return;
     if (activeTab === 'album' && !hasMoreAlbums) return;
 
@@ -73,9 +73,11 @@ export function useFeedData({
         const cleanData = res?.data?.photos || res?.photos || [];
         const finalArray = Array.isArray(cleanData) ? cleanData : [];
 
-        setDisplayedPhotos((prev) => [...prev, ...finalArray]);
+        if (finalArray.length > 0) {
+          setDisplayedPhotos((prev) => [...prev, ...finalArray]);
+          setPhotoPage(nextPage);
+        }
         setHasMorePhotos(finalArray.length >= itemsPerPage);
-        setPhotoPage(nextPage);
       } else {
         const nextPage = albumPage + 1;
         const res = await fetchItems('album', nextPage);
@@ -83,9 +85,11 @@ export function useFeedData({
         const cleanData = res?.data?.albums || res?.albums || [];
         const finalArray = Array.isArray(cleanData) ? cleanData : [];
 
-        setDisplayedAlbums((prev) => [...prev, ...finalArray]);
+        if (finalArray.length > 0) {
+          setDisplayedAlbums((prev) => [...prev, ...finalArray]);
+          setAlbumPage(nextPage);
+        }
         setHasMoreAlbums(finalArray.length >= itemsPerPage);
-        setAlbumPage(nextPage);
       }
     } catch (error: unknown) {
       toast.error(
@@ -97,6 +101,7 @@ export function useFeedData({
   }, [
     isLoading,
     isAuthLoading,
+    mode,
     activeTab,
     photoPage,
     albumPage,
@@ -107,10 +112,11 @@ export function useFeedData({
   ]);
 
   useEffect(() => {
-    if (mode === 'feed' && !isAuthLoading && !isLoggedIn) {
-      navigate('/login');
+    if (mode === 'feed' && (isAuthLoading || !isLoggedIn)) {
       return;
     }
+
+    let isMounted = true;
 
     const initData = async () => {
       setIsLoading(true);
@@ -119,6 +125,8 @@ export function useFeedData({
           fetchItems('photo', 1),
           fetchItems('album', 1),
         ]);
+
+        if (!isMounted) return;
 
         const pData = photoRes?.data?.photos || photoRes?.photos || [];
         const aData = albumRes?.data?.albums || albumRes?.albums || [];
@@ -135,31 +143,37 @@ export function useFeedData({
         setPhotoPage(1);
         setAlbumPage(1);
       } catch (error: unknown) {
-        toast.error(
-          getBackendMessage(error, FEED_CONSTANTS.API_RESPONSE.FETCH_FAILED)
-        );
+        if (isMounted) {
+          toast.error(
+            getBackendMessage(error, FEED_CONSTANTS.API_RESPONSE.FETCH_FAILED)
+          );
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
-    if (!isAuthLoading) {
-      initData();
-    }
-  }, [itemsPerPage, mode, isLoggedIn, isAuthLoading, fetchItems, navigate]);
+    initData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [itemsPerPage, mode, isLoggedIn, isAuthLoading, fetchItems]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition =
-        window.innerHeight + document.documentElement.scrollTop;
-      const targetThreshold = document.documentElement.offsetHeight - 50;
+      const windowHeight = window.innerHeight;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const documentHeight = document.documentElement.scrollHeight;
 
-      if (scrollPosition >= targetThreshold) {
+      if (windowHeight + scrollTop >= documentHeight - 300) {
         loadMoreItems();
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [loadMoreItems]);
 

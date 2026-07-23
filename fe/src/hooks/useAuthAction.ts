@@ -6,17 +6,14 @@ import { AUTH_CONSTANTS } from '../constants/auth.constant';
 import { getBackendMessage } from '../utils/error';
 import type { AuthUser, LoginInput } from '../types/auth.type';
 
-const PUBLIC_PATHS = ['/discovery', '/feeds', '/login', '/signup', '/register'];
-
 export function useAuthActions() {
+  const hasStoredToken =
+    typeof window !== 'undefined' &&
+    Boolean(localStorage.getItem('accessToken'));
+
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    const hasToken = Boolean(localStorage.getItem('accessToken'));
-    const isPublicPath = PUBLIC_PATHS.includes(window.location.pathname);
-    return !(isPublicPath && !hasToken);
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(hasStoredToken);
 
   const refreshSession = useCallback(async () => {
     try {
@@ -45,9 +42,7 @@ export function useAuthActions() {
   }, []);
 
   useEffect(() => {
-    const hasToken = Boolean(localStorage.getItem('accessToken'));
-
-    if (!hasToken) {
+    if (!hasStoredToken) {
       return;
     }
 
@@ -56,7 +51,7 @@ export function useAuthActions() {
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, [refreshSession]);
+  }, [hasStoredToken, refreshSession]);
 
   const login = useCallback(async (credentials: Record<string, unknown>) => {
     setIsLoading(true);

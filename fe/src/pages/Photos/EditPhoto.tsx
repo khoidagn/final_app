@@ -7,10 +7,12 @@ import { PHOTO_CONSTANTS } from '../../constants/photo.constant';
 export default function EditPhoto() {
   const {
     formData,
+    fieldErrors,
     setFormData,
+    handleFieldChange,
     handleFileChange,
     handleSubmit,
-    handleDelete, 
+    handleDelete,
     handleConfirmDelete,
     isConfirmOpen,
     setIsConfirmOpen,
@@ -30,7 +32,9 @@ export default function EditPhoto() {
       >
         <PhotoFormFields
           formData={formData}
+          fieldErrors={fieldErrors}
           setFormData={setFormData}
+          onFieldChange={handleFieldChange}
           onFileChange={handleFileChange}
         />
       </MediaFormLayout>

@@ -36,11 +36,15 @@ export const authService = {
   async login(credentials: LoginInput): Promise<LoginResponse> {
     const response = await authApi.login(credentials);
 
-    if (response.data.data.accessToken) {
-      localStorage.setItem('accessToken', response.data.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.data.refreshToken);
-      localStorage.setItem('role', response.data.data.user.role);
-      localStorage.setItem('userId', response.data.data.user.id.toString());
+    const data = response.data?.data;
+
+    if (data?.accessToken) {
+      localStorage.setItem('accessToken', data.accessToken);
+      if (data.refreshToken)
+        localStorage.setItem('refreshToken', data.refreshToken);
+      if (data.user?.role) localStorage.setItem('role', data.user.role);
+      if (data.user?.id)
+        localStorage.setItem('userId', data.user.id.toString());
     }
     return response.data;
   },
@@ -54,6 +58,7 @@ export const authService = {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('role');
+      localStorage.removeItem('userId');
     }
   },
 
@@ -64,7 +69,7 @@ export const authService = {
     }
     try {
       const response = await authApi.getCurrentUser();
-      return { isLoggedIn: true, user: response.data };
+      return { isLoggedIn: true, user: response.data?.data || response.data };
     } catch {
       return { isLoggedIn: false, user: null };
     }
@@ -81,12 +86,26 @@ export const authService = {
   },
 
   async refreshSessionTokens(): Promise<string> {
-    const response = await authApi.refreshToken();
-    const { accessToken, refreshToken } = response.data.data;
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    if (!storedRefreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await authApi.refreshToken(storedRefreshToken);
+    const data = response.data?.data;
+
+    const accessToken = data?.accessToken;
+    const refreshToken = data?.refreshToken;
+
+    if (!accessToken) {
+      throw new Error('Failed to refresh access token');
+    }
+
     localStorage.setItem('accessToken', accessToken);
     if (refreshToken) {
       localStorage.setItem('refreshToken', refreshToken);
     }
+
     return accessToken;
   },
 };

@@ -5,6 +5,7 @@ import type {
   RegisterInput,
   ResetPasswordInput,
 } from '../types/auth.type';
+
 export interface UserResponseData {
   id: number;
   firstName: string;
@@ -62,13 +63,14 @@ export const authApi = {
     return apiClient.post('/auth/reset-password', data);
   },
 
-  refreshToken() {
+  refreshToken(refreshToken?: string) {
     return apiClient.post<{
-      status: string;
+      success: boolean;
+      message: string;
       data: {
         accessToken: string;
         refreshToken?: string;
       };
-    }>('/auth/refresh');
+    }>('/auth/refresh', { refreshToken });
   },
 };

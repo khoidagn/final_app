@@ -13,12 +13,17 @@ const getEnvVar = (key: string, required = true): string => {
 
 const port = parseInt(process.env.PORT || '3002', 10);
 
+const frontendHost =
+  process.env.CLIENT_URL ||
+  process.env.FRONTEND_HOST ||
+  'http://localhost:5173';
+
 export const config = {
   app: {
     env: getEnvVar('NODE_ENV', false) || 'development',
     port: port,
     host: process.env.HOST || `http://localhost:${port}`,
-    frontendHost: process.env.FRONTEND_HOST || 'http://localhost:5173',
+    frontendHost: frontendHost,
   },
   database: {
     url: getEnvVar('DATABASE_URL'),

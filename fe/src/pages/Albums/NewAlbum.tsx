@@ -11,6 +11,7 @@ export default function NewAlbum() {
     description,
     setDescription,
     albumImages,
+    fieldErrors,
     handleAddImages,
     handleRemoveImage,
     handleSubmit,
@@ -33,6 +34,7 @@ export default function NewAlbum() {
         description={description}
         setDescription={setDescription}
         albumImages={albumImages}
+        fieldErrors={fieldErrors}
         onAddImages={handleAddImages}
         onRemoveImage={handleRemoveImage}
       />

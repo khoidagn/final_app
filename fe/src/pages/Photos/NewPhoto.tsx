@@ -5,7 +5,9 @@ import { usePhotoForm } from './hooks/usePhotoForm';
 export default function NewPhoto() {
   const {
     formData,
+    fieldErrors,
     setFormData,
+    handleFieldChange,
     handleFileChange,
     handleSubmit,
     isSubmitting,
@@ -21,7 +23,9 @@ export default function NewPhoto() {
     >
       <PhotoFormFields
         formData={formData}
+        fieldErrors={fieldErrors}
         setFormData={setFormData}
+        onFieldChange={handleFieldChange}
         onFileChange={handleFileChange}
       />
     </MediaFormLayout>

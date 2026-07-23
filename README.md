@@ -1,279 +1,163 @@
-# Fotobook
+# 📷 Fotobook — Fullstack Photo Sharing Platform
 
-A modern photo-sharing platform where users can upload, organize, and share photos and albums with the community. Users can discover public content, follow other photographers, interact with posts, and manage their own photo collections.
+A modern, responsive photo-sharing social platform built for photography enthusiasts to express themselves, organize moments into multi-image albums, interact with community posts, and discover inspiring content.
 
-This project is developed as part of the NUS Advanced Training Program and follows a full-stack architecture with a focus on scalability, maintainability, and modern web development practices.
-
----
-
-## 🚧 Project Status
-
-This project is currently under development.
-
-- ✅ Frontend implementation completed
-- ✅ Mock API using JSON Server
-- ✅ Backend implementation in progress
-- ✅ Authentication and database integration planned
+This project was developed as part of the **NUS Advanced Training Program**, strictly adhering to full-stack software design principles, clean architecture, type safety, and modern web development practices.
 
 ---
 
-## Final Application
+ 💡 _For detailed architectural documentation, API specifications, and folder breakdowns of each service, please refer to their respective README files:_
 
-Fotobook allows users to:
-
-- Create and manage personal accounts.
-- Upload and organize photos into albums.
-- Set photos and albums as public or private.
-- Follow and unfollow other users.
-- Explore community content through feeds and discovery pages.
-- Like photos and albums.
-- Manage personal profiles and uploaded content.
-- Access administrator features for user and content management.
-
-### Key Features
-
-#### Authentication & Authorization
-
-- User registration and login
-- JWT-based authentication
-- Email verification
-- Password reset
-- Role-based access control (User/Admin)
-
-#### Photo Management
-
-- Upload photos
-- Edit and delete photos
-- Public/private visibility
-- Image preview and gallery view
-
-#### Album Management
-
-- Create albums
-- Upload multiple images
-- Edit and delete albums
-- Public/private visibility
-
-#### Social Features
-
-- Follow / unfollow users
-- Like photos and albums
-- Personalized feed
-- Public user profiles
-
-#### Admin Features
-
-- Manage users
-- Manage photos
-- Manage albums
-- Activate/deactivate user accounts
+ - 📄 [Frontend Documentation (`fe/README.md`)](./fe/README.md)
+ - 📄 [Backend Documentation (`be/README.md`)](./be/README.md)
 
 ---
 
-## 🛠 Tech Stack
+## 🛠 Tech Stack Ecosystem
 
-### Frontend
+### 💻 Frontend Client
 
 ![React](https://img.shields.io/badge/React-19.2.6-61DAFB?logo=react&logoColor=white)
-![React DOM](https://img.shields.io/badge/React_DOM-19.2.6-61DAFB?logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6.0.2-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8.0.12-646CFF?logo=vite&logoColor=white)
-![React Router](https://img.shields.io/badge/React_Router-8.0.1-CA4245?logo=reactrouter&logoColor=white)
 ![React Router DOM](https://img.shields.io/badge/React_Router_DOM-7.18.0-CA4245?logo=reactrouter&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3.1-06B6D4?logo=tailwindcss&logoColor=white)
 ![Axios](https://img.shields.io/badge/Axios-1.18.1-5A29E4?logo=axios&logoColor=white)
 ![Lucide React](https://img.shields.io/badge/Lucide_React-1.21.0-F56565)
-
-### Backend 
-
-![Node.js](https://img.shields.io/badge/Node.js-v18+-339933?logo=node.js&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5.2.1-000000?logo=express&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-7.8.0-2D3748?logo=prisma&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-9.0.3-000000?logo=jsonwebtokens&logoColor=white)
-![Passport](https://img.shields.io/badge/Passport-0.7.0-34E27A?logo=passport&logoColor=white)
 ![Zod](https://img.shields.io/badge/Zod-4.4.3-3E67B1)
-![TSX](https://img.shields.io/badge/TSX-4.22.4-3178C6)
 
+### ⚙️ Backend API Service
 
-### Development Tools
+![Node.js](https://img.shields.io/badge/Node.js-v20+-339933?logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-v6.0+-3178C6?logo=typescript&logoColor=white)
+![Express](https://img.shields.io/badge/Express-v5.2-000000?logo=express&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-v7.8-2D3748?logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-v17-4169E1?logo=postgresql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-v9.0-000000?logo=jsonwebtokens&logoColor=white)
+![Passport](https://img.shields.io/badge/Passport-v0.7-34E27A?logo=passport&logoColor=white)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-v2.5-3448C5?logo=cloudinary&logoColor=white)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-v6.10-22B573)
+![Swagger](https://img.shields.io/badge/Swagger-v5.0-85EA2D?logo=swagger&logoColor=black)
 
-![npm](https://img.shields.io/badge/npm-Latest-CB3837?logo=npm&logoColor=white)
-![ESLint](https://img.shields.io/badge/ESLint-10.3.0-4B32C3?logo=eslint&logoColor=white)
-![TypeScript ESLint](https://img.shields.io/badge/typescript--eslint-8.59.2-3178C6?logo=typescript&logoColor=white)
-![JSON Server](https://img.shields.io/badge/JSON_Server-1.0.0--beta.15-000000)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Ready-2088FF?logo=githubactions&logoColor=white)
+### 🧰 Tools & Quality Control
+
+![npm](https://img.shields.io/badge/npm-v10+-CB3837?logo=npm&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-v10.3-4B32C3?logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-v3.0-F7B93E?logo=prettier&logoColor=black)
+![TSX](https://img.shields.io/badge/TSX-v4.22-3178C6)
+
+---
+## 🌐 Live Demo & Deployment
+
+The application is fully deployed and accessible in production environment across modern cloud infrastructure platforms:
+
+| Component | Platform | Status | Live URL |
+| :--- | :--- | :--- | :--- |
+| **Frontend Web App** | ![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white) | ![Active](https://img.shields.io/badge/Status-Active-2ea44f) | [https://rosy-fotobook.vercel.app](https://rosy-fotobook.vercel.app) |
+| **Backend REST API** | ![Render](https://img.shields.io/badge/Render-46E3B7?logo=render&logoColor=white) | ![Active](https://img.shields.io/badge/Status-Active-2ea44f) | [https://fotobook-qit0.onrender.com](https://fotobook-qit0.onrender.com) |
+| **Database (PostgreSQL)** | ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white) | ![Active](https://img.shields.io/badge/Status-Active-2ea44f) | PostgreSQL Managed Database |
+
 
 ---
 
-## Project Structure
+### ☁️ Deployment Architecture Highlights
+- **Frontend Hosting (Vercel):** Continuous deployment automatically triggered on main branch updates with optimized static asset caching and global CDN distribution.
+- **Backend Service (Render):** Docker/Node.js web service running instance environment with dynamic port mapping and environment isolation.
+- **Managed Database (Supabase):** Managed PostgreSQL database cluster providing reliable SSL connections, transaction pooling, and automated backups.
+
+---
+## 📁 Repository Structure
 
 ```text
 final_app/
-├── be/
-│   ├── src/
-│   │   ├── app.ts                  # Application entry point
-│   │   ├── config/                 # Global configurations
-│   │   ├── controllers/            # Handle HTTP requests & responses
-│   │   ├── services/               # Business logic layer
-│   │   ├── routes/                 # Express route definitions
-│   │   ├── middlewares/            # Custom Express middlewares
-│   │   ├── validations/            # Zod validation schemas
-│   │   └── views/                  # Pug templates
-│   │
-│   ├── .env.example                # Environment variable template
-│   ├── auth_test.http              # REST Client API testing file
-│   ├── eslint.config.js            # ESLint Flat Config
-│   ├── package.json                # Project metadata & dependencies
-│   ├── prisma.config.ts            # Prisma configuration
-│   ├── tsconfig.json               # TypeScript configuration
-│   └── README.md                   # Project documentation│
-│ 
-└── fe/
-    ├── public/
-    ├── src/
-    │   ├── api/            # API configuration and requests
-    │   ├── assets/         # Static assets
-    │   ├── components/     # Reusable UI components
-    │   ├── hooks/          # Custom React hooks
-    │   ├── mocks/          # Mock data and API mocks
-    │   ├── pages/          # Application pages
-    │   ├── services/       # Business logic and API services
-    │   ├── types/          # TypeScript type definitions
-    │   ├── utils/          # Utility functions
-    │   ├── App.tsx
-    │   ├── App.css
-    │   ├── index.css
-    │   └── main.tsx
-    │
-    ├── .env
-    ├── .env.example
-    ├── package.json
-    └── vite.config.ts
+├── be/                          # Express v5 + Prisma Backend REST API Service
+│   ├── prisma/                  # Database Schema ERD, Migrations & Seeders
+│   ├── src/                     # Core Business Logic Layered Architecture
+│   │   ├── config/              # Centralized Environment, Passport & Swagger configs
+│   │   ├── controllers/         # HTTP Request Parsers & Response Formatters
+│   │   ├── middlewares/         # JWT Guards, Multer Upload & Error Interceptors
+│   │   ├── routes/              # Express Endpoints Definition
+│   │   ├── services/            # Business Logic & Prisma Transactions
+│   │   └── validations/         # Zod Request Validation Schemas
+│   ├── package.json             # Backend Dependencies & Scripts
+│   └── README.md                # Detailed Backend API Documentation
+│
+├── fe/                          # React 19 + Vite Frontend Web Application
+│   ├── public/                  # Static Public Assets (Favicon, Logos)
+│   ├── src/                     # React Component Tree & Application Logic
+│   │   ├── api/                 # Axios Client & Token Refresh Interceptors
+│   │   ├── components/          # Reusable UI Primitives, Guards & Forms
+│   │   ├── contexts/            # Global React Context State Management
+│   │   ├── hooks/               # Custom React Hooks (useAuth, usePhotoForm)
+│   │   ├── pages/               # Primary App Views (Auth, Feeds, Profile, Admin)
+│   │   └── services/            # Client API Services Layer
+│   ├── package.json             # Frontend Dependencies & Scripts
+│   └── README.md                # Detailed Frontend Web Documentation
+│
+├── .gitignore                   # Workspace Root Git Ignore rules
+├── .prettierrc                  # Workspace Prettier Code Formatting Config
+├── package.json                 # Workspace Meta & Root Scripts
+└── README.md                    # System Root Overview Documentation
 ```
+
+## 🚀 Complete Functional Matrix
+
+### 👤 1. Guest User (Unauthenticated)
+
+- **Landing & Discovery:** Access Public Feeds and Discovery pages to browse public photos and albums.
+- **Content Inspection:** Open interactive modals to view high-resolution photos and navigate through album image collections.
+- **Profiles:** View Public User Profiles, including their public photos, public albums, follower list, and following list.
+- **Authentication:** Sign up for a new account, confirm email via verification link, log in, and request password reset tokens.
+
+### 🔐 2. Normal Authenticated User
+
+- **Account Management:**
+  - Edit Personal Profile: Update Avatar image (Max 2MB), First Name, Last Name, Email, and Password.
+  - Auto-fallback initial avatars generated if no avatar photo is uploaded.
+  - Session Synchronization: Cross-tab logout and state synchronization via `BroadcastChannel`.
+- **Photo Management:**
+  - Create/Upload new single photo (JPEG, PNG, GIF up to 5MB) with mandatory Title ($\le$ 140 chars) and Description ($\le$ 300 chars).
+  - Set privacy mode: `Public` or `Private`.
+  - Edit photo details or replace image file.
+  - Delete photos with double-confirmation modal.
+- **Album Management:**
+  - Create new albums with batch uploading (up to 25 images per album).
+  - Multi-image navigation carousel inside album preview modals.
+  - Edit album details, update remaining image collections, or delete entire albums (automatically purges all associated stored images).
+- **Social Engagement:**
+  - **Feeds Page:** Personalized reverse-chronological timeline displaying public posts exclusively from followed photographers.
+  - **Discovery Page:** Explore public posts platform-wide with content filters (`Photos` / `Albums`).
+  - **Interactions:** One-click Like/Unlike photos and albums with real-time counter updates.
+  - **Follow Graph:** One-click Follow/Unfollow other creators from feed cards, discovery grid, or profile pages.
+
+### 🛡️ 3. Administrator (`ADMIN` Role)
+
+- **User Moderation:**
+  - View paginated list of all platform users with search capabilities.
+  - Temporarily activate or deactivate (suspend) user accounts. Inactive users are immediately revoked access.
+  - Permanently delete user accounts.
+- **Global Asset Management:**
+  - View, edit, or permanently remove **ANY** Photo or Album across the entire system, including assets marked as `PRIVATE`.
 
 ---
 
-## ⚙️ Getting Started
+## 🏗️ Technical Highlights & Design Patterns
 
-### Prerequisites
+1. **Dual-Token Authentication with Queue Interceptor:**
+   - Short-lived Access Tokens paired with long-lived Refresh Tokens.
+   - Axios response interceptors transparently handle token expiration, queueing failed requests while fetching a new token without disturbing user session flow.
 
-Make sure you have installed:
+2. **Cascading Asset Lifecycle Management:**
+   - Deleting a photo or album triggers automatic cleanup in both PostgreSQL relational database tables (`Media`, `Photo`, `Album`) and remote **Cloudinary CDN** storage to prevent orphan files.
 
-- Node.js >= 20
-- npm >= 10
-- Git
+3. **Strict Validation Pipeline:**
+   - Both Client and Server enforce identical Zod validation schemas for request bodies, query strings, and file attributes (MIME types, file size boundaries).
 
-### Clone Repository
-
-```bash
-git clone https://github.com/khoidagn/final_app.git
-cd final_app/fe
-```
-
-### Install Dependencies
-
-```bash
-npm install
-```
-
-### Environment Variables
-
-Create a local environment file:
-
-```bash
-cp .env.example .env
-```
-
-Update the environment variables if needed.
-
-### Run Development Server
-
-```bash
-npm run dev
-```
-
-The application will be available at:
-
-```text
-http://localhost:5173
-```
-
-### Run Mock API
-
-This project currently uses JSON Server as a mock backend.
-
-```bash
-npm run mock-api
-```
-
-Mock API will be available at:
-
-```text
-http://localhost:5000
-```
-
-<!-- ### Build for Production
-
-```bash
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-npm run preview
-``` -->
+4. **Self-Documenting RESTful API:**
+   - Fully documented OpenAPI/Swagger endpoints available at `/api-docs` with interactive execution and JWT authorization support.
 
 ---
 
-## 📜 Available Scripts
+## 🛡️ License
 
-| Command            | Description                   |
-| ------------------ | ----------------------------- |
-| `npm run dev`      | Start Vite development server |
-| `npm run mock-api` | Start JSON Server mock API    |
-| `npm run lint`     | Run ESLint                    |
-
-<!-- | `npm run build`    | Build application for production |
-| `npm run preview`  | Preview production build         | -->
-
----
-
-## 🔧 Environment Variables
-
-Example:
-
-```env
-VITE_API_URL=http://localhost:5000
-```
-
-Never commit real environment files or secrets to the repository.
-
----
-
-## Future Improvements
-
-- Real-time notifications
-- Advanced search functionality
-- Social login (Google, Facebook, X)
-- Infinite scrolling optimization
-- Cloud image storage (AWS S3 / Cloudinary)
-- Email notification system
-- Docker deployment
-
----
-
-## Contributing
-
-1. Create a feature branch.
-2. Commit your changes.
-3. Open a Pull Request.
-
-Please follow the project's coding standards and best practices.
-
----
-
-## License
-
-This project is developed for educational purposes as part of the NUS Advanced Training Program.
+This project was developed for educational purposes as part of the **NUS Advanced Training Program**.

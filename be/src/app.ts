@@ -14,6 +14,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://192.168.2.43:5173',
   'https://rosy-fotobook.vercel.app',
+  'http://localhost:3002',
 ];
 
 app.use(

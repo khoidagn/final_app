@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type InternalAxiosRequestConfig } from 'axios';
 import { env } from '../configs/env';
 import { authService } from '../services/auth.service';
 
@@ -42,15 +42,27 @@ const processQueue = (error: unknown, token: string | null = null) => {
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
-    if (originalRequest.url.includes('/auth/refresh')) {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
+    if (originalRequest?.url?.includes('/auth/refresh')) {
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('role');
+      localStorage.removeItem('userId');
+
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
       return Promise.reject(error);
     }
+
     if (
       error.response?.status === 401 &&
+      originalRequest &&
       !originalRequest._retry &&
-      !originalRequest.url.includes('/auth/login')
+      !originalRequest.url?.includes('/auth/login')
     ) {
       if (isRefreshing) {
         return new Promise<string>((resolve, reject) => {
@@ -68,8 +80,10 @@ apiClient.interceptors.response.use(
 
       try {
         const newAccessToken = await authService.refreshSessionTokens();
+
         apiClient.defaults.headers.common['Authorization'] =
           `Bearer ${newAccessToken}`;
+
         processQueue(null, newAccessToken);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -82,7 +96,9 @@ apiClient.interceptors.response.use(
         localStorage.removeItem('role');
         localStorage.removeItem('userId');
 
-        window.location.href = '/login';
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

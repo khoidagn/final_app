@@ -4,6 +4,10 @@ import { userService } from '../../../services/user.service';
 import { PROFILE_CONSTANTS } from '../../../constants/profile.constant';
 import { getBackendMessage } from '../../../utils/error';
 import { useAuth } from '../../../contexts/auth.context';
+import {
+  validateProfileForm,
+  type ProfileFormErrors,
+} from '../validations/profile.validation';
 
 export function useUserProfileAction() {
   const { refreshSession } = useAuth();
@@ -23,7 +27,7 @@ export function useUserProfileAction() {
     confirmPassword: '',
   });
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<ProfileFormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -53,64 +57,53 @@ export function useUserProfileAction() {
       });
   }, []);
 
+  const handleFormChange = (field: keyof typeof form, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (errors[field as keyof ProfileFormErrors]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      if (file.size > PROFILE_CONSTANTS.LIMITS.MAX_AVATAR_SIZE_BYTES) {
-        toast.warning(
-          PROFILE_CONSTANTS.VALIDATION.FILE_TOO_LARGE(
-            PROFILE_CONSTANTS.LIMITS.MAX_AVATAR_SIZE_MB
-          )
-        );
+
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        setErrors((prev) => ({
+          ...prev,
+          avatar: 'Accepted formats are JPEG and PNG.',
+        }));
         return;
       }
+
+      if (file.size > PROFILE_CONSTANTS.LIMITS.MAX_AVATAR_SIZE_BYTES) {
+        setErrors((prev) => ({
+          ...prev,
+          avatar: PROFILE_CONSTANTS.VALIDATION.FILE_TOO_LARGE(
+            PROFILE_CONSTANTS.LIMITS.MAX_AVATAR_SIZE_MB
+          ),
+        }));
+        return;
+      }
+
       setAvatarFile(file);
       setForm((prev) => ({
         ...prev,
         avatarUrl: URL.createObjectURL(file),
       }));
+
+      if (errors.avatar) {
+        setErrors((prev) => ({ ...prev, avatar: undefined }));
+      }
     }
   };
 
   const handlePasswordChange = (field: string, value: string) => {
     setPasswordForm((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
+    if (errors[field as keyof ProfileFormErrors]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  };
-
-  const validateForm = (isChangingPassword: boolean): boolean => {
-    const newErrors: { [key: string]: string } = {};
-
-    if (isChangingPassword) {
-      if (!passwordForm.currentPassword) {
-        newErrors.currentPassword =
-          PROFILE_CONSTANTS.VALIDATION.CURRENT_PASSWORD_REQUIRED;
-      }
-      if (!passwordForm.newPassword) {
-        newErrors.newPassword =
-          PROFILE_CONSTANTS.VALIDATION.NEW_PASSWORD_REQUIRED;
-      } else if (
-        passwordForm.newPassword.length <
-        PROFILE_CONSTANTS.LIMITS.MIN_PASSWORD_LENGTH
-      ) {
-        newErrors.newPassword =
-          PROFILE_CONSTANTS.VALIDATION.NEW_PASSWORD_TOO_SHORT(
-            PROFILE_CONSTANTS.LIMITS.MIN_PASSWORD_LENGTH
-          );
-      }
-      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        newErrors.confirmPassword =
-          PROFILE_CONSTANTS.VALIDATION.PASSWORDS_NOT_MATCH;
-      }
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
   const handleInfoSubmit = async (
@@ -119,8 +112,18 @@ export function useUserProfileAction() {
   ) => {
     e.preventDefault();
 
-    if (!validateForm(isChangingPassword)) return;
+    const validationErrors = validateProfileForm(
+      form,
+      passwordForm,
+      isChangingPassword
+    );
 
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
     setIsLoading(true);
 
     try {
@@ -161,6 +164,7 @@ export function useUserProfileAction() {
   return {
     form,
     setForm,
+    handleFormChange,
     passwordForm,
     errors,
     isLoading,

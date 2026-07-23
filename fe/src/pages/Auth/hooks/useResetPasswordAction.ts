@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { authService } from '../../../services/auth.service';
 import { getBackendMessage } from '../../../utils/error';
 import { RESET_PASSWORD_CONSTANTS } from '../constants/reset-password.constant';
+import { authChannel } from '../../../utils/authChannel';
 
 export function useResetPasswordAction() {
   const navigate = useNavigate();
@@ -48,8 +49,16 @@ export function useResetPasswordAction() {
       const successMsg = RESET_PASSWORD_CONSTANTS.API_RESPONSE.RESET_SUCCESS;
       toast.success(successMsg);
 
+      authChannel.postMessage({
+        type: 'RESET_PASSWORD_SUCCESS',
+        message: 'Password reset successfully from another tab! Redirecting...',
+      });
+
       sessionStorage.setItem('toastMessage', successMsg);
-      navigate('/login');
+
+      setTimeout(() => {
+        navigate('/login', { replace: true });
+      }, 1500);
     } catch (error: unknown) {
       const errorMsg = getBackendMessage(
         error,

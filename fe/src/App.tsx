@@ -7,6 +7,7 @@ import AdminLayout from './components/layouts/AdminLayout';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import VerifyWaiting from './pages/Auth/VerifyWaiting';
+import VerifyEmail from './pages/Auth/VerifyEmail';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassWord';
 
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-waiting" element={<VerifyWaiting />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
 

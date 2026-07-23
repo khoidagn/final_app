@@ -6,7 +6,13 @@ export const FORGOT_PASSWORD_CONSTANTS = {
     LABEL_EMAIL: 'Email Address',
     BUTTON_SUBMIT: 'Send Reset Link',
     BUTTON_SENDING: 'Sending...',
+    BUTTON_RESEND: 'Resend Email',
     BUTTON_COOLDOWN: (seconds: number) => `Resend in ${seconds}s`,
+    TITLE_SENT: 'Check your email',
+    DESC_SENT: (email: string) =>
+      `We have sent a password reset link to ${email || 'your email'}.`,
+    STATUS_QUESTION: "Didn't receive the email?",
+    TRY_ANOTHER_EMAIL: 'Try another email address',
     BACK_TO_LOGIN: 'Back to Login',
   },
 
@@ -15,12 +21,12 @@ export const FORGOT_PASSWORD_CONSTANTS = {
   },
 
   VALIDATION: {
-    EMAIL_REQUIRED: 'Please enter your email address.',
+    EMAIL_REQUIRED: 'Email address is required.',
   },
 
   API_RESPONSE: {
-    SEND_SUCCESS: 'Password reset link has been sent to your email!',
-    SEND_FAILED: 'Failed to send password reset email. Please try again.',
+    SUCCESS: 'Password reset link sent to your email.',
+    FAILED: 'Failed to send reset link. Please try again.',
   },
 
   COOLDOWN_MESSAGE: (seconds: number) =>

@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { isAxiosError } from 'axios';
 import { authService } from '../../../services/auth.service';
-import { getBackendMessage } from '../../../utils/error';
 import { SIGNUP_CONSTANTS } from '../constants/signup.constant';
+import {
+  validateSignUpForm,
+  type SignUpFieldErrors,
+} from '../validations/signup.validation';
+
+interface ApiErrorResponse {
+  success?: boolean;
+  message?: string;
+}
 
 export function useSignUpAction() {
   const [email, setEmail] = useState('');
@@ -11,42 +20,58 @@ export function useSignUpAction() {
   const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+
+  const [fieldErrors, setFieldErrors] = useState<SignUpFieldErrors>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFirstName(e.target.value);
+    if (fieldErrors.firstName)
+      setFieldErrors((prev) => ({ ...prev, firstName: undefined }));
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLastName(e.target.value);
+    if (fieldErrors.lastName)
+      setFieldErrors((prev) => ({ ...prev, lastName: undefined }));
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (fieldErrors.email)
+      setFieldErrors((prev) => ({ ...prev, email: undefined }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (fieldErrors.password)
+      setFieldErrors((prev) => ({ ...prev, password: undefined }));
+  };
+
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setConfirmPassword(e.target.value);
+    if (fieldErrors.confirmPassword)
+      setFieldErrors((prev) => ({ ...prev, confirmPassword: undefined }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-
-    if (!email.trim()) {
-      const msg = SIGNUP_CONSTANTS.VALIDATION.EMAIL_REQUIRED;
-      setErrorMessage(msg);
-      toast.warning(msg);
+    const errors = validateSignUpForm({
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    });
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
-    if (!firstName.trim() || !lastName.trim()) {
-      const msg = SIGNUP_CONSTANTS.VALIDATION.NAME_REQUIRED;
-      setErrorMessage(msg);
-      toast.warning(msg);
-      return;
-    }
-    if (!password.trim()) {
-      const msg = SIGNUP_CONSTANTS.VALIDATION.PASSWORD_REQUIRED;
-      setErrorMessage(msg);
-      toast.warning(msg);
-      return;
-    }
-    if (password !== confirmPassword) {
-      const msg = SIGNUP_CONSTANTS.VALIDATION.PASSWORDS_NOT_MATCH;
-      setErrorMessage(msg);
-      toast.warning(msg);
-      return;
-    }
-
+    setFieldErrors({});
     setIsLoading(true);
     try {
       await authService.register({
@@ -55,23 +80,30 @@ export function useSignUpAction() {
         lastName: lastName.trim(),
         password,
       });
-
       sessionStorage.setItem('registeredEmail', email.trim());
-      const successMsg = SIGNUP_CONSTANTS.API_RESPONSE.REGISTER_SUCCESS;
-
-      setSuccessMessage(successMsg);
-      toast.success(successMsg);
-
+      toast.success(SIGNUP_CONSTANTS.API_RESPONSE.REGISTER_SUCCESS);
       setTimeout(() => {
         navigate('/verify-waiting');
       }, 1500);
     } catch (error: unknown) {
-      const errorMsg = getBackendMessage(
-        error,
-        SIGNUP_CONSTANTS.API_RESPONSE.REGISTER_FAILED
-      );
-      setErrorMessage(errorMsg);
-      toast.error(errorMsg);
+      let serverMessage: string = SIGNUP_CONSTANTS.API_RESPONSE.REGISTER_FAILED;
+      if (isAxiosError<ApiErrorResponse>(error) && error.response) {
+        const status = error.response.status;
+        const backendMsg = error.response.data?.message || '';
+        const isEmailTaken =
+          status === 400 ||
+          status === 409 ||
+          /email/i.test(backendMsg) ||
+          /registered|exists/i.test(backendMsg);
+        if (isEmailTaken) {
+          setFieldErrors({
+            email: SIGNUP_CONSTANTS.VALIDATION.EMAIL_EXISTS,
+          });
+          return;
+        }
+        serverMessage = backendMsg || serverMessage;
+      }
+      toast.error(serverMessage);
     } finally {
       setIsLoading(false);
     }
@@ -83,14 +115,13 @@ export function useSignUpAction() {
     lastName,
     password,
     confirmPassword,
-    errorMessage,
-    successMessage,
+    fieldErrors,
     isLoading,
-    setEmail,
-    setFirstName,
-    setLastName,
-    setPassword,
-    setConfirmPassword,
+    handleFirstNameChange,
+    handleLastNameChange,
+    handleEmailChange,
+    handlePasswordChange,
+    handleConfirmPasswordChange,
     handleSubmit,
   };
 }

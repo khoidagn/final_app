@@ -41,6 +41,16 @@ export const config = {
     apiSecret: getEnvVar('CLOUDINARY_API_SECRET'),
     folder: getEnvVar('CLOUDINARY_FOLDER', false) || 'upload-finalapp',
   },
+  mail: {
+    smtpHost: getEnvVar('SMTP_HOST', false) || 'smtp.gmail.com',
+    smtpPort: parseInt(getEnvVar('SMTP_PORT', false) || '587', 10),
+    smtpSecure: getEnvVar('SMTP_SECURE', false) === 'true',
+    smtpUser: getEnvVar('SMTP_USER', false),
+    smtpPass: getEnvVar('SMTP_PASS', false),
+    smtpFrom:
+      getEnvVar('SMTP_FROM', false) ||
+      '"Fotobook System" <noreply@fotobook.com>',
+  },
 } as const;
 
 export default config;

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { useSignUpAction } from './hooks/useSignupAction';
 import PasswordField from '../../components/ui/PasswordField';
+import SocialAuthButtons from './components/SocialAuthButtons';
 import { SIGNUP_CONSTANTS } from './constants/signup.constant';
 
 export default function SignUp() {
@@ -11,12 +12,13 @@ export default function SignUp() {
     lastName,
     password,
     confirmPassword,
+    fieldErrors,
     isLoading,
-    setEmail,
-    setFirstName,
-    setLastName,
-    setPassword,
-    setConfirmPassword,
+    handleFirstNameChange,
+    handleLastNameChange,
+    handleEmailChange,
+    handlePasswordChange,
+    handleConfirmPasswordChange,
     handleSubmit,
   } = useSignUpAction();
 
@@ -36,10 +38,13 @@ export default function SignUp() {
         )}
       >
         <form
+          noValidate
           onSubmit={handleSubmit}
           className={cn('p-5 flex flex-col items-center')}
         >
-          <div className={cn('w-full flex gap-3 mb-3')}>
+          {/* FIRST NAME & LAST NAME */}
+          <div className={cn('w-full flex gap-3 mb-3 items-start')}>
+            {/* FIRST NAME */}
             <div className={cn('flex-1')}>
               <label
                 className={cn(
@@ -52,15 +57,24 @@ export default function SignUp() {
                 type="text"
                 placeholder={SIGNUP_CONSTANTS.PLACEHOLDERS.FIRST_NAME}
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={handleFirstNameChange}
                 disabled={isLoading}
                 className={cn(
                   'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                  'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+                  fieldErrors.firstName
+                    ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                    : 'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
+                  isLoading && 'opacity-60 cursor-not-allowed'
                 )}
               />
+              {fieldErrors.firstName && (
+                <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                  {fieldErrors.firstName}
+                </p>
+              )}
             </div>
 
+            {/* LAST NAME */}
             <div className={cn('flex-1')}>
               <label
                 className={cn(
@@ -73,13 +87,21 @@ export default function SignUp() {
                 type="text"
                 placeholder={SIGNUP_CONSTANTS.PLACEHOLDERS.LAST_NAME}
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={handleLastNameChange}
                 disabled={isLoading}
                 className={cn(
                   'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                  'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+                  fieldErrors.lastName
+                    ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                    : 'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
+                  isLoading && 'opacity-60 cursor-not-allowed'
                 )}
               />
+              {fieldErrors.lastName && (
+                <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                  {fieldErrors.lastName}
+                </p>
+              )}
             </div>
           </div>
 
@@ -95,13 +117,21 @@ export default function SignUp() {
               type="email"
               placeholder={SIGNUP_CONSTANTS.PLACEHOLDERS.EMAIL}
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               disabled={isLoading}
               className={cn(
                 'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20'
+                fieldErrors.email
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                  : 'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
+                isLoading && 'opacity-60 cursor-not-allowed'
               )}
             />
+            {fieldErrors.email && (
+              <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
 
           <div className={cn('w-full mb-3')}>
@@ -109,9 +139,18 @@ export default function SignUp() {
               label={SIGNUP_CONSTANTS.UI.LABEL_PASSWORD}
               placeholder={SIGNUP_CONSTANTS.PLACEHOLDERS.PASSWORD}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               disabled={isLoading}
+              className={cn(
+                fieldErrors.password &&
+                  'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              )}
             />
+            {fieldErrors.password && (
+              <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
 
           <div className={cn('w-full mb-4')}>
@@ -119,9 +158,18 @@ export default function SignUp() {
               label={SIGNUP_CONSTANTS.UI.LABEL_CONFIRM_PASSWORD}
               placeholder={SIGNUP_CONSTANTS.PLACEHOLDERS.PASSWORD}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={handleConfirmPasswordChange}
               disabled={isLoading}
+              className={cn(
+                fieldErrors.confirmPassword &&
+                  'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              )}
             />
+            {fieldErrors.confirmPassword && (
+              <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                {fieldErrors.confirmPassword}
+              </p>
+            )}
           </div>
 
           <button
@@ -139,63 +187,11 @@ export default function SignUp() {
           </button>
         </form>
 
-        <div
-          className={cn(
-            'p-5 pt-3 border-t flex flex-col gap-2 border-border-muted bg-background/30'
-          )}
-        >
-          <button
-            disabled={isLoading}
-            className={cn(
-              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
-            )}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className={cn('w-3.5 h-3.5 shrink-0')}
-            />
-            <span className={cn('text-xs font-medium')}>
-              Sign up with Google
-            </span>
-          </button>
-
-          <button
-            disabled={isLoading}
-            className={cn(
-              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
-            )}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475647/facebook-color.svg"
-              alt="Facebook"
-              className={cn('w-3.5 h-3.5 shrink-0')}
-            />
-            <span className={cn('text-xs font-medium')}>
-              Sign up with Facebook
-            </span>
-          </button>
-
-          <button
-            disabled={isLoading}
-            className={cn(
-              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
-            )}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475689/twitter-color.svg"
-              alt="Twitter"
-              className={cn('w-3.5 h-3.5 shrink-0')}
-            />
-            <span className={cn('text-xs font-medium')}>
-              Sign up with Twitter
-            </span>
-          </button>
-        </div>
+        <SocialAuthButtons isLoading={isLoading} mode="signup" />
       </div>
 
       <div className={cn('text-xs text-text-muted mt-4 font-normal')}>
-        {SIGNUP_CONSTANTS.UI.FOOTER_PROMPT}
+        {SIGNUP_CONSTANTS.UI.FOOTER_PROMPT}{' '}
         <Link
           to="/login"
           className={cn(

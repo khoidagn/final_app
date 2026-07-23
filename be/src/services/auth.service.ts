@@ -62,7 +62,7 @@ export const authService = {
       { expiresIn: '1h' }
     );
 
-    const verificationUrl = `${config.app.host}/api/v1/auth/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
 
     try {
       await MailService.sendEmail({
@@ -157,7 +157,7 @@ export const authService = {
       { expiresIn: '1h' }
     );
 
-    const verificationUrl = `${config.app.host || 'http://localhost:3002'}/api/v1/auth/verify-email?token=${verificationToken}`;
+    const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
 
     await MailService.sendEmail({
       to: user.email,
@@ -259,10 +259,9 @@ export const authService = {
     logInfo(SERVICE_NAME, 'Session token refresh requested');
 
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_REFRESH_SECRET || 'default_refresh_secret'
-      ) as { id: number };
+      const decoded = jwt.verify(token, config.jwt.refreshSecret) as {
+        id: number;
+      };
 
       const user = await prisma.user.findUnique({ where: { id: decoded.id } });
       if (!user || !user.isActive) {
@@ -302,11 +301,11 @@ export const authService = {
 
     const resetToken = jwt.sign(
       { userId: user.id, email: user.email },
-      config.jwt.resetPasswordSecret || 'your_reset_secret',
+      config.jwt.resetPasswordSecret,
       { expiresIn: '15m' }
     );
 
-    const resetPasswordUrl = `${config.app.frontendHost || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+    const resetPasswordUrl = `${config.app.frontendHost}/reset-password?token=${resetToken}`;
 
     try {
       await MailService.sendEmail({
@@ -339,10 +338,7 @@ export const authService = {
     logInfo(SERVICE_NAME, 'Password correction execution initiated');
 
     try {
-      const decoded = jwt.verify(
-        token,
-        config.jwt.resetPasswordSecret || 'your_reset_secret'
-      ) as {
+      const decoded = jwt.verify(token, config.jwt.resetPasswordSecret) as {
         userId: number;
       };
 

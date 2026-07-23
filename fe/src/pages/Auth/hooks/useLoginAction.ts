@@ -5,12 +5,18 @@ import { useAuth } from '../../../hooks/useAuth';
 import { getBackendMessage } from '../../../utils/error';
 import { LOGIN_CONSTANTS } from '../constants/login.constant';
 import { UserRole } from '../../../types/enum.type';
+import {
+  validateLoginForm,
+  type LoginFieldErrors,
+} from '../validations/login.validation';
 
 export function useLoginAction() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const { login, isLoading } = useAuth();
+  const [fieldErrors, setFieldErrors] = useState<LoginFieldErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,42 +29,36 @@ export function useLoginAction() {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
+    if (fieldErrors.email) {
+      setFieldErrors((prev) => ({ ...prev, email: undefined }));
+    }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    if (fieldErrors.password) {
+      setFieldErrors((prev) => ({ ...prev, password: undefined }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
 
-    const emailTrimmed = email.trim();
-    const passwordTrimmed = password.trim();
+    const errors = validateLoginForm(email, password);
 
-    if (emailTrimmed === '' && passwordTrimmed === '') {
-      const msg = LOGIN_CONSTANTS.VALIDATION.BOTH_REQUIRED;
-      setErrorMessage(msg);
-      toast.warning(msg);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
-    if (emailTrimmed === '') {
-      const msg = LOGIN_CONSTANTS.VALIDATION.EMAIL_REQUIRED;
-      setErrorMessage(msg);
-      toast.warning(msg);
-      return;
-    }
-    if (passwordTrimmed === '') {
-      const msg = LOGIN_CONSTANTS.VALIDATION.PASSWORD_REQUIRED;
-      setErrorMessage(msg);
-      toast.warning(msg);
-      return;
-    }
+
+    setFieldErrors({});
 
     try {
+      setIsSubmitting(true);
+
       const userData = await login({
-        email: emailTrimmed,
-        password: passwordTrimmed,
+        email: email.trim(),
+        password: password.trim(),
       });
 
       toast.success('Welcome back! Login successful.');
@@ -77,16 +77,17 @@ export function useLoginAction() {
         error,
         LOGIN_CONSTANTS.API_RESPONSE.LOGIN_FAILED
       );
-      setErrorMessage(backendMsg);
       toast.error(backendMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return {
     email,
     password,
-    errorMessage,
-    isLoading,
+    fieldErrors,
+    isLoading: isSubmitting,
     handleEmailChange,
     handlePasswordChange,
     handleSubmit,

@@ -71,7 +71,7 @@ export const MailTemplates = {
         
         <p style="font-size: 13px; color: #6b7280; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
           Best regards,<br>
-          <strong>Fotobook System</strong>
+          <strong>Rosy Fotobook</strong>
         </p>
       </div>
     `;
@@ -98,7 +98,7 @@ export const MailTemplates = {
         
         <p style="font-size: 13px; color: #6b7280; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
           Best regards,<br>
-          <strong>Fotobook System</strong>
+          <strong>Rosy Fotobook</strong>
         </p>
       </div>
     `;

@@ -2,12 +2,14 @@ import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { useLoginAction } from './hooks/useLoginAction';
 import PasswordField from '../../components/ui/PasswordField';
+import SocialAuthButtons from './components/SocialAuthButtons';
 import { LOGIN_CONSTANTS } from './constants/login.constant';
 
 export default function Login() {
   const {
     email,
     password,
+    fieldErrors,
     isLoading,
     handleEmailChange,
     handlePasswordChange,
@@ -30,6 +32,7 @@ export default function Login() {
         )}
       >
         <form
+          noValidate
           onSubmit={handleSubmit}
           className={cn('p-5 flex flex-col items-center')}
         >
@@ -49,10 +52,17 @@ export default function Login() {
               disabled={isLoading}
               className={cn(
                 'w-full bg-surface border rounded-xs px-3 py-1.5 text-xs focus:outline-none placeholder-text-muted text-text-primary transition-all',
-                'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
+                fieldErrors.email
+                  ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+                  : 'border-border-default focus:border-brand focus:ring-2 focus:ring-brand/20',
                 isLoading && 'opacity-60 cursor-not-allowed'
               )}
             />
+            {fieldErrors.email && (
+              <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
 
           <div className={cn('w-full mb-4')}>
@@ -62,7 +72,16 @@ export default function Login() {
               value={password}
               onChange={handlePasswordChange}
               disabled={isLoading}
+              className={cn(
+                fieldErrors.password &&
+                  'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20'
+              )}
             />
+            {fieldErrors.password && (
+              <p className={cn('text-[11px] text-red-500 mt-1 font-medium')}>
+                {fieldErrors.password}
+              </p>
+            )}
           </div>
 
           <button
@@ -91,63 +110,11 @@ export default function Login() {
           </div>
         </form>
 
-        <div
-          className={cn(
-            'p-5 pt-3 border-t flex flex-col gap-2 border-border-muted bg-background/30'
-          )}
-        >
-          <button
-            disabled={isLoading}
-            className={cn(
-              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
-            )}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className={cn('w-3.5 h-3.5 shrink-0')}
-            />
-            <span className={cn('text-xs font-medium')}>
-              Sign in with Google
-            </span>
-          </button>
-
-          <button
-            disabled={isLoading}
-            className={cn(
-              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
-            )}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475647/facebook-color.svg"
-              alt="Facebook"
-              className={cn('w-3.5 h-3.5 shrink-0')}
-            />
-            <span className={cn('text-xs font-medium')}>
-              Sign in with Facebook
-            </span>
-          </button>
-
-          <button
-            disabled={isLoading}
-            className={cn(
-              'w-full h-8 border rounded-xs flex items-center justify-center space-x-2 shadow-2xs transition-all focus:outline-none px-3 cursor-pointer bg-surface border-border-default text-text-secondary hover:bg-background hover:text-text-primary active:scale-98 transform'
-            )}
-          >
-            <img
-              src="https://www.svgrepo.com/show/475689/twitter-color.svg"
-              alt="Twitter"
-              className={cn('w-3.5 h-3.5 shrink-0')}
-            />
-            <span className={cn('text-xs font-medium')}>
-              Sign in with Twitter
-            </span>
-          </button>
-        </div>
+        <SocialAuthButtons isLoading={isLoading} mode="signin" />
       </div>
 
       <div className={cn('text-xs text-text-muted mt-4 font-normal')}>
-        {LOGIN_CONSTANTS.UI.FOOTER_PROMPT}
+        {LOGIN_CONSTANTS.UI.FOOTER_PROMPT}{' '}
         <Link
           to="/signup"
           className={cn(

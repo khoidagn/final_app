@@ -47,14 +47,14 @@ export const config = {
     folder: getEnvVar('CLOUDINARY_FOLDER', false) || 'upload-finalapp',
   },
   mail: {
-    smtpHost: getEnvVar('SMTP_HOST', false) || 'smtp.gmail.com',
+    smtpHost: getEnvVar('SMTP_HOST', false) || 'smtp-relay.brevo.com',
     smtpPort: parseInt(getEnvVar('SMTP_PORT', false) || '587', 10),
     smtpSecure: getEnvVar('SMTP_SECURE', false) === 'true',
     smtpUser: getEnvVar('SMTP_USER', false),
     smtpPass: getEnvVar('SMTP_PASS', false),
     smtpFrom:
       getEnvVar('SMTP_FROM', false) ||
-      '"Fotobook System" <noreply@fotobook.com>',
+      '"Fotobook System" <rosyfotobook@gmail.com>',
   },
 } as const;
 

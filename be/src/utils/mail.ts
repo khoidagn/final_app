@@ -10,7 +10,11 @@ interface SendMailOptions {
   html: string;
 }
 
-const createTransporter = async () => {
+let cachedTransporter: nodemailer.Transporter | null = null;
+
+const getTransporter = async (): Promise<nodemailer.Transporter> => {
+  if (cachedTransporter) return cachedTransporter;
+
   const { smtpUser, smtpPass, smtpHost, smtpPort, smtpSecure } = config.mail;
 
   if (smtpUser && smtpPass) {
@@ -18,22 +22,32 @@ const createTransporter = async () => {
       SERVICE_NAME,
       `Email Service operating mode: PRODUCTION/REAL MAIL (${smtpUser})`
     );
-    return nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
+
+    const isSecure = smtpSecure || Number(smtpPort) === 465;
+
+    cachedTransporter = nodemailer.createTransport({
+      host: smtpHost || 'smtp.gmail.com',
+      port: Number(smtpPort) || 465,
+      secure: isSecure,
       auth: {
-        user: smtpUser,
-        pass: smtpPass,
+        user: smtpUser.trim(),
+        pass: smtpPass.trim().replace(/\s+/g, ''),
       },
-    });
+      family: 4,
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    } as nodemailer.TransportOptions);
   } else {
     logInfo(
       SERVICE_NAME,
       'Email Service operating mode: ETHEREAL TEST (SMTP_USER/PASS not configured)'
     );
     const testAccount = await nodemailer.createTestAccount();
-    return nodemailer.createTransport({
+    cachedTransporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
@@ -43,6 +57,8 @@ const createTransporter = async () => {
       },
     });
   }
+
+  return cachedTransporter;
 };
 
 export const MailService = {
@@ -52,16 +68,20 @@ export const MailService = {
     html,
   }: SendMailOptions): Promise<boolean> => {
     try {
-      const transporter = await createTransporter();
+      const transporter = await getTransporter();
 
       const info = await transporter.sendMail({
-        from: config.mail.smtpFrom,
+        from:
+          config.mail.smtpFrom || `"Fotobook System" <${config.mail.smtpUser}>`,
         to,
         subject,
         html,
       });
 
-      logInfo(SERVICE_NAME, `Email dispatched successfully to: ${to}`);
+      logInfo(
+        SERVICE_NAME,
+        `Email dispatched successfully to: ${to} (MessageId: ${info.messageId})`
+      );
 
       const testUrl = nodemailer.getTestMessageUrl(info);
       if (testUrl) {
@@ -74,6 +94,7 @@ export const MailService = {
         SERVICE_NAME,
         `Failed to dispatch email to ${to}. Details: ${error?.message || error}`
       );
+      cachedTransporter = null;
       return false;
     }
   },

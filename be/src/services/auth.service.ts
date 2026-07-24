@@ -64,25 +64,31 @@ export const authService = {
 
     const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
 
-    try {
-      await MailService.sendEmail({
-        to: newUser.email,
-        subject: '[Fotobook] Verify your email address',
-        html: MailTemplates.getVerificationEmail({
-          firstName: newUser.firstName,
-          verificationUrl,
-        }),
-      });
-      logInfo(
-        SERVICE_NAME,
-        `Verification email dispatched successfully for User ID: ${newUser.id}`
-      );
-    } catch (mailError) {
+    const isEmailSent = await MailService.sendEmail({
+      to: newUser.email,
+      subject: '[Fotobook] Verify your email address',
+      html: MailTemplates.getVerificationEmail({
+        firstName: newUser.firstName,
+        verificationUrl,
+      }),
+    });
+
+    if (!isEmailSent) {
+      await prisma.user.delete({ where: { id: newUser.id } });
       logError(
         SERVICE_NAME,
-        `Failed to send verification email to ${newUser.email}: ${mailError}`
+        `Registration aborted for ${newUser.email} - Failed to send email.`
+      );
+      throw new AppError(
+        500,
+        'Could not send verification email. Registration aborted. Please try again.'
       );
     }
+
+    logInfo(
+      SERVICE_NAME,
+      `Verification email dispatched successfully for User ID: ${newUser.id}`
+    );
 
     return { user: newUser };
   },

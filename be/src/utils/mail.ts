@@ -17,6 +17,17 @@ const getTransporter = async (): Promise<nodemailer.Transporter> => {
 
   const { smtpUser, smtpPass, smtpHost, smtpPort, smtpSecure } = config.mail;
 
+    logInfo(
+    SERVICE_NAME,
+    JSON.stringify({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpSecure,
+      user: smtpUser,
+      passLength: smtpPass?.length,
+    })
+  );
+
   if (smtpUser && smtpPass) {
     logInfo(
       SERVICE_NAME,

@@ -46,51 +46,53 @@ export const authService = {
 
     const hashedPassword = await bcrypt.hash(signupData.password, 10);
 
-    const newUser = await prisma.user.create({
-      data: {
-        firstName: signupData.firstName,
-        lastName: signupData.lastName,
-        email: signupData.email,
-        passwordHash: hashedPassword,
-        isActive: true,
-      },
-    });
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const newUser = await tx.user.create({
+          data: {
+            firstName: signupData.firstName,
+            lastName: signupData.lastName,
+            email: signupData.email,
+            passwordHash: hashedPassword,
+            isActive: true,
+          },
+        });
 
-    const verificationToken = jwt.sign(
-      { userId: newUser.id, email: newUser.email },
-      config.jwt.verificationSecret,
-      { expiresIn: '1h' }
-    );
+        const verificationToken = jwt.sign(
+          { userId: newUser.id, email: newUser.email },
+          config.jwt.verificationSecret,
+          { expiresIn: '1h' }
+        );
 
-    const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
+        const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
 
-    const isEmailSent = await MailService.sendEmail({
-      to: newUser.email,
-      subject: '[Fotobook] Verify your email address',
-      html: MailTemplates.getVerificationEmail({
-        firstName: newUser.firstName,
-        verificationUrl,
-      }),
-    });
+        await MailService.sendEmail({
+          to: newUser.email,
+          subject: '[Fotobook] Verify your email address',
+          html: MailTemplates.getVerificationEmail({
+            firstName: newUser.firstName,
+            verificationUrl,
+          }),
+        });
 
-    if (!isEmailSent) {
-      await prisma.user.delete({ where: { id: newUser.id } });
+        logInfo(
+          SERVICE_NAME,
+          `Verification email dispatched successfully for User ID: ${newUser.id}`
+        );
+
+        return { user: newUser };
+      });
+    } catch (error: any) {
       logError(
         SERVICE_NAME,
-        `Registration aborted for ${newUser.email} - Failed to send email.`
+        `Registration transaction failed for ${signupData.email}. Details: ${error?.message || error}`
       );
+
       throw new AppError(
         500,
-        'Could not send verification email. Registration aborted. Please try again.'
+        `Could not complete registration: ${error?.message || 'Mail service failure'}`
       );
     }
-
-    logInfo(
-      SERVICE_NAME,
-      `Verification email dispatched successfully for User ID: ${newUser.id}`
-    );
-
-    return { user: newUser };
   },
 
   verifyEmail: async (token: string) => {

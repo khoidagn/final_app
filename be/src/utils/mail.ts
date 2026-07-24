@@ -82,20 +82,22 @@ export const MailService = {
         SERVICE_NAME,
         `Email dispatched successfully to: ${to} (MessageId: ${info.messageId})`
       );
-
-      const testUrl = nodemailer.getTestMessageUrl(info);
-      if (testUrl) {
-        logInfo(SERVICE_NAME, `Ethereal Test Mail URL: ${testUrl}`);
-      }
-
       return true;
     } catch (error: any) {
       logError(
         SERVICE_NAME,
-        `Failed to dispatch email to ${to}. Details: ${error?.message || error}`
+        `[SMTP ERROR] Failed to send email to ${to}. Reason: ${error?.message || error}`
       );
-      cachedTransporter = null;
-      return false;
+      if (error?.response) {
+        logError(
+          SERVICE_NAME,
+          `[SMTP RESPONSE]: ${JSON.stringify(error.response)}`
+        );
+      }
+
+      throw new Error(
+        `Email dispatch failed: ${error?.message || 'Unknown SMTP error'}`
+      );
     }
   },
 };

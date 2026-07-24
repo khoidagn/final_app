@@ -48,9 +48,9 @@ const getTransporter = async (): Promise<nodemailer.Transporter> => {
       tls: {
         rejectUnauthorized: false,
       },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
+      connectionTimeout: 7000,
+      greetingTimeout: 7000,
+      socketTimeout: 7000,
     } as nodemailer.TransportOptions);
   } else {
     logInfo(

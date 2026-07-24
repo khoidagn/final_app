@@ -28,71 +28,52 @@ const generateRefreshToken = (userId: number): string => {
 
 export const authService = {
   register: async (signupData: any) => {
-    logInfo(
-      SERVICE_NAME,
-      `Registering new account attempt for email: ${signupData.email}`
-    );
+    logInfo(SERVICE_NAME, `Registering attempt: ${signupData.email}`);
 
     const existingUser = await prisma.user.findUnique({
       where: { email: signupData.email },
     });
     if (existingUser) {
-      logWarning(
-        SERVICE_NAME,
-        `Registration rejected - Email already exists: ${signupData.email}`
-      );
       throw new AppError(400, 'Email is already registered.');
     }
 
     const hashedPassword = await bcrypt.hash(signupData.password, 10);
 
-    try {
-      return await prisma.$transaction(async (tx) => {
-        const newUser = await tx.user.create({
-          data: {
-            firstName: signupData.firstName,
-            lastName: signupData.lastName,
-            email: signupData.email,
-            passwordHash: hashedPassword,
-            isActive: true,
-          },
-        });
+    const newUser = await prisma.user.create({
+      data: {
+        firstName: signupData.firstName,
+        lastName: signupData.lastName,
+        email: signupData.email,
+        passwordHash: hashedPassword,
+        isActive: true,
+      },
+    });
 
-        const verificationToken = jwt.sign(
-          { userId: newUser.id, email: newUser.email },
-          config.jwt.verificationSecret,
-          { expiresIn: '1h' }
-        );
+    const verificationToken = jwt.sign(
+      { userId: newUser.id, email: newUser.email },
+      config.jwt.verificationSecret,
+      { expiresIn: '1h' }
+    );
+    const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
 
-        const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
-
-        await MailService.sendEmail({
-          to: newUser.email,
-          subject: '[Fotobook] Verify your email address',
-          html: MailTemplates.getVerificationEmail({
-            firstName: newUser.firstName,
-            verificationUrl,
-          }),
-        });
-
-        logInfo(
-          SERVICE_NAME,
-          `Verification email dispatched successfully for User ID: ${newUser.id}`
-        );
-
-        return { user: newUser };
-      });
-    } catch (error: any) {
+    MailService.sendEmail({
+      to: newUser.email,
+      subject: '[Fotobook] Verify your email address',
+      html: MailTemplates.getVerificationEmail({
+        firstName: newUser.firstName,
+        verificationUrl,
+      }),
+    }).catch((err) => {
       logError(
         SERVICE_NAME,
-        `Registration transaction failed for ${signupData.email}. Details: ${error?.message || error}`
+        `Background Email dispatch failed for ${newUser.email}: ${err?.message}`
       );
+    });
 
-      throw new AppError(
-        500,
-        `Could not complete registration: ${error?.message || 'Mail service failure'}`
-      );
-    }
+    return {
+      message: 'Registration successful! Please check your email.',
+      user: newUser,
+    };
   },
 
   verifyEmail: async (token: string) => {

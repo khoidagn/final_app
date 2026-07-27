@@ -8,10 +8,10 @@ interface AuthProviderProps {
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const authActions = useAuthActions();
-console.log('[AuthProvider] Current Auth State:', {
+  console.log('[AuthProvider] Current Auth State:', {
     isLoggedIn: authActions.isLoggedIn,
     isLoading: authActions.isLoading,
-    userData: authActions.user
+    userData: authActions.user,
   });
   return (
     <AuthContext.Provider value={authActions}>{children}</AuthContext.Provider>

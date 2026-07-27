@@ -17,7 +17,7 @@ export default function BackButton({
     if (to) {
       navigate(to);
     } else {
-      navigate(-1); 
+      navigate(-1);
     }
   };
 

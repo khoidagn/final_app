@@ -20,7 +20,7 @@ export const albumApi = {
       headers: { 'Content-Type': 'multipart/form-data' },
       timeout: 30000,
     }),
-    
+
   updateAlbum: (id: number, formData: FormData) =>
     apiClient.put(`/albums/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },

@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 import { config } from '../config/env.js';
 import { logInfo, logError } from './logging.js';
 
@@ -10,40 +10,17 @@ interface SendMailOptions {
   html: string;
 }
 
-const createTransporter = async () => {
-  const { smtpUser, smtpPass, smtpHost, smtpPort, smtpSecure } = config.mail;
+const apiKey = config.mail.apiKey;
 
-  if (smtpUser && smtpPass) {
-    logInfo(
-      SERVICE_NAME,
-      `Email Service operating mode: PRODUCTION/REAL MAIL (${smtpUser})`
-    );
-    return nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
-      secure: smtpSecure,
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-    });
-  } else {
-    logInfo(
-      SERVICE_NAME,
-      'Email Service operating mode: ETHEREAL TEST (SMTP_USER/PASS not configured)'
-    );
-    const testAccount = await nodemailer.createTestAccount();
-    return nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
-      port: 587,
-      secure: false,
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-  }
-};
+if (apiKey) {
+  sgMail.setApiKey(apiKey.trim().replace(/\s+/g, ''));
+  logInfo(SERVICE_NAME, 'SendGrid Web API initialized successfully.');
+} else {
+  logError(
+    SERVICE_NAME,
+    'SendGrid API Key is missing! Check your environment variables.'
+  );
+}
 
 export const MailService = {
   sendEmail: async ({
@@ -52,29 +29,41 @@ export const MailService = {
     html,
   }: SendMailOptions): Promise<boolean> => {
     try {
-      const transporter = await createTransporter();
+      const fromEmail =
+        config.mail.smtpFrom || 'Rosy Fotobook <rosyfotobook@gmail.com>';
 
-      const info = await transporter.sendMail({
-        from: config.mail.smtpFrom,
+      const msg = {
         to,
+        from: fromEmail,
         subject,
         html,
-      });
+      };
 
-      logInfo(SERVICE_NAME, `Email dispatched successfully to: ${to}`);
+      const [response] = await sgMail.send(msg);
 
-      const testUrl = nodemailer.getTestMessageUrl(info);
-      if (testUrl) {
-        logInfo(SERVICE_NAME, `Ethereal Test Mail URL: ${testUrl}`);
-      }
-
+      logInfo(
+        SERVICE_NAME,
+        `Email dispatched successfully via Web API to: ${to} (StatusCode: ${response.statusCode})`
+      );
       return true;
     } catch (error: any) {
       logError(
         SERVICE_NAME,
-        `Failed to dispatch email to ${to}. Details: ${error?.message || error}`
+        `[SendGrid Web API ERROR] Failed to send email to ${to}. Reason: ${
+          error?.message || error
+        }`
       );
-      return false;
+
+      if (error?.response?.body) {
+        logError(
+          SERVICE_NAME,
+          `[SendGrid Error Details]: ${JSON.stringify(error.response.body)}`
+        );
+      }
+
+      throw new Error(
+        `Email dispatch failed: ${error?.message || 'Unknown SendGrid API error'}`
+      );
     }
   },
 };

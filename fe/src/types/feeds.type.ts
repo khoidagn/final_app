@@ -8,21 +8,12 @@ export interface UserSummary {
   isFollowing: boolean;
 }
 
-
-
-
-
-
-
-
-
 export interface PaginationData {
   page: number;
   limit: number;
   total: number;
   totalPages: number;
 }
-
 
 export interface AlbumImageLocal {
   id: string | number;

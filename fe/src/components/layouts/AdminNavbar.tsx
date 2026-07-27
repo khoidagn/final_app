@@ -60,7 +60,7 @@ export default function AdminNavbar() {
           >
             <div className={cn('hidden sm:block w-full max-w-xl mr-4')}>
               <SearchBar
-                isAdmin={true} 
+                isAdmin={true}
                 placeholder="Admin Search Photos / Albums..."
                 onSelectPhoto={setSelectedPhoto}
                 onSelectAlbum={setSelectedAlbum}
@@ -117,7 +117,7 @@ export default function AdminNavbar() {
             )}
           >
             <SearchBar
-              isAdmin={true} 
+              isAdmin={true}
               placeholder="Admin Search Photos / Albums..."
               onSelectPhoto={setSelectedPhoto}
               onSelectAlbum={setSelectedAlbum}

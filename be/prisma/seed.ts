@@ -1,13 +1,11 @@
 import { SharingMode, Role, LikeableType } from '@prisma/client';
-import bcrypt from 'bcryptjs'; // Đồng bộ thư viện bcryptjs giống seedAdmin
+import bcrypt from 'bcryptjs'; 
 import prisma from '../src/config/prisma.js';
-import { logInfo, logError } from '../src/utils/logging.js'; // Sử dụng bộ logging chuẩn của dự án
+import { logInfo, logError } from '../src/utils/logging.js'; 
 const SERVICE_NAME = 'MasterSeed';
 
-// Mật khẩu chung mã hóa cho tất cả tài khoản test để tiện đăng nhập thử nghiệm
 const PASSWORD_RAW = 'khoi123';
 
-// Kho ảnh ảo mock từ Unsplash chất lượng cao theo nhiều chủ đề
 const MOCK_IMAGES = [
   'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
   'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05',

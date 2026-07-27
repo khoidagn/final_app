@@ -28,10 +28,7 @@ const generateRefreshToken = (userId: number): string => {
 
 export const authService = {
   register: async (signupData: any) => {
-    logInfo(
-      SERVICE_NAME,
-      `Registering new account attempt for email: ${signupData.email}`
-    );
+    logInfo(SERVICE_NAME, `Registering attempt for email: ${signupData.email}`);
 
     const existingUser = await prisma.user.findUnique({
       where: { email: signupData.email },
@@ -56,35 +53,36 @@ export const authService = {
       },
     });
 
+    logInfo(
+      SERVICE_NAME,
+      `User record created successfully. ID: ${newUser.id}`
+    );
+
     const verificationToken = jwt.sign(
       { userId: newUser.id, email: newUser.email },
       config.jwt.verificationSecret,
       { expiresIn: '1h' }
     );
-
     const verificationUrl = `${config.app.frontendHost}/verify-email?token=${verificationToken}`;
 
-    try {
-      await MailService.sendEmail({
-        to: newUser.email,
-        subject: '[Fotobook] Verify your email address',
-        html: MailTemplates.getVerificationEmail({
-          firstName: newUser.firstName,
-          verificationUrl,
-        }),
-      });
-      logInfo(
-        SERVICE_NAME,
-        `Verification email dispatched successfully for User ID: ${newUser.id}`
-      );
-    } catch (mailError) {
+    MailService.sendEmail({
+      to: newUser.email,
+      subject: '[Fotobook] Verify your email address',
+      html: MailTemplates.getVerificationEmail({
+        firstName: newUser.firstName,
+        verificationUrl,
+      }),
+    }).catch((err) => {
       logError(
         SERVICE_NAME,
-        `Failed to send verification email to ${newUser.email}: ${mailError}`
+        `Background Email dispatch failed for ${newUser.email}: ${err?.message}`
       );
-    }
+    });
 
-    return { user: newUser };
+    return {
+      message: 'Registration successful! Please check your email to verify.',
+      user: newUser,
+    };
   },
 
   verifyEmail: async (token: string) => {

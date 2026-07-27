@@ -1,4 +1,4 @@
-import type {  UserSummary } from './feeds.type';
+import type { UserSummary } from './feeds.type';
 import type { SharingModeType } from './enum.type';
 export interface PhotoData {
   id: number;
@@ -20,8 +20,8 @@ export interface PhotoData {
 
 export interface PhotoFormData {
   title: string;
-  sharingMode: SharingModeType; 
+  sharingMode: SharingModeType;
   description: string;
   previewSrc: string;
-  imageFile?: File | null; 
+  imageFile?: File | null;
 }

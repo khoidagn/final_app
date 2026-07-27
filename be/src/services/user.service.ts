@@ -41,8 +41,8 @@ export const userService = {
           select: {
             photos: true,
             albums: true,
-            followers: true, 
-            followings: true, 
+            followers: true,
+            followings: true,
           },
         },
       },
@@ -81,8 +81,8 @@ export const userService = {
       _count: {
         photos: userProfile._count.photos,
         albums: userProfile._count.albums,
-        followers: userProfile._count.followers, 
-        following: userProfile._count.followings, 
+        followers: userProfile._count.followers,
+        following: userProfile._count.followings,
       },
     };
   },

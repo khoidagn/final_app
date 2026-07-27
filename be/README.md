@@ -267,7 +267,9 @@ Complete Zod-backed JSON Request and Response Schemas.
 | `npm run build` | Transpiles TypeScript into optimized production JavaScript (dist/). |
 
 ---
+
 ## 🛡️ 7. Security & Best Practices Implemented
+
 - Input Validation & Sanitization: All incoming body parameters, query parameters, and URL path variables are validated at runtime via Zod schemas.
 
 - Centralized Error Handling: Global Express error middleware intercepts all unhandled exceptions, returning standardized JSON error payloads without leaking stack traces in production.
@@ -275,4 +277,3 @@ Complete Zod-backed JSON Request and Response Schemas.
 - Cascading Delete Integrity: Managed through Prisma schema relationships to avoid orphaned records across PostgreSQL tables.
 
 - Environment Isolation: Centralized `src/config/env.ts` module guarantees the server fails immediately at startup if required variables are missing.
-

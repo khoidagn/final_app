@@ -6,8 +6,3 @@ export interface ProfileStats {
   followings: number;
   followers: number;
 }
-
-
-
-
-

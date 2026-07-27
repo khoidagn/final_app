@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { logError } from '../utils/logging.js';
+
 dotenv.config();
 
 const getEnvVar = (key: string, required = true): string => {
@@ -22,7 +23,7 @@ export const config = {
   app: {
     env: getEnvVar('NODE_ENV', false) || 'development',
     port: port,
-    host: process.env.HOST || `http://localhost:${port}`,
+    host: process.env.APP_HOST || `http://localhost:${port}`,
     frontendHost: frontendHost,
   },
   database: {
@@ -47,14 +48,10 @@ export const config = {
     folder: getEnvVar('CLOUDINARY_FOLDER', false) || 'upload-finalapp',
   },
   mail: {
-    smtpHost: getEnvVar('SMTP_HOST', false) || 'smtp.gmail.com',
-    smtpPort: parseInt(getEnvVar('SMTP_PORT', false) || '587', 10),
-    smtpSecure: getEnvVar('SMTP_SECURE', false) === 'true',
-    smtpUser: getEnvVar('SMTP_USER', false),
-    smtpPass: getEnvVar('SMTP_PASS', false),
+    apiKey: process.env.SENDGRID_API_KEY || '',
     smtpFrom:
       getEnvVar('SMTP_FROM', false) ||
-      '"Fotobook System" <noreply@fotobook.com>',
+      '"Rosy Fotobook" <rosyfotobook@gmail.com>',
   },
 } as const;
 

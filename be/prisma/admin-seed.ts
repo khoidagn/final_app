@@ -11,7 +11,7 @@ const ADMIN_PASSWORD = 'admin12345';
 async function seedAdmin() {
   logInfo(
     SERVICE_NAME,
-    '🛡️ [ADMIN SEED]: Đang khởi chạy tiến trình khởi tạo Quản trị viên...'
+    '[ADMIN SEED]: Đang khởi chạy tiến trình khởi tạo Quản trị viên...'
   );
 
   const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);

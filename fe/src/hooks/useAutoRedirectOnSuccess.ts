@@ -12,7 +12,11 @@ export function useAutoRedirectOnSuccess(
   useEffect(() => {
     const handleMessage = (event: MessageEvent<AuthChannelMessage>) => {
       if (event.data?.type === expectedType) {
-        toast.success(event.data.message || defaultToastMsg || 'Action completed! Redirecting...');        
+        toast.success(
+          event.data.message ||
+            defaultToastMsg ||
+            'Action completed! Redirecting...'
+        );
         navigate('/login', { replace: true });
       }
     };

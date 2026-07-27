@@ -82,7 +82,7 @@ export const adminController = {
       next(error);
     }
   },
-  
+
   adminGetPhotoById: async (
     req: Request,
     res: Response,

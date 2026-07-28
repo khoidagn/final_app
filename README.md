@@ -100,14 +100,27 @@ final_app/
 └── README.md                    # System Root Overview Documentation
 ```
 
-## 🚀 Complete Functional Matrix
+## 🚀 Complete Functional Matrix & Interface Preview
 
 ### 👤 1. Guest User (Unauthenticated)
 
 - **Landing & Discovery:** Access Public Feeds and Discovery pages to browse public photos and albums.
+- **Global Search System:** Real-time query search across public photos, public albums, and creator profiles with debounced API requests.
 - **Content Inspection:** Open interactive modals to view high-resolution photos and navigate through album image collections.
 - **Profiles:** View Public User Profiles, including their public photos, public albums, follower list, and following list.
 - **Authentication:** Sign up for a new account, confirm email via verification link, log in, and request password reset tokens.
+
+<div align="center">
+
+| 🌐 Public Discovery Grid (Photos) | 🌐 Public Discovery Grid (Albums) |
+| :---: | :---: |
+| <img src="./.github/assets/discovery-photo.png" width="100%" alt="Discovery Photo"/> | <img src="./.github/assets/discovery-album.png" width="100%" alt="Discovery Album"/> |
+| **🔍 Photo Detail Modal** | **🔍 Album Navigation Modal** |
+| <img src="./.github/assets/photo-modal.png" width="100%" alt="Photo Modal"/> | <img src="./.github/assets/album-modal.png" width="100%" alt="Album Modal"/> |
+
+</div>
+
+---
 
 ### 🔐 2. Normal Authenticated User
 
@@ -130,7 +143,33 @@ final_app/
   - **Interactions:** One-click Like/Unlike photos and albums with real-time counter updates.
   - **Follow Graph:** One-click Follow/Unfollow other creators from feed cards, discovery grid, or profile pages.
 
-### 🛡️ 3. Administrator (`ADMIN` Role)
+<div align="center">
+
+| 📰 Personalized Social Feed | 👤 User Profile & Album Collections |
+| :---: | :---: |
+| <img src="./.github/assets/feeds.png" width="100%" alt="Personal Feeds"/> | <img src="./.github/assets/user-profile.png" width="100%" alt="User Profile"/> |
+
+</div>
+
+### 📱 3. Responsive Mobile Experience
+
+The platform is engineered with a mobile-first responsive architecture using Tailwind CSS, providing seamless touch-friendly navigation across all smartphone viewports.
+
+- **Mobile Navigation Bar & Bottom Bar:** Optimized navigation menus for small screens with bottom tabs for Feeds and Discover.
+- **Touch-Friendly Controls:** Swipeable album cards, tap-optimized interaction buttons, and intuitive mobile form controls.
+
+<div align="center">
+
+| 🌐 Mobile Discover | 📚 Mobile Feeds | 👤 Mobile Profile |
+| :---: | :---: | :---: |
+| <img src="./.github/assets/mobile-discovery-photo.png" width="100%" alt="Mobile Discovery Photos"/> | <img src="./.github/assets/mobile-feed-album.png" width="100%" alt="Mobile Feeds Albums"/> | <img src="./.github/assets/mobile-profile-photos.png" width="100%" alt="Mobile Profile Photos"/> |
+| **👥 Social Graph** | **✏️ Profile Settings** | **➕ Photo Upload** |
+| <img src="./.github/assets/mobile-followings.png" width="100%" alt="Mobile Followings"/> | <img src="./.github/assets/mobile-edit-profile.png" width="100%" alt="Mobile Edit Profile"/> | <img src="./.github/assets/mobile-add-photo.png" width="100%" alt="Mobile Add Photo"/> |
+
+</div>
+
+---
+### 🛡️ 4. Administrator (`ADMIN` Role)
 
 - **User Moderation:**
   - View paginated list of all platform users with search capabilities.
@@ -138,6 +177,14 @@ final_app/
   - Permanently delete user accounts.
 - **Global Asset Management:**
   - View, edit, or permanently remove **ANY** Photo or Album across the entire system, including assets marked as `PRIVATE`.
+
+<div align="center">
+
+| 🛡️ Admin Photo Management | 🛡️ Admin User Moderation |
+| :---: | :---: |
+| <img src="./.github/assets/admin-photo.png" width="100%" alt="Admin Manage Photos" /> | <img src="./.github/assets/admin-user.png" width="100%" alt="Admin Manage Users" /> |
+
+</div>
 
 ---
 

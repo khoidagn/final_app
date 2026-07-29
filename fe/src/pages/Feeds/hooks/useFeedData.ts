@@ -34,6 +34,8 @@ export function useFeedData({
   const [hasMoreAlbums, setHasMoreAlbums] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const [hasFetchedAlbums, setHasFetchedAlbums] = useState<boolean>(false);
+
   const { handleFollowToggle, handleLikeToggle } = useFeedInteractions({
     setPhotos: setDisplayedPhotos,
     setAlbums: setDisplayedAlbums,
@@ -56,6 +58,86 @@ export function useFeedData({
     },
     [mode, itemsPerPage, isLoggedIn]
   );
+
+  useEffect(() => {
+    if (mode === 'feed' && (isAuthLoading || !isLoggedIn)) return;
+
+    let isMounted = true;
+
+    const initPhotos = async () => {
+      setIsLoading(true);
+      try {
+        const photoRes = await fetchItems('photo', 1);
+        if (!isMounted) return;
+
+        const pData = photoRes?.data?.photos || photoRes?.photos || [];
+        const safePhotos = Array.isArray(pData) ? pData : [];
+
+        setDisplayedPhotos(safePhotos);
+        setHasMorePhotos(safePhotos.length >= itemsPerPage);
+        setPhotoPage(1);
+      } catch (error: unknown) {
+        if (isMounted) {
+          toast.error(
+            getBackendMessage(error, FEED_CONSTANTS.API_RESPONSE.FETCH_FAILED)
+          );
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    initPhotos();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [itemsPerPage, mode, isLoggedIn, isAuthLoading, fetchItems]);
+
+  useEffect(() => {
+    if (activeTab !== 'album' || hasFetchedAlbums) return;
+    if (mode === 'feed' && (isAuthLoading || !isLoggedIn)) return;
+
+    let isMounted = true;
+
+    const initAlbums = async () => {
+      setIsLoading(true);
+      try {
+        const albumRes = await fetchItems('album', 1);
+        if (!isMounted) return;
+
+        const aData = albumRes?.data?.albums || albumRes?.albums || [];
+        const safeAlbums = Array.isArray(aData) ? aData : [];
+
+        setDisplayedAlbums(safeAlbums);
+        setHasMoreAlbums(safeAlbums.length >= itemsPerPage);
+        setAlbumPage(1);
+        setHasFetchedAlbums(true);
+      } catch (error: unknown) {
+        if (isMounted) {
+          toast.error(
+            getBackendMessage(error, FEED_CONSTANTS.API_RESPONSE.FETCH_FAILED)
+          );
+        }
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    initAlbums();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    activeTab,
+    hasFetchedAlbums,
+    itemsPerPage,
+    mode,
+    isLoggedIn,
+    isAuthLoading,
+    fetchItems,
+  ]);
 
   const loadMoreItems = useCallback(async () => {
     if (isLoading) return;
@@ -110,57 +192,6 @@ export function useFeedData({
     itemsPerPage,
     fetchItems,
   ]);
-
-  useEffect(() => {
-    if (mode === 'feed' && (isAuthLoading || !isLoggedIn)) {
-      return;
-    }
-
-    let isMounted = true;
-
-    const initData = async () => {
-      setIsLoading(true);
-      try {
-        const [photoRes, albumRes] = await Promise.all([
-          fetchItems('photo', 1),
-          fetchItems('album', 1),
-        ]);
-
-        if (!isMounted) return;
-
-        const pData = photoRes?.data?.photos || photoRes?.photos || [];
-        const aData = albumRes?.data?.albums || albumRes?.albums || [];
-
-        const safePhotos = Array.isArray(pData) ? pData : [];
-        const safeAlbums = Array.isArray(aData) ? aData : [];
-
-        setDisplayedPhotos(safePhotos);
-        setHasMorePhotos(safePhotos.length >= itemsPerPage);
-
-        setDisplayedAlbums(safeAlbums);
-        setHasMoreAlbums(safeAlbums.length >= itemsPerPage);
-
-        setPhotoPage(1);
-        setAlbumPage(1);
-      } catch (error: unknown) {
-        if (isMounted) {
-          toast.error(
-            getBackendMessage(error, FEED_CONSTANTS.API_RESPONSE.FETCH_FAILED)
-          );
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    initData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [itemsPerPage, mode, isLoggedIn, isAuthLoading, fetchItems]);
 
   useEffect(() => {
     const handleScroll = () => {

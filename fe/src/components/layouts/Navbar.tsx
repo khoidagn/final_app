@@ -13,7 +13,7 @@ import type { PhotoData } from '../../types/photo.type';
 import type { AlbumData } from '../../types/album.type';
 
 export default function Navbar() {
-  const { isLoggedIn, user } = useAuth();
+  const { user, isLoading } = useAuth();
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const [selectedPhoto, setSelectedPhoto] = useState<PhotoData | null>(null);
@@ -73,7 +73,7 @@ export default function Navbar() {
               {isMobileSearchOpen ? <X size={20} /> : <Search size={20} />}
             </button>
 
-            {isLoggedIn && user ? (
+            {user ? (
               <Link
                 to="/my-profile"
                 className={cn(
@@ -98,9 +98,15 @@ export default function Navbar() {
             )}
           </div>
 
-          <div className={cn('shrink-0 text-right sm:text-center sm:min-w-0')}>
-            {isLoggedIn ? (
+          <div
+            className={cn(
+              'shrink-0 text-right sm:text-center sm:min-w-0 flex justify-end sm:justify-center items-center'
+            )}
+          >
+            {user ? (
               <LogoutButton />
+            ) : isLoading ? (
+              <div className="w-16 h-6 bg-white/20 rounded animate-pulse" />
             ) : (
               <Link
                 to="/login"

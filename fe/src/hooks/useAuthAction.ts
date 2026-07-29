@@ -6,14 +6,28 @@ import { AUTH_CONSTANTS } from '../constants/auth.constant';
 import { getBackendMessage } from '../utils/error';
 import type { AuthUser, LoginInput } from '../types/auth.type';
 
+const getStoredUser = (): AuthUser | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const saved = localStorage.getItem('authUser');
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+};
+
 export function useAuthActions() {
   const hasStoredToken =
     typeof window !== 'undefined' &&
     Boolean(localStorage.getItem('accessToken'));
 
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(hasStoredToken);
+  const [user, setUser] = useState<AuthUser | null>(getStoredUser);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
+    () => hasStoredToken && Boolean(getStoredUser())
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    hasStoredToken && !getStoredUser()
+  );
 
   const refreshSession = useCallback(async () => {
     try {
@@ -22,9 +36,11 @@ export function useAuthActions() {
       if (response && response.success === true && response.data) {
         setUser(response.data);
         setIsLoggedIn(true);
+        localStorage.setItem('authUser', JSON.stringify(response.data));
       } else {
         setIsLoggedIn(false);
         setUser(null);
+        localStorage.removeItem('authUser');
       }
     } catch (error: unknown) {
       console.error(
@@ -36,6 +52,7 @@ export function useAuthActions() {
       );
       setIsLoggedIn(false);
       setUser(null);
+      localStorage.removeItem('authUser');
     } finally {
       setIsLoading(false);
     }
@@ -67,8 +84,10 @@ export function useAuthActions() {
 
       if (response && response.success === true && response.data) {
         setUser(response.data);
+        localStorage.setItem('authUser', JSON.stringify(response.data));
       } else {
         setUser(null);
+        localStorage.removeItem('authUser');
       }
 
       setIsLoggedIn(true);
@@ -76,6 +95,7 @@ export function useAuthActions() {
     } catch (error: unknown) {
       setIsLoggedIn(false);
       setUser(null);
+      localStorage.removeItem('authUser');
       throw error;
     } finally {
       setIsLoading(false);
@@ -94,6 +114,7 @@ export function useAuthActions() {
     } finally {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('userId');
+      localStorage.removeItem('authUser');
 
       setUser(null);
       setIsLoggedIn(false);

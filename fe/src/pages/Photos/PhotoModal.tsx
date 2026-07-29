@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { cn } from '../../utils/cn';
 
 interface PhotoModalProps {
@@ -16,35 +15,31 @@ export default function PhotoModal({
   description = '',
   onClose,
 }: PhotoModalProps) {
-  const [isSuperVertical, setIsSuperVertical] = useState(false);
-
   if (!isOpen) return null;
-
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { naturalWidth, naturalHeight } = e.currentTarget;
-    setIsSuperVertical(naturalHeight / naturalWidth > 1.2);
-  };
 
   return (
     <div
       className={cn(
-        'fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-100'
+        'fixed inset-0 bg-black/80 flex items-center justify-center p-4 sm:p-6 z-100'
       )}
       onClick={onClose}
     >
       <div
         className={cn(
-          'bg-surface rounded-md overflow-hidden shadow-2xl relative inline-flex flex-col w-fit max-w-[90vw] mx-auto',
-          'sm:max-w-[70vh]'
+          'bg-surface rounded-md overflow-hidden shadow-2xl relative flex flex-col',
+          'w-full max-w-lg md:max-w-xl mx-auto'
         )}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header */}
         <div
           className={cn(
-            'px-4 pt-3 pb-1 flex items-center justify-between shrink-0 w-0 min-w-full bg-surface select-none'
+            'px-4 pt-3 flex items-center justify-between shrink-0 bg-surface select-none border-b border-border-muted'
           )}
         >
-          <h2 className={cn('text-sm font-bold text-text-primary truncate')}>
+          <h2
+            className={cn('text-sm font-bold text-text-primary truncate pr-4')}
+          >
             {title}
           </h2>
           <button
@@ -60,31 +55,27 @@ export default function PhotoModal({
 
         <div
           className={cn(
-            'p-3 pt-1 flex items-center justify-center max-h-[60vh] w-fit mx-auto overflow-hidden bg-surface relative group select-none transition-all',
-            isSuperVertical ? 'min-w-[45vh]' : 'min-w-0'
+            'w-full h-[55vh] max-h-[500px] min-h-[280px] bg-surface flex items-center justify-center relative group select-none overflow-hidden'
           )}
         >
           <img
             src={imageUrl}
             alt={title}
-            onLoad={handleImageLoad}
-            className={cn(
-              'w-auto h-full max-h-[calc(60vh-24px)] object-contain block rounded-sm'
-            )}
+            className={cn('w-full h-full object-contain px-2 block')}
           />
         </div>
 
         <div
           className={cn(
-            'px-4 pb-4 border-t border-border-muted bg-surface shrink-0 w-0 min-w-full'
+            'px-4 pb-3 border-t border-border-muted bg-surface shrink-0 max-h-[120px] overflow-y-auto'
           )}
         >
           <p
             className={cn(
-              'text-xs text-text-secondary leading-relaxed break-words whitespace-normal pt-2'
+              'text-xs text-text-secondary leading-relaxed break-words whitespace-normal'
             )}
           >
-            {description}
+            {description || 'No description provided.'}
           </p>
         </div>
       </div>

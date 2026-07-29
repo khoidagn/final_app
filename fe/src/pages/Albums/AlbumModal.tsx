@@ -18,13 +18,8 @@ export default function AlbumModal({
   imageUrls,
   onClose,
 }: AlbumModalProps) {
-  const {
-    currentIndex,
-    isSuperVertical,
-    handlePrev,
-    handleNext,
-    handleImageLoad,
-  } = useAlbumCarousel(imageUrls);
+  const { currentIndex, handlePrev, handleNext, handleImageLoad } =
+    useAlbumCarousel(imageUrls);
 
   if (!isOpen) return null;
 
@@ -32,7 +27,7 @@ export default function AlbumModal({
     return (
       <div
         className={cn(
-          'fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50'
+          'fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-100'
         )}
         onClick={onClose}
       >
@@ -60,20 +55,21 @@ export default function AlbumModal({
   return (
     <div
       className={cn(
-        'fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-100'
+        'fixed inset-0 bg-black/80 flex items-center justify-center p-4 sm:p-6 z-100'
       )}
       onClick={onClose}
     >
       <div
         className={cn(
-          'bg-surface rounded-md overflow-hidden shadow-2xl relative inline-flex flex-col w-fit max-w-[90vw] mx-auto',
-          'sm:max-w-[65vh]'
+          'bg-surface rounded-md overflow-hidden shadow-2xl relative flex flex-col',
+          'w-full max-w-lg md:max-w-xl mx-auto'
         )}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header */}
         <div
           className={cn(
-            'px-4 pt-3 pb-1 flex items-center justify-between shrink-0 w-0 min-w-full bg-surface select-none'
+            'px-4 pt-3 flex items-center justify-between shrink-0 bg-surface select-none border-b border-border-muted'
           )}
         >
           <div className={cn('flex flex-col min-w-0 flex-1 pr-4')}>
@@ -83,7 +79,7 @@ export default function AlbumModal({
           </div>
           <span
             className={cn(
-              'text-sm text-text-muted font-semibold mr-4 shrink-0'
+              'text-xs text-text-muted font-semibold mr-4 shrink-0'
             )}
           >
             {currentIndex + 1} / {imageUrls.length}
@@ -101,8 +97,7 @@ export default function AlbumModal({
 
         <div
           className={cn(
-            'p-3 pt-1 flex items-center justify-center max-h-[60vh] w-fit mx-auto overflow-hidden bg-surface relative group select-none transition-all',
-            isSuperVertical ? 'min-w-[45vh]' : 'min-w-0'
+            'w-full h-[55vh] max-h-[500px] min-h-[280px] bg-surface flex items-center justify-center relative group select-none overflow-hidden'
           )}
         >
           {imageUrls.length > 1 && (
@@ -115,7 +110,7 @@ export default function AlbumModal({
             alt={`Detail index ${currentIndex}`}
             onLoad={handleImageLoad}
             className={cn(
-              'w-auto h-full max-h-[calc(60vh-24px)] object-contain block rounded-sm'
+              'w-full h-full object-contain px-3 block transition-all duration-200'
             )}
           />
 
@@ -126,15 +121,15 @@ export default function AlbumModal({
 
         <div
           className={cn(
-            'px-4 pb-4 border-t border-border-muted bg-surface shrink-0 w-0 min-w-full'
+            'px-4 pb-3 border-t border-border-muted bg-surface shrink-0 max-h-[120px] overflow-y-auto'
           )}
         >
           <p
             className={cn(
-              'text-xs text-text-secondary leading-relaxed break-words whitespace-normal pt-2'
+              'text-xs text-text-secondary leading-relaxed break-words whitespace-normal'
             )}
           >
-            {description}
+            {description || 'No description provided.'}
           </p>
         </div>
       </div>

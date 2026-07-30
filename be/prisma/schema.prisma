@@ -42,7 +42,7 @@ model User {
   followersCount  Int       @default(0) @map("followers_count")
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamp
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamp
-
+  tokenVersion    Int       @default(0) @map("token_version")
   photos          Photo[]
   albums          Album[]
   likes           Like[]

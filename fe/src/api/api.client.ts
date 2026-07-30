@@ -51,9 +51,10 @@ apiClient.interceptors.response.use(
       localStorage.removeItem('refreshToken');
       localStorage.removeItem('role');
       localStorage.removeItem('userId');
+      localStorage.removeItem('authUser');
 
       if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
+        window.location.href = '/login?reason=session_expired';
       }
       return Promise.reject(error);
     }
@@ -95,9 +96,10 @@ apiClient.interceptors.response.use(
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('role');
         localStorage.removeItem('userId');
+        localStorage.removeItem('authUser');
 
         if (window.location.pathname !== '/login') {
-          window.location.href = '/login';
+          window.location.href = '/login?reason=session_expired';
         }
         return Promise.reject(refreshError);
       } finally {

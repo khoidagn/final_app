@@ -10,20 +10,32 @@ import { Role } from '@prisma/client';
 
 const SERVICE_NAME = 'AuthService';
 
-const generateAccessToken = (userId: number, role: Role): string => {
+const generateAccessToken = (
+  userId: number,
+  role: Role,
+  tokenVersion: number
+): string => {
   const options: SignOptions = {
     expiresIn: config.jwt.accessExpiresIn as SignOptions['expiresIn'],
   };
 
-  return jwt.sign({ id: userId, role }, config.jwt.accessSecret, options);
+  return jwt.sign(
+    { id: userId, role, tokenVersion },
+    config.jwt.accessSecret,
+    options
+  );
 };
 
-const generateRefreshToken = (userId: number): string => {
+const generateRefreshToken = (userId: number, tokenVersion: number): string => {
   const options: SignOptions = {
     expiresIn: config.jwt.refreshExpiresIn as SignOptions['expiresIn'],
   };
 
-  return jwt.sign({ id: userId }, config.jwt.refreshSecret, options);
+  return jwt.sign(
+    { id: userId, tokenVersion },
+    config.jwt.refreshSecret,
+    options
+  );
 };
 
 export const authService = {
@@ -236,8 +248,12 @@ export const authService = {
       data: { lastLogin: new Date() },
     });
 
-    const accessToken = generateAccessToken(user.id, user.role);
-    const refreshToken = generateRefreshToken(user.id);
+    const accessToken = generateAccessToken(
+      user.id,
+      user.role,
+      user.tokenVersion
+    );
+    const refreshToken = generateRefreshToken(user.id, user.tokenVersion);
 
     logInfo(SERVICE_NAME, `User logged in successfully. User ID: ${user.id}`);
     return {
@@ -259,6 +275,7 @@ export const authService = {
     try {
       const decoded = jwt.verify(token, config.jwt.refreshSecret) as {
         id: number;
+        tokenVersion: number;
       };
 
       const user = await prisma.user.findUnique({ where: { id: decoded.id } });
@@ -270,7 +287,23 @@ export const authService = {
         throw new AppError(401, 'User no longer exists or is deactivated');
       }
 
-      const newAccessToken = generateAccessToken(user.id, user.role);
+      if (decoded.tokenVersion !== user.tokenVersion) {
+        logWarning(
+          SERVICE_NAME,
+          `Refresh session rejected - Token version mismatch for User ID: ${user.id}`
+        );
+        throw new AppError(
+          401,
+          'Session has expired due to security updates. Please log in again.'
+        );
+      }
+
+      const newAccessToken = generateAccessToken(
+        user.id,
+        user.role,
+        user.tokenVersion
+      );
+
       logInfo(
         SERVICE_NAME,
         `Access token refreshed successfully for User ID: ${user.id}`
@@ -344,12 +377,15 @@ export const authService = {
 
       await prisma.user.update({
         where: { id: decoded.userId },
-        data: { passwordHash: hashedPassword },
+        data: {
+          passwordHash: hashedPassword,
+          tokenVersion: { increment: 1 },
+        },
       });
 
       logInfo(
         SERVICE_NAME,
-        `Password updated successfully in database for User ID: ${decoded.userId}`
+        `Password updated and session invalidated successfully for User ID: ${decoded.userId}`
       );
       return {
         message:

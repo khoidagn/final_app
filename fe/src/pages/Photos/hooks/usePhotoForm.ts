@@ -94,7 +94,6 @@ export function usePhotoForm(isEdit: boolean, isAdmin: boolean = false) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🟢 Truyền cả previewSrc vào để chặn Save nếu người dùng xóa hết ảnh
     const errors = validatePhotoForm(
       {
         title: formData.title,

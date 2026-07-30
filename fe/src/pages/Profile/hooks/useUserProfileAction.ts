@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { userService } from '../../../services/user.service';
 import { PROFILE_CONSTANTS } from '../../../constants/profile.constant';
@@ -11,6 +12,7 @@ import {
 
 export function useUserProfileAction() {
   const { refreshSession } = useAuth();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     firstName: '',
@@ -142,6 +144,18 @@ export function useUserProfileAction() {
       }
 
       await userService.updateProfile(formData);
+
+      if (isChangingPassword) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('authUser');
+
+        navigate('/login?reason=session_expired');
+        return;
+      }
+
       await refreshSession();
 
       setAvatarFile(null);

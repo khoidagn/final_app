@@ -111,11 +111,11 @@ const options: swaggerJSDoc.Options = {
                 },
               },
             },
-            responses: {
-              200: { description: 'Verification email resent successfully.' },
-              400: { description: 'Email is already verified.' },
-              404: { description: 'User with this email address not found.' },
-            },
+          },
+          responses: {
+            200: { description: 'Verification email resent successfully.' },
+            400: { description: 'Email is already verified.' },
+            404: { description: 'User with this email address not found.' },
           },
         },
       },
@@ -203,8 +203,11 @@ const options: swaggerJSDoc.Options = {
           tags: ['Authentication'],
           summary: 'Renew Access Token automatically (Silent Refresh)',
           responses: {
-            200: { description: 'Returns a new valid Access Token.' },
-            401: { description: 'Invalid or expired refresh token.' },
+            '200': { description: 'Returns a new valid Access Token.' },
+            '401': {
+              description:
+                'Invalid, expired refresh token, or session invalidated due to password change (tokenVersion mismatch).',
+            },
           },
         },
       },
@@ -277,7 +280,7 @@ const options: swaggerJSDoc.Options = {
           tags: ['Authentication'],
           summary: 'Thực hiện đặt lại mật khẩu mới bằng token khôi phục',
           description:
-            'FE bốc tách token từ URL để gửi kèm với mật khẩu mới. Backend verify JWT và ghi đè mật khẩu mới vào cơ sở dữ liệu.',
+            'FE bóc tách token từ URL để gửi kèm với mật khẩu mới. Backend verify JWT, ghi đè mật khẩu mới và tự động tăng tokenVersion để ngắt toàn bộ phiên đăng nhập cũ.',
           requestBody: {
             required: true,
             content: {
@@ -305,7 +308,8 @@ const options: swaggerJSDoc.Options = {
           },
           responses: {
             200: {
-              description: 'Cập nhật lại mật khẩu thành công.',
+              description:
+                'Cập nhật lại mật khẩu thành công. Tất cả các phiên làm việc cũ đều bị ngắt kết nối.',
               content: {
                 'application/json': {
                   schema: {

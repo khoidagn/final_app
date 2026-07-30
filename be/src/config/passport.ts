@@ -19,10 +19,15 @@ passport.use(
           lastName: true,
           role: true,
           isActive: true,
+          tokenVersion: true,
         },
       });
 
       if (!user || !user.isActive) {
+        return done(null, false);
+      }
+
+      if (jwtPayload.tokenVersion !== user.tokenVersion) {
         return done(null, false);
       }
 

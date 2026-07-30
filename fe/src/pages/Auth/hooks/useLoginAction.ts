@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useAuth } from '../../../hooks/useAuth';
 import { getBackendMessage } from '../../../utils/error';
@@ -18,14 +18,23 @@ export function useLoginAction() {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    if (searchParams.get('reason') === 'session_expired') {
+      toast.error(
+        'Your session has expired or your password was changed. Please log in again.'
+      );
+      searchParams.delete('reason');
+      setSearchParams(searchParams, { replace: true });
+    }
+
     const msg = sessionStorage.getItem('toastMessage');
     if (msg) {
       toast.success(msg);
       sessionStorage.removeItem('toastMessage');
     }
-  }, []);
+  }, [searchParams, setSearchParams]);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);

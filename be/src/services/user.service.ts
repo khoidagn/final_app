@@ -168,7 +168,7 @@ export const userService = {
       dataToUpdate.email = updateData.email;
     }
 
-    if (updateData.password) {
+    if (updateData.password && updateData.password.trim() !== '') {
       if (currentUserRole !== Role.ADMIN) {
         if (!updateData.oldPassword) {
           logWarning(
@@ -195,6 +195,13 @@ export const userService = {
       }
 
       dataToUpdate.passwordHash = await bcrypt.hash(updateData.password, 10);
+
+      dataToUpdate.tokenVersion = { increment: 1 };
+
+      logInfo(
+        SERVICE_NAME,
+        `Password updated for User ID: ${targetUserId}. Incrementing tokenVersion to clear all active sessions.`
+      );
     }
 
     logInfo(

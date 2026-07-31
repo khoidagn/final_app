@@ -29,49 +29,46 @@ export default function ProfileHeader({
   return (
     <div
       className={cn(
-        'w-full flex flex-col items-center gap-4 sm:gap-6',
-        'sm:flex-row sm:items-center'
+        'w-full flex flex-col items-center gap-4',
+        'lg:flex-row lg:items-center lg:gap-8'
       )}
     >
-      <div className={cn('shrink-0')}>
+      <div className={cn('shrink-0 flex justify-center')}>
         <Avatar
           avatarUrl={avatarUrl}
           firstName={firstName}
           lastName={lastName}
-          sizeClass="w-28 h-28 sm:w-36 sm:h-36"
-          textSizeClass="text-2xl"
+          sizeClass="w-24 h-24 sm:w-28 sm:h-28 lg:w-36 lg:h-36"
+          textSizeClass="text-xl lg:text-2xl"
         />
       </div>
 
       <div
         className={cn(
-          'w-full flex-1 flex flex-col items-center gap-3 sm:gap-4',
-          'sm:items-start min-w-0'
+          'w-full flex-1 flex flex-col items-center gap-3',
+          'lg:items-start min-w-0'
         )}
       >
         <div
           className={cn(
-            'w-full flex flex-col items-center gap-2.5',
-            'sm:flex-row sm:items-center sm:gap-4 min-w-0'
+            'w-full flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-4 min-w-0'
           )}
         >
           <h2
             className={cn(
-              'text-lg sm:text-2xl font-bold leading-snug tracking-tight text-text-primary text-center sm:text-left',
-              'break-words max-w-full'
+              'text-xl sm:text-2xl font-bold leading-snug tracking-tight text-text-primary text-center lg:text-left',
+              'truncate max-w-full'
             )}
           >
             {fullName}
           </h2>
 
-          <div className={cn('shrink-0')}>{renderHeaderActions()}</div>
+          <div className={cn('shrink-0 flex items-center')}>
+            {renderHeaderActions()}
+          </div>
         </div>
 
-        <div
-          className={cn(
-            'w-full flex justify-center sm:justify-start mt-1 sm:mt-0'
-          )}
-        >
+        <div className={cn('w-full flex justify-center lg:justify-start mt-1')}>
           <ProfileTabs
             stats={stats}
             activeTab={activeTab}

@@ -18,9 +18,10 @@ export default function AdminLayout() {
 
       <div
         className={cn(
-          'w-full px-0 py-0 sm:px-6 sm:py-8 flex-1 items-start gap-6 grid',
+          'w-full max-w-7xl mx-auto flex-1 items-start gap-4 md:gap-6 grid',
+          'p-0 sm:px-6 sm:py-6 md:py-8',
           'grid-cols-1',
-          'md:grid-cols-[180px_1fr]',
+          'md:grid-cols-[120px_1fr]',
           'lg:grid-cols-[120px_1fr_120px]',
           isSidebarCollapsed && 'md:grid-cols-[64px_1fr]'
         )}

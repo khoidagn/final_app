@@ -27,61 +27,72 @@ export default function AdminUsers() {
   return (
     <div
       className={cn(
-        'w-full min-h-[500px] flex flex-col justify-between p-3 sm:p-6',
-        'bg-surface border border-border-default rounded-md shadow-xs'
+        'w-full min-h-[500px] flex flex-col justify-between p-3 sm:p-5 md:p-6',
+        'bg-surface border-0 sm:border border-border-default rounded-none sm:rounded-md shadow-none sm:shadow-xs'
       )}
     >
       <div className={cn('w-full')}>
-        {/* ================= MOBILE VIEW (< md) ================= */}
-        <div className={cn('flex flex-col gap-3 md:hidden')}>
+        {/* ================= CARDS VIEW (Mobile: 1 cột | iPad/Tablet: 2 cột) ================= */}
+        <div
+          className={cn('grid grid-cols-1 sm:grid-cols-2 gap-3.5 lg:hidden')}
+        >
           {users.map((user) => (
             <div
               key={user.id}
               className={cn(
-                'p-3.5 rounded-sm border border-border-default bg-background/50',
-                'flex flex-col gap-2.5 shadow-3xs'
+                'p-3.5 rounded-md border border-border-default bg-background/40',
+                'flex flex-col justify-between gap-3 shadow-3xs transition-all hover:border-brand/30'
               )}
             >
-              <div className={cn('flex items-center justify-between')}>
-                <span
-                  className={cn('font-bold text-xs text-text-primary truncate')}
-                >
-                  {user.firstName} {user.lastName}
-                </span>
-
-                <span
-                  className={cn(
-                    'px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0',
-                    user.isActive
-                      ? 'bg-success/10 text-success border border-success/20'
-                      : 'bg-danger/10 text-danger border border-danger/20'
-                  )}
-                >
-                  {user.isActive ? 'Active' : 'Inactive'}
-                </span>
-              </div>
-
-              <div
-                className={cn(
-                  'flex flex-col gap-1 text-[11px] text-text-muted'
-                )}
-              >
-                <div className={cn('flex items-center justify-between')}>
-                  <span>Email:</span>
+              <div className={cn('flex flex-col gap-2')}>
+                <div className={cn('flex items-center justify-between gap-2')}>
                   <span
                     className={cn(
-                      'font-mono text-text-primary truncate max-w-[200px]'
+                      'font-bold text-xs text-text-primary truncate'
                     )}
                   >
-                    {user.email}
+                    {user.firstName} {user.lastName}
+                  </span>
+
+                  <span
+                    className={cn(
+                      'px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0',
+                      user.isActive
+                        ? 'bg-success/10 text-success border border-success/20'
+                        : 'bg-danger/10 text-danger border border-danger/20'
+                    )}
+                  >
+                    {user.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>
 
-                <div className={cn('flex items-center justify-between')}>
-                  <span>Last login:</span>
-                  <span className={cn('font-mono text-text-secondary')}>
-                    {formatDateTime(user.lastLogin)}
-                  </span>
+                <div
+                  className={cn(
+                    'flex flex-col gap-1.5 text-[11px] text-text-muted'
+                  )}
+                >
+                  <div
+                    className={cn('flex items-center justify-between gap-2')}
+                  >
+                    <span>Email:</span>
+                    <span
+                      className={cn(
+                        'font-mono text-text-primary truncate max-w-[180px]'
+                      )}
+                      title={user.email}
+                    >
+                      {user.email}
+                    </span>
+                  </div>
+
+                  <div
+                    className={cn('flex items-center justify-between gap-2')}
+                  >
+                    <span>Last login:</span>
+                    <span className={cn('font-mono text-text-secondary')}>
+                      {formatDateTime(user.lastLogin)}
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -100,8 +111,8 @@ export default function AdminUsers() {
           ))}
         </div>
 
-        {/* ================= DESKTOP VIEW (>= md) ================= */}
-        <div className={cn('hidden md:block w-full overflow-x-auto')}>
+        {/* ================= DESKTOP VIEW (>= lg: 1024px) ================= */}
+        <div className={cn('hidden lg:block w-full overflow-x-auto')}>
           <table
             className={cn('w-full text-left border-collapse min-w-[650px]')}
           >

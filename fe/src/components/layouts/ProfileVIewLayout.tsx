@@ -27,11 +27,13 @@ export default function ProfileViewLayout({
   return (
     <div
       className={cn(
-        'w-full flex flex-col p-6',
-        'bg-surface border border-border-default rounded-md shadow-xs'
+        'w-full flex flex-col',
+        'p-3 sm:p-6 md:p-8',
+        'bg-surface',
+        'border-0 sm:border border-border-default rounded-none sm:rounded-md shadow-none sm:shadow-xs'
       )}
     >
-      <div className={cn('w-full mb-2 pb-4 border-b border-border-muted')}>
+      <div className={cn('w-full mb-4 pb-4 border-b border-border-default/60')}>
         <ProfileHeader
           firstName={firstName}
           lastName={lastName}
@@ -43,7 +45,7 @@ export default function ProfileViewLayout({
         />
       </div>
 
-      <div className={cn('w-full')}>{renderTabContent(activeTab)}</div>
+      <div className={cn('w-full min-w-0')}>{renderTabContent(activeTab)}</div>
     </div>
   );
 }
